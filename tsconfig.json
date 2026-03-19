@@ -1,0 +1,58 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/*"],
+      "@test/*": ["test/*"]
+    },
+    "composite": true,
+    "declaration": true,
+    "lib": ["ES2022"],
+    "target": "ES2022",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "./src",
+    "moduleSuffixes": [""],
+    "maxNodeModuleJsDepth": 0, // <--- ADD THIS
+    "allowJs": true,
+    "checkJs": false,
+    "types": ["node", "jest", "crypto-js", "crypto-js/enc-base64"],
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths"
+      },
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      }
+    ]
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "verbose": false
+  },
+  "ts-node": {
+    "esm": false
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules/",
+    "dist/",
+    "logs",
+    "build",
+    "test/**/*",
+    "scratch_code",
+    "src/assets/**/*"
+  ]
+}

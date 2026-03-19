@@ -1,0 +1,129 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+  "editor.snippetSuggestions": "top",
+  "jest.runMode": "on-demand",
+  "jest.monitorLongRun": 600000,
+  "jest.jestCommandLine": "node --experimental-vm-modules node_modules/.bin/jest",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": ["javascript", "typescript"],
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+  "[typescript]": {
+    "editor.formatOnSave": false
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
+  "search.exclude": {
+    "**/bower_components": true,
+    "**/dist": true,
+    "**/coverage": true
+  },
+  "typescript.referencesCodeLens.enabled": true,
+  "appService.zipIgnorePattern": [".vscode{,/**}"],
+  "appService.deploySubpath": "",
+  "todo-tree.highlights.defaultHighlight": {
+    "icon": "alert",
+    "type": "text-and-comment",
+    "foreground": "black",
+    "background": "white",
+    "opacity": 50,
+    "iconColour": "blue",
+    "gutterIcon": true
+  },
+  "todo-tree.highlights.customHighlight": {
+    "TODO": {
+      "icon": "check",
+      "foreground": "black",
+      "background": "white",
+      "iconColour": "white"
+    },
+    "NOTE": {
+      "icon": "note",
+      "foreground": "white",
+      "background": "gray",
+      "iconColour": "gray"
+    },
+    "COMMENT": {
+      "icon": "note",
+      "foreground": "white",
+      "background": "gray",
+      "iconColour": "gray"
+    },
+    "FIXME": {
+      "foreground": "black",
+      "background": "yellow",
+      "iconColour": "yellow"
+    },
+    "BUG": {
+      "foreground": "black",
+      "background": "red",
+      "iconColour": "red"
+    },
+    "[ ]": {
+      "icon": "check",
+      "foreground": "black",
+      "background": "white",
+      "iconColour": "yellow"
+    },
+    "[x]": {
+      "icon": "check",
+      "foreground": "white",
+      "background": "green",
+      "iconColour": "green"
+    }
+  },
+  "todo-tree.general.tags": [
+    "BUG",
+    "HACK",
+    "FIXME",
+    "TODO",
+    "NOTE",
+    "COMMENT",
+    "[ ]",
+    "[x]"
+  ],
+  "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^\\s*(-|\\d+.))\\s*($TAGS).*(\\n\\s*//\\s{2,}.*)*",
+  "search.useIgnoreFiles": false,
+  "workbench.colorCustomizations": {
+    "statusBar.background": "#1D856D",
+    "statusBar.foreground": "#fff",
+    "activityBar.background": "#1D856D",
+    "activityBar.foreground": "#fff"
+  },
+  "cSpell.words": [
+    "Creds",
+    "IATF"
+  ],
+  "typescript.experimental.updateImportsOnPaste": true,
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.format.insertSpaceAfterTypeAssertion": true,
+  "typescript.inlayHints.enumMemberValues.enabled": true,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.inlayHints.parameterTypes.enabled": true,
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
+  "typescript.inlayHints.variableTypes.enabled": true,
+  "typescript.referencesCodeLens.showOnAllFunctions": true,
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true,
+  "typescript.format.insertSpaceBeforeFunctionParenthesis": true,
+  "typescript.format.placeOpenBraceOnNewLineForControlBlocks": false,
+  "typescript.format.semicolons": "insert",
+  "typescript.implementationsCodeLens.enabled": true,
+  "typescript.implementationsCodeLens.showOnInterfaceMethods": true,
+  "typescript.preferGoToSourceDefinition": true,
+  "typescript.suggest.completeFunctionCalls": true,
+  "typescript.tsserver.enableTracing": true,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "javascript.experimental.updateImportsOnPaste": true,
+  "javascript.inlayHints.enumMemberValues.enabled": true,
+  "javascript.inlayHints.functionLikeReturnTypes.enabled": true
+}

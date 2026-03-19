@@ -1,0 +1,107 @@
+# now-sdk-ext-core
+
+TypeScript library that extends the ServiceNow SDK (`@servicenow/sdk`) to provide high-level managers for interacting with ServiceNow instances — applications, ATF tests, batch operations, workflows, update sets, and more.
+
+## Project Overview
+
+This is the core library used by both the `nex` CLI (`now-sdk-ext-cli`) and the MCP server (`now-sdk-ext-mcp`). It provides 25+ specialized manager classes that wrap ServiceNow REST APIs, WebSocket channels, and platform endpoints into a clean, typed interface.
+
+## Architecture
+
+- **Base Class**: `SNRequestBase` — parent for all manager classes. Encapsulates a `ServiceNowRequest` and provides logger utilities.
+- **ServiceNowInstance** — central connection object holding host, username, alias, and credential. Passed to all manager constructors.
+- **ServiceNowRequest** — HTTP abstraction layer that handles authentication, CSRF tokens, cookies, and session management automatically via `@servicenow/sdk-cli-core`'s `makeRequest`.
+- **Communication Layer**: `RequestHandler` (HTTP with cookie/auth handling), `ATFMessageHandler` (WebSocket), `AuthenticatedWebSocket` (AMB event subscriptions via CometD).
+- **Authentication**: Factory pattern (`AuthenticationHandlerFactory`) using `getCredentials()` from `@servicenow/sdk-cli` — the same credential store used by the ServiceNow CLI.
+
+## Directory Structure
+
+```
+src/
+├── index.ts                    # Barrel export (auto-generated via ctix)
+├── auth/                       # Authentication handlers and factory
+├── comm/
+│   ├── http/                   # HTTP request handling (RequestHandler, TableAPIRequest, etc.)
+│   └── ws/                     # WebSocket handling (ATFMessageHandler)
+├── sn/                         # ServiceNow manager classes (25+ modules)
+│   ├── ServiceNowInstance.ts   # Central connection object
+│   ├── SNRequestBase.ts        # Abstract base for all managers
+│   ├── aggregate/              # COUNT, AVG, MIN, MAX, SUM queries
+│   ├── amb/                    # Asynchronous Message Bus (WebSocket)
+│   ├── application/            # App install, upgrade, search, repo operations
+│   ├── atf/                    # Automated Test Framework execution
+│   ├── attachment/             # File attachment management
+│   ├── batch/                  # Bulk create/update with variable substitution
+│   ├── catalog/                # Service catalog management
+│   ├── cmdb/                   # CMDB relationships and graph traversal
+│   ├── codesearch/             # Platform code search
+│   ├── discovery/              # Instance table and plugin discovery
+│   ├── flow/                   # Flow Designer execution and management
+│   ├── health/                 # Instance health monitoring
+│   ├── knowledge/              # Knowledge base management
+│   ├── schema/                 # Table schema discovery
+│   ├── scope/                  # App scope management
+│   ├── scriptsync/             # Bidirectional script sync
+│   ├── syslog/                 # System log reading
+│   ├── task/                   # Task operations (comments, assignments)
+│   ├── updateset/              # Update set management
+│   ├── user/                   # User management with factory pattern
+│   ├── workflow/               # Workflow management
+│   ├── xml/                    # XML record import/export
+│   └── factory/                # ISNFactory base pattern
+├── util/                       # Logger (Winston), CSRF helper, string utilities
+├── exception/                  # Custom exception classes
+├── encryption/                 # Encrypt/decrypt utilities
+├── constants/                  # Extension, file, and ServiceNow constants
+├── model/                      # Shared types (ServiceNowResponse<T>, ReferenceLink, etc.)
+└── assets/                     # Static assets (excluded from build)
+test/
+├── unit/                       # Fast unit tests (~180+ tests, mock-based)
+├── integration/                # Integration tests (require ServiceNow credentials)
+└── test_utils/                 # Test configuration and utilities
+dist/                           # Compiled JS output (gitignored)
+```
+
+## Sibling Projects
+
+- **CLI**: `../nowsdk-ext-cli` (`@sonisoft/now-sdk-ext-cli`) — the `nex` CLI, reference implementation for using this library
+- **MCP server**: `../nowsdk-ext-mcp` (`@sonisoft/now-sdk-ext-mcp`) — MCP server exposing these managers as AI-callable tools
+
+## Build & Run
+
+```bash
+npm run build              # Full build: clean + generate barrel exports + compile TypeScript
+npm run buildts            # Compile TypeScript only (with tsc-alias path resolution)
+npm run build-index-export # Regenerate src/index.ts barrel exports via ctix
+npm run lint               # Type check (tsc --noEmit) + ESLint
+npm run clean              # Remove dist/ and build artifacts
+```
+
+## Testing
+
+```bash
+npm test                   # Unit tests only (fast, no credentials needed)
+npm run test:unit          # Same as above (explicit)
+npm run test:integration   # Integration tests (requires ServiceNow instance credentials)
+npm run test:all           # Run all tests (unit + integration)
+npm run watch-test         # Watch mode for unit tests
+```
+
+- **Unit tests**: Mock-based, run in ~2-3 seconds, no ServiceNow instance required
+- **Integration tests**: Hit a real ServiceNow instance, require stored credentials
+- **Path aliases**: `@src/*` → `src/*`, `@test/*` → `test/*` (configured in tsconfig and jest)
+
+## Key Patterns
+
+- All HTTP communication goes through `ServiceNowRequest`, which handles auth, CSRF tokens, cookies, and session management automatically.
+- Manager classes follow a consistent pattern: constructor takes `ServiceNowInstance`, methods return typed `ServiceNowResponse<T>` wrappers.
+- `BackgroundScriptExecutor` posts to `/sys.scripts.do` with a CSRF token and parses the XML response.
+- Barrel exports in `src/index.ts` are auto-generated by `ctix` (configured in `.ctirc`) — run `npm run build-index-export` after adding new public exports.
+- Winston-based `Logger` class for structured logging.
+
+## Conventions
+
+- ES Modules (`"type": "module"` in package.json)
+- TypeScript strict mode, target ES2022
+- Semantic versioning via `semantic-release`
+- Pre-commit hooks configured in `.githooks/`
