@@ -1,5 +1,5 @@
-import { APP_TAB_CONTEXT } from './ApplicationManager';
-import { ApplicationDetailModel } from './ApplicationDetailModel';
+import { APP_TAB_CONTEXT } from './ApplicationManager.js';
+import { ApplicationDetailModel } from './ApplicationDetailModel.js';
 
 // ============================================================
 // Search / List Applications

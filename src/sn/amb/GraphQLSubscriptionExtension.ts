@@ -1,4 +1,4 @@
-import {Logger} from "../../util/Logger";
+import {Logger} from "../../util/Logger.js";
 
 export class GraphQLSubscriptionExtension {
 	static RW_GRAPHQL_CHANNEL:string = '/rw/graphql';

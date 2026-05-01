@@ -1,8 +1,8 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { TableAPIRequest } from "../../comm/http/TableAPIRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
-import { ServiceNowProcessorRequest } from "../../comm/http/ServiceNowProcessorRequest";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
+import { ServiceNowProcessorRequest } from "../../comm/http/ServiceNowProcessorRequest.js";
 import { Parser } from 'xml2js';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -15,7 +15,7 @@ import {
     SyslogTailOptions,
     LogTailResponse,
     LogTailItem
-} from './SyslogRecord';
+} from './SyslogRecord.js';
 
 /**
  * SyslogReader class for querying and tailing ServiceNow syslog tables

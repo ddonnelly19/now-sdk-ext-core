@@ -4,12 +4,12 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { AggregateQuery } from '../../../../src/sn/aggregate/AggregateQuery';
-import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse';
-import { MockAuthenticationHandler, createGetCredentialsMock } from '../../__mocks__/servicenow-sdk-mocks';
-import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory';
-import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { AggregateQuery } from '../../../../src/sn/aggregate/AggregateQuery.js';
+import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
+import { MockAuthenticationHandler, createGetCredentialsMock } from '../../__mocks__/servicenow-sdk-mocks.js';
+import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
+import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 
 // Mock dependencies
 jest.mock('../../../../src/auth/AuthenticationHandlerFactory');

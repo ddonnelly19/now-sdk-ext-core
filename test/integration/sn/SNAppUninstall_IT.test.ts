@@ -1,16 +1,12 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
 //import { changeApplication } from "@servicenow/sdk-cli-core/dist/command/install/index.js";
-import { parseXml, getScopeMetadataFromInstance, getNowTableRequest, monitorUninstallWorkerCompletion, getAppAndSummary } from "@servicenow/sdk-cli-core/dist/util/index.js";
-import { makeRequest, parseResponseBody } from "@servicenow/sdk-cli-core/dist/http/index.js";
+import { getAppAndSummary } from "@servicenow/sdk-cli-core/dist/util/index.js";
 import { getSafeUserSession } from "@servicenow/sdk-cli-core/dist/util/sessionToken.js";
 
-import { Application } from '../../../src/sn/Application';
-import { SN_INSTANCE_ALIAS } from '../../test_utils/test_config';
+import { Application } from '../../../src/sn/Application.js';
+import { SN_INSTANCE_ALIAS } from '../../test_utils/test_config.js';
 
-import * as path from 'path';
-import * as fs from 'fs';
-import { info } from "console";
 
 
 describe.skip('SNAppUninstall', () => {

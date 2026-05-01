@@ -1,9 +1,9 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
-import { FlowManager } from '../../../../src/sn/flow/FlowManager';
-import { FlowExecutionResult, FlowContextStatusResult, FlowPublishResult, FlowDefinitionResult, FlowTestResult, FlowCopyResult, FlowContextDetailsResult, FlowLogResult } from '../../../../src/sn/flow/FlowModels';
+import { FlowManager } from '../../../../src/sn/flow/FlowManager.js';
+import { FlowExecutionResult, FlowContextStatusResult, FlowPublishResult, FlowDefinitionResult, FlowTestResult, FlowCopyResult, FlowContextDetailsResult, FlowLogResult } from '../../../../src/sn/flow/FlowModels.js';
 
 const SECONDS = 1000;
 

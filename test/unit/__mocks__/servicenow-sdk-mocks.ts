@@ -4,6 +4,9 @@
  */
 
 import { jest } from '@jest/globals';
+import { getSafeUserSession } from '@servicenow/sdk-cli-core/dist/util/sessionToken.js';
+import { getCredentials } from '@servicenow/sdk-cli/dist/auth/index.js';
+import { ServiceNowInstance } from '../../../src/index.js';
 
 /**
  * Mock for Response object (Web API Response)
@@ -200,7 +203,7 @@ export class MockAuthenticationHandler {
     private _requestHandler: any = null;
     private _cookieStore: any = null;
 
-    doLogin = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
+    doLogin = jest.fn().mockResolvedValue(undefined);
     
     getRequestHandler = jest.fn().mockReturnValue(this._requestHandler);
     
@@ -296,7 +299,7 @@ export class MockCookieStore {
  * Mock for getCredentials from @servicenow/sdk-cli
  */
 export const createGetCredentialsMock = () => {
-    return jest.fn<any>().mockImplementation(async (aliasOrArgs: string | unknown) => {
+    return jest.fn<typeof getCredentials>().mockImplementation(async (aliasOrArgs: string | unknown) => {
         const alias = typeof aliasOrArgs === 'string' ? aliasOrArgs : (aliasOrArgs as {auth?: string})?.auth || 'test-instance';
         
         // Return mock credentials with all required properties
@@ -306,6 +309,7 @@ export const createGetCredentialsMock = () => {
             password: 'mock-password',
             instanceUrl: `https://${alias}.service-now.com`,
             token: 'mock-oauth-token',
+			type: "basic",
             // Additional properties that may be accessed
             alias: alias,
             authType: 'basic'
@@ -317,7 +321,7 @@ export const createGetCredentialsMock = () => {
  * Mock for getSafeUserSession from @servicenow/sdk-cli-core
  */
 export const createGetSafeUserSessionMock = () => {
-    return jest.fn<any>().mockImplementation(async (auth: unknown, logger: unknown) => {
+    return jest.fn<typeof getSafeUserSession>().mockImplementation(async (auth: unknown, logger: unknown) => {
         const authObj = auth as {credentials?: {username?: string, host?: string}};
         return {
             username: authObj?.credentials?.username || 'mock.user',
@@ -337,10 +341,10 @@ export const createGetSafeUserSessionMock = () => {
  */
 export const createMockServiceNowInstance = (alias: string = 'test-instance') => {
     return {
-        getAlias: jest.fn().mockReturnValue(alias),
-        getHost: jest.fn().mockReturnValue(`${alias}.service-now.com`),
-        getInstanceUrl: jest.fn().mockReturnValue(`https://${alias}.service-now.com`),
-        getCredential: jest.fn().mockReturnValue({
+        getAlias: jest.fn<ServiceNowInstance["getAlias"]>().mockReturnValue(alias),
+        getHost: jest.fn<ServiceNowInstance["getHost"]>().mockReturnValue(`${alias}.service-now.com`),
+        getInstanceUrl: jest.fn<ServiceNowInstance["getInstanceUrl"]>().mockReturnValue(`https://${alias}.service-now.com`),
+        getCredential: jest.fn<ServiceNowInstance["getCredential"]>().mockReturnValue({
             host: `${alias}.service-now.com`,
             username: 'mock.user',
             password: 'mock-password'

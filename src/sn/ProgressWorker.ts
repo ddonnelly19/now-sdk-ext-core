@@ -1,7 +1,7 @@
-import { HTTPRequest } from "../comm/http/HTTPRequest";
-import { IHttpResponse } from "../comm/http/IHttpResponse";
-import { ServiceNowRequest } from "../comm/http/ServiceNowRequest";
-import { ServiceNowInstance } from "./ServiceNowInstance";
+import { HTTPRequest } from "../comm/http/HTTPRequest.js";
+import { IHttpResponse } from "../comm/http/IHttpResponse.js";
+import { ServiceNowRequest } from "../comm/http/ServiceNowRequest.js";
+import { ServiceNowInstance } from "./ServiceNowInstance.js";
 
 
 export class ProgressWorker{
@@ -15,11 +15,11 @@ export class ProgressWorker{
         this._req = new ServiceNowRequest(instance);
     }
 
-    public async getProgress(progressId:string):Promise<ProgressResult>{
+    public async getProgress(progressId:string):Promise<ProgressResult | null>{
         const request:HTTPRequest = { path: "/api/sn_cicd/progress/"+progressId, headers: null, query: null, body:null};
         const resp:IHttpResponse<ProgressResultResponse> = await this._req.get<ProgressResultResponse>(request);
         if(resp.status == 200){
-            return resp.bodyObject.result;
+            return resp.bodyObject?.result ?? null;
         }
         return null;
     }

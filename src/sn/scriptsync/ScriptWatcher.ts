@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Logger } from "../../util/Logger";
-import { ScriptSync } from './ScriptSync';
-import { SyncResult } from './ScriptSyncModels';
+import { Logger } from "../../util/Logger.js";
+import { ScriptSync } from './ScriptSync.js';
+import { SyncResult } from './ScriptSyncModels.js';
 
 export interface WatchOptions {
     directory: string;

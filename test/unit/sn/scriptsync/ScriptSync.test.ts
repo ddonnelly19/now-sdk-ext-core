@@ -7,12 +7,12 @@
  */
 
 import { describe, it, expect, beforeEach, jest, afterEach } from '@jest/globals';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
-import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks';
-import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse';
-import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory';
-import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory';
-import { SessionManager } from '../../../../src/comm/http/SessionManager';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
+import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
+import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
+import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
+import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
+import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
 
 // Define mock fs functions
 const mockWriteFileSync = jest.fn();
@@ -43,8 +43,8 @@ jest.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 // Dynamic imports — must come after jest.unstable_mockModule so ScriptSync
 // receives the mocked 'fs' module instead of the real one.
-const { ScriptSync } = await import('../../../../src/sn/scriptsync/ScriptSync');
-const { SCRIPT_TYPES } = await import('../../../../src/sn/scriptsync/ScriptSyncModels');
+const { ScriptSync } = await import('../../../../src/sn/scriptsync/ScriptSync.js');
+const { SCRIPT_TYPES } = await import('../../../../src/sn/scriptsync/ScriptSyncModels.js');
 
 // Mock request handler
 class MockRequestHandler {

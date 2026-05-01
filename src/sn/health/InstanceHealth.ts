@@ -1,8 +1,8 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { TableAPIRequest } from "../../comm/http/TableAPIRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
-import { AggregateQuery } from "../aggregate/AggregateQuery";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
+import { AggregateQuery } from "../aggregate/AggregateQuery.js";
 import {
     HealthCheckOptions,
     HealthCheckResult,
@@ -14,7 +14,7 @@ import {
     ClusterStateResponse,
     SysTriggerResponse,
     SysSemaphoreResponse
-} from './HealthModels';
+} from './HealthModels.js';
 
 /**
  * InstanceHealth provides a consolidated health check for a ServiceNow instance.

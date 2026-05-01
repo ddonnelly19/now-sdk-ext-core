@@ -2,7 +2,7 @@
 
 //import {Logger} from "../util/Logger.js";
 
-import { AMBClient } from "./AMBClient";
+import { AMBClient } from "./AMBClient.js";
 
 "use strict";
 

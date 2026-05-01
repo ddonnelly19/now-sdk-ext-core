@@ -1,5 +1,5 @@
-import {Logger} from "../../util/Logger";
-import {Properties as properties} from "./Properties";
+import {Logger} from "../../util/Logger.js";
+import {Properties as properties} from "./Properties.js";
 
 
 

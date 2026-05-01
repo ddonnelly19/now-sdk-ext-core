@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import {EventManager} from "./EventManager";
-import {Logger} from "../../util/Logger";
+import {EventManager} from "./EventManager.js";
+import {Logger} from "../../util/Logger.js";
 
-import { isNil, isObject } from "./Helper";
-import { AMBConstants } from "./AMBConstants";
-import { XMLHttpRequest } from "./XMLHttpRequest";
-import {Properties as properties} from "./Properties";
-import {ChannelRedirect} from "./ChannelRedirect";
-import {Channel} from "./Channel";
-import {CrossClientChannel} from "./CrossClientChannel";
-import {FunctionQueue} from "./FunctionQueue";
-import {SubscriptionCommandSender} from "./SubscriptionCommandSender";
+import { isNil, isObject } from "./Helper.js";
+import { AMBConstants } from "./AMBConstants.js";
+import { XMLHttpRequest } from "./XMLHttpRequest.js";
+import {Properties as properties} from "./Properties.js";
+import {ChannelRedirect} from "./ChannelRedirect.js";
+import {Channel} from "./Channel.js";
+import {CrossClientChannel} from "./CrossClientChannel.js";
+import {FunctionQueue} from "./FunctionQueue.js";
+import {SubscriptionCommandSender} from "./SubscriptionCommandSender.js";
 
 export class ServerConnection {
 

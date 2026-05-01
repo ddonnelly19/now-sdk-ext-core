@@ -1,10 +1,10 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
-import { TaskOperations } from '../../../../src/sn/task/TaskOperations';
-import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest';
-import { TaskRecord } from '../../../../src/sn/task/TaskModels';
+import { TaskOperations } from '../../../../src/sn/task/TaskOperations.js';
+import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest.js';
+import { TaskRecord } from '../../../../src/sn/task/TaskModels.js';
 
 const SECONDS = 1000;
 
@@ -35,7 +35,7 @@ describe('TaskOperations - Integration Tests', () => {
     afterEach(async () => {
         // Clean up all created test records
         if (createdRecords.length > 0 && instance) {
-            const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest');
+            const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest.js');
             const snReq = new ServiceNowRequest(instance);
 
             for (const record of createdRecords) {

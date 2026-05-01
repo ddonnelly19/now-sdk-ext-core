@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import {MessageClient, SubscriptionConfig} from "./MessageClient";
+import {MessageClient, SubscriptionConfig} from "./MessageClient.js";
 import Base64 from "crypto-js/enc-base64.js";
 import Utf8 from "crypto-js/enc-utf8.js";
-import {Logger} from "../../util/Logger";
-import { ServerConnection } from "./ServerConnection";
-import { ChannelListener } from "./ChannelListener";
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { SessionManager } from "../../comm/http/SessionManager";
-import { HTTPRequest } from "../../comm/http/HTTPRequest";
+import {Logger} from "../../util/Logger.js";
+import { ServerConnection } from "./ServerConnection.js";
+import { ChannelListener } from "./ChannelListener.js";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { SessionManager } from "../../comm/http/SessionManager.js";
+import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
 
 
 export class AMBClient{
@@ -53,7 +53,7 @@ export class AMBClient{
             this._logger.debug("Session obtained", { sessionKeys: Object.keys(session) });
             
             // Extract instance URL from session
-            let instanceUrl = this._instance.getHost();
+            let instanceUrl: string | null = this._instance.getHost();
             if (!instanceUrl && session) {
                 // Try to get from session/credential
                 instanceUrl = this.extractInstanceUrl(session);

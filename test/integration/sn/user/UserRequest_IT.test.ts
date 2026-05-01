@@ -1,9 +1,9 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
-import { UserRequest } from '../../../../src/sn/user/UserRequest';
-import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest';
-import { IUser } from '../../../../src/sn/user/model/IUser';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
+import { UserRequest } from '../../../../src/sn/user/UserRequest.js';
+import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest.js';
+import { IUser } from '../../../../src/sn/user/model/IUser.js';
 
 const SECONDS = 1000;
 

@@ -1,13 +1,13 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { HTTPRequest } from "../../comm/http/HTTPRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
-import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
+import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
 import * as fs from 'fs';
-import { ProgressWorker } from "../ProgressWorker";
-import { ApplicationDetailModel, ApplicationDetailModelResponse } from "./ApplicationDetailModel";
-import { BatchInstallation } from "./BatchInstallation";
-import { BatchDefinition } from "./BatchDefinition";
+import { ProgressWorker } from "../ProgressWorker.js";
+import { ApplicationDetailModel, ApplicationDetailModelResponse } from "./ApplicationDetailModel.js";
+import { BatchInstallation } from "./BatchInstallation.js";
+import { BatchDefinition } from "./BatchDefinition.js";
 import {
     StoreAppSearchOptions,
     StoreAppSearchResponse,
@@ -16,7 +16,7 @@ import {
     StoreAppOperationResponse,
     StoreAppOperationResult,
     StoreAppFinalResult
-} from "./StoreApplicationModels";
+} from "./StoreApplicationModels.js";
 
 export enum APP_TAB_CONTEXT {
     AVAILABLE_FOR_YOU = "available_for_you",
@@ -59,9 +59,9 @@ export class ApplicationManager {
     this._logger.info(`Batch definition: ${batchDefinitionJson}`);
     const result = await this.executeBatchInstallRequest(batchInstall);
     this._logger.info(`Batch install result: ${JSON.stringify(result)}`);
-    this._logger.info(`Batch install links: ${JSON.stringify(result.result.links)}`);
+    this._logger.info(`Batch install links: ${JSON.stringify(result?.result?.links)}`);
 
-    if(result.result.links && result.result.links.progress){
+    if(result?.result?.links && result.result.links.progress){
         await this.waitForBatchInstallCompletion(result.result);
     }
 
@@ -82,11 +82,11 @@ export class ApplicationManager {
 
 
 
-   public async getApplicationDetails(appID:string):Promise<ApplicationDetailModel>{
+   public async getApplicationDetails(appID:string):Promise<ApplicationDetailModel | null>{
     const request:HTTPRequest = { method: 'GET', path: this.APP_DETAILS_API_URL.replace("{appID}", appID), headers: null, query: null, body:null};
     const resp:IHttpResponse<ApplicationDetailModelResponse> = await this._req.get<ApplicationDetailModelResponse>(request);
     if(resp.status == 200){
-        return resp.bodyObject.result.app_info_on_instance;
+        return resp.bodyObject?.result.app_info_on_instance ?? null;
     }
     return null;
    }
@@ -96,13 +96,14 @@ export class ApplicationManager {
     let progressResult = await this.getBatchProgress(batchInstallResult);
     this._logger.info(`Batch install progress: ${JSON.stringify(progressResult)}`);
 
-    while(progressResult.percent_complete < 100 && (Date.now() - startTime) < this.BATCH_INSTALL_TIMEOUT){
+    while(progressResult && progressResult.percent_complete < 100 && (Date.now() - startTime) < this.BATCH_INSTALL_TIMEOUT){
         await new Promise(resolve => setTimeout(resolve, 5000));
         progressResult = await this.getBatchProgress(batchInstallResult);
+        if (!progressResult) break;
         this._logger.info(`Batch install progress: ${progressResult.percent_complete}%`);
     }
 
-    if(progressResult.percent_complete < 100){
+    if(!progressResult || progressResult.percent_complete < 100){
         throw new Error("Batch install timed out");
     }
 
@@ -451,20 +452,21 @@ export class ApplicationManager {
        let progress = await progressWorker.getProgress(progressId);
        this._logger.info(`Installation progress: ${JSON.stringify(progress)}`);
 
-       while (progress.percent_complete < 100 && (Date.now() - startTime) < timeoutMs) {
+       while (progress && progress.percent_complete < 100 && (Date.now() - startTime) < timeoutMs) {
            await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
            progress = await progressWorker.getProgress(progressId);
+           if (!progress) break;
            this._logger.info(`Installation progress: ${progress.percent_complete}%`);
        }
 
-       if (progress.percent_complete < 100) {
+       if (!progress || progress.percent_complete < 100) {
            return {
                success: false,
-               status: progress.status,
-               status_label: progress.status_label,
-               status_message: progress.status_message,
+               status: progress?.status ?? '',
+               status_label: progress?.status_label ?? '',
+               status_message: progress?.status_message ?? '',
                error: 'Installation timed out',
-               percent_complete: progress.percent_complete
+               percent_complete: progress?.percent_complete ?? 0
            };
        }
 
@@ -529,7 +531,7 @@ export class ApplicationManager {
 }
 
 export class BatchInstallResultResponse{
-    result:BatchInstallResult;
+    result!:BatchInstallResult;
 }
 
 export interface BatchInstallResultLinks {
@@ -540,7 +542,7 @@ export interface BatchInstallResultLinks {
 }
 
 export class BatchInstallResult{
-    links: BatchInstallResultLinks;
+    links!: BatchInstallResultLinks;
 }
 
 /**

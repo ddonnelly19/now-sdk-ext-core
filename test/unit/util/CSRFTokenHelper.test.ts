@@ -1,5 +1,5 @@
-import { describe, it, expect } from '@jest/globals';
-import { CSRFTokenHelper } from '../../../src/util/CSRFTokenHelper';
+
+import { CSRFTokenHelper } from '../../../src/util/CSRFTokenHelper.js';
 
 describe('CSRFTokenHelper', () => {
 

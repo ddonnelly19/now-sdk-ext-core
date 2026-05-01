@@ -1,7 +1,7 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { TableAPIRequest } from "../../comm/http/TableAPIRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
 import {
     ListTablesOptions,
     ListScopedAppsOptions,
@@ -15,7 +15,7 @@ import {
     ScopedAppResponse,
     StoreAppResponse,
     PluginResponse
-} from './DiscoveryModels';
+} from './DiscoveryModels.js';
 
 /**
  * InstanceDiscovery provides methods for discovering what tables,

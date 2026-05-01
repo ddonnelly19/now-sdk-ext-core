@@ -4,20 +4,20 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
-import { createGetCredentialsMock } from '../../__mocks__/servicenow-sdk-mocks';
-import { ApplicationManager, APP_TAB_CONTEXT } from '../../../../src/sn/application/ApplicationManager';
-import { ApplicationDetailModel } from '../../../../src/sn/application/ApplicationDetailModel';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
+import { createGetCredentialsMock } from '../../__mocks__/servicenow-sdk-mocks.js';
+import { ApplicationManager, APP_TAB_CONTEXT } from '../../../../src/sn/application/ApplicationManager.js';
+import { ApplicationDetailModel } from '../../../../src/sn/application/ApplicationDetailModel.js';
 import {
     StoreAppSearchResponse,
     StoreAppOperationResponse
-} from '../../../../src/sn/application/StoreApplicationModels';
-import { BatchDefinition } from '../../../../src/sn/application/BatchDefinition';
-import { BatchInstallation } from '../../../../src/sn/application/BatchInstallation';
-import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse';
-import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks';
-import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory';
-import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory';
+} from '../../../../src/sn/application/StoreApplicationModels.js';
+import { BatchDefinition } from '../../../../src/sn/application/BatchDefinition.js';
+import { BatchInstallation } from '../../../../src/sn/application/BatchInstallation.js';
+import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
+import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
+import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
+import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();

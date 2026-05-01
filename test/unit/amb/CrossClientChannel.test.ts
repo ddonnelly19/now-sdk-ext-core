@@ -2,8 +2,9 @@
  * Unit tests for CrossClientChannel
  */
 
-import { describe, it, expect, jest } from '@jest/globals';
-import { CrossClientChannel } from '../../../src/sn/amb/CrossClientChannel';
+// Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
+import { jest } from '@jest/globals';
+import { CrossClientChannel } from '../../../src/sn/amb/CrossClientChannel.js';
 
 describe('CrossClientChannel - Unit Tests', () => {
     let crossClientChannel: CrossClientChannel;

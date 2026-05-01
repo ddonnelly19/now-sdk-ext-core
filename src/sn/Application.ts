@@ -1,11 +1,10 @@
 import { parseXml, getScopeMetadataFromInstance, getNowTableRequest, monitorUninstallWorkerCompletion, getAppAndSummary } from "@servicenow/sdk-cli-core/dist/util/index.js";
 import { makeRequest, parseResponseBody } from "@servicenow/sdk-cli-core/dist/http/index.js";
-import { getSafeUserSession } from "@servicenow/sdk-cli-core/dist/util/sessionToken.js";
-import { ServiceNowRequest } from "../comm/http/ServiceNowRequest";
-import { ServiceNowInstance } from "./ServiceNowInstance";
-import { HTTPRequest } from "../comm/http/HTTPRequest";
-import { IHttpResponse } from "../comm/http/IHttpResponse";
-import { Logger } from "../util/Logger";
+import { ServiceNowRequest } from "../comm/http/ServiceNowRequest.js";
+import { ServiceNowInstance } from "./ServiceNowInstance.js";
+import { HTTPRequest } from "../comm/http/HTTPRequest.js";
+import { IHttpResponse } from "../comm/http/IHttpResponse.js";
+import { Logger } from "../util/Logger.js";
 
 
 export class Application {
@@ -171,7 +170,7 @@ export class Application {
     private async getAppAndSummary() : Promise<{appID:string, sys_class_name:string, upgrade_finished:string}> {
         let userSession = await this.snRequest.getUserSession();
         const { appID, sys_class_name, upgrade_finished } = await (getAppAndSummary)(this._applicationId, this._scope, userSession);
-        return { appID, sys_class_name, upgrade_finished };
+        return { appID: appID ?? '', sys_class_name: sys_class_name ?? '', upgrade_finished: upgrade_finished ?? '' };
     }
 
 }

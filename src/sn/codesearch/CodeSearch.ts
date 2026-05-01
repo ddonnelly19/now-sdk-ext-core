@@ -1,9 +1,9 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest";
-import { TableAPIRequest } from "../../comm/http/TableAPIRequest";
-import { HTTPRequest } from "../../comm/http/HTTPRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
+import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
+import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
 import {
     CodeSearchOptions,
     CodeSearchResult,
@@ -18,7 +18,7 @@ import {
     CodeSearchTableRecord,
     CodeSearchTableRecordResponse,
     CodeSearchTableRecordsResponse
-} from './CodeSearchModels';
+} from './CodeSearchModels.js';
 
 /**
  * CodeSearch class for querying ServiceNow's code search REST API.

@@ -1,58 +1,74 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@src/*": ["src/*"],
-      "@test/*": ["test/*"]
-    },
-    "composite": true,
-    "declaration": true,
-    "lib": ["ES2022"],
-    "target": "ES2022",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": false,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "strict": false,
-    "skipLibCheck": true,
-    "noImplicitAny": false,
-    "sourceMap": true,
-    "outDir": "dist",
-    "rootDir": "./src",
-    "moduleSuffixes": [""],
-    "maxNodeModuleJsDepth": 0, // <--- ADD THIS
-    "allowJs": true,
-    "checkJs": false,
-    "types": ["node", "jest", "crypto-js", "crypto-js/enc-base64"],
-    "plugins": [
-      {
-        "transform": "typescript-transform-paths"
-      },
-      {
-        "transform": "typescript-transform-paths",
-        "afterDeclarations": true
-      }
-    ]
-  },
-  "tsc-alias": {
-    "resolveFullPaths": true,
-    "verbose": false
-  },
-  "ts-node": {
-    "esm": false
-  },
-  "include": ["src/**/*"],
-  "exclude": [
-    "node_modules/",
-    "dist/",
-    "logs",
-    "build",
-    "test/**/*",
-    "scratch_code",
-    "src/assets/**/*"
-  ]
+	"compilerOptions": {		
+		/*"paths": {
+		
+			"@servicenow/*": [
+				"C:/Users/ddonnell/OneDrive - Capgemini/source/@servicenow/*"
+			],
+			"@servicenow/sdk-cli-core/dist/": [
+				"C:/Users/ddonnell/OneDrive - Capgemini/source/@servicenow/sdk-cli-core/src/*"
+			]
+		},*/
+		"composite": true,
+		"declaration": true,
+		"lib": [
+			"ESNext"
+		],
+		"target": "ES2022",
+		"module": "NodeNext",
+		"moduleResolution": "nodenext",
+		"esModuleInterop": true,
+		"isolatedModules": true,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"noImplicitAny": false,
+		"sourceMap": true,
+		"noEmit": true,		
+		"rootDir": ".",	
+		"maxNodeModuleJsDepth": 0, // <--- ADD THIS
+		"allowJs": true,
+		"checkJs": false,
+		"types": [
+			"node",
+			"jest"
+		],
+		/*"plugins": [
+			{
+				"transform": "typescript-transform-paths"
+			},
+			{
+				"transform": "typescript-transform-paths",
+				"afterDeclarations": true
+			}
+		],*/
+	},
+	/*"tsc-alias": {
+		"resolveFullPaths": true,
+		"verbose": false
+	},
+	"ts-node": {
+		"esm": false
+	},*/
+	"include": [
+		"src/**/*",
+		"test/**/*",
+		"jest.config.ts"
+	],
+	"exclude": [
+		"node_modules/",
+		"dist/",
+		"logs",
+		"build",
+		"scratch_code",
+		"src/assets/**/*"
+	],
+	/*"references": [
+		{
+			"path": "C:/Users/ddonnell/OneDrive - Capgemini/source/@servicenow/sdk-cli-core"
+		}
+	]*/
 }

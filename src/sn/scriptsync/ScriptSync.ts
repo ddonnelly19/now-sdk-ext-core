@@ -1,9 +1,9 @@
 import * as fs from 'fs';
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest";
-import { TableAPIRequest } from "../../comm/http/TableAPIRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
+import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
 import {
     SCRIPT_TYPES,
     ScriptTypeConfig,
@@ -14,7 +14,7 @@ import {
     ParsedFileName,
     ScriptRecord,
     ScriptRecordListResponse
-} from './ScriptSyncModels';
+} from './ScriptSyncModels.js';
 
 /**
  * ScriptSync provides bidirectional synchronization between local files

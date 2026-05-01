@@ -1,9 +1,8 @@
-import { UISession } from "@servicenow/sdk-cli-core";
-import { NowSDKAuthenticationHandler } from "../../../src/auth/NowSDKAuthenticationHandler";
-import { IAuthenticationHandler } from "../../../src/auth/IAuthenticationHandler";
-import { ServiceNowInstance, ServiceNowSettingsInstance } from "../../../src/sn/ServiceNowInstance";
-import { getCredentials } from "@servicenow/sdk-cli/dist/auth";
-import { SN_INSTANCE_ALIAS } from '../../test_utils/test_config';
+import { NowSDKAuthenticationHandler } from "../../../src/auth/NowSDKAuthenticationHandler.js";
+import { IAuthenticationHandler } from "../../../src/auth/IAuthenticationHandler.js";
+import { ServiceNowInstance, ServiceNowSettingsInstance } from "../../../src/sn/ServiceNowInstance.js";
+import { getCredentials } from "@servicenow/sdk-cli-core/dist/auth/index.js";
+import { SN_INSTANCE_ALIAS } from '../../test_utils/test_config.js';
 
 
 

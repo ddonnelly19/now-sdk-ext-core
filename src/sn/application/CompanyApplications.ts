@@ -1,8 +1,8 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { HTTPRequest } from "../../comm/http/HTTPRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
-import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
+import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
 
 /**
  * CompanyApplications class for retrieving company application information

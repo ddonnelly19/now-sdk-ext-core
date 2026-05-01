@@ -2,7 +2,7 @@
 
 export class FileException extends Error{
     
-    private _innerException: Error;
+    private _innerException!: Error;
     public get innerException(): Error {
         return this._innerException;
     }

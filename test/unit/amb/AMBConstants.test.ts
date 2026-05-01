@@ -2,8 +2,8 @@
  * Unit tests for AMBConstants
  */
 
-import { describe, it, expect } from '@jest/globals';
-import { AMBConstants } from '../../../src/sn/amb/AMBConstants';
+// Removed import from '@jest/globals' - Jest provides globals automatically
+import { AMBConstants } from '../../../src/sn/amb/AMBConstants.js';
 
 describe('AMBConstants - Unit Tests', () => {
     describe('Constants', () => {

@@ -1,34 +1,34 @@
-import { ServiceNowRequest } from "../comm/http/ServiceNowRequest";
-import { Logger } from "../util/Logger";
-import { ServiceNowInstance } from "./ServiceNowInstance";
+import { ServiceNowRequest } from "../comm/http/ServiceNowRequest.js";
+import { Logger } from "../util/Logger.js";
+import { ServiceNowInstance } from "./ServiceNowInstance.js";
 
 
-export abstract class SNRequestBase{
-    private _snInstance: ServiceNowInstance;
-   
+export abstract class SNRequestBase {
+	private _snInstance: ServiceNowInstance;
 
-    private _req: ServiceNowRequest;
-  
 
-    _logger:Logger = new Logger("ATFTestExecutor");
+	private _req: ServiceNowRequest;
 
-    public constructor(instance:ServiceNowInstance){
-        this._snInstance = instance;
-        this._req  = new ServiceNowRequest(this._snInstance);
-    }
 
-    public get request (): ServiceNowRequest {
-        return this._req;
-    }
-    public set request ( value: ServiceNowRequest ) {
-        this._req = value;
-    }
+	_logger: Logger = new Logger("ATFTestExecutor");
 
-    public get snInstance (): ServiceNowInstance {
-        return this._snInstance;
-    }
-    public set snInstance ( value: ServiceNowInstance ) {
-        this._snInstance = value;
-    }
+	public constructor(instance: ServiceNowInstance) {
+		this._snInstance = instance;
+		this._req = new ServiceNowRequest(this._snInstance);
+	}
+
+	public get request(): ServiceNowRequest {
+		return this._req;
+	}
+	public set request(value: ServiceNowRequest) {
+		this._req = value;
+	}
+
+	public get snInstance(): ServiceNowInstance {
+		return this._snInstance;
+	}
+	public set snInstance(value: ServiceNowInstance) {
+		this._snInstance = value;
+	}
 
 }

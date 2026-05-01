@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import {Logger} from "../../util/Logger";
-import {ChannelListener} from "./ChannelListener";
-import { ServerConnection } from "./ServerConnection";
-import { Channel } from "./Channel";
+import {Logger} from "../../util/Logger.js";
+import {ChannelListener} from "./ChannelListener.js";
+import { ServerConnection } from "./ServerConnection.js";
+import { Channel } from "./Channel.js";
 
 export class ChannelRedirect{
 

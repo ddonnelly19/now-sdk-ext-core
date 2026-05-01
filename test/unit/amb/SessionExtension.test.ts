@@ -2,11 +2,12 @@
  * Unit tests for SessionExtension
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { SessionExtension } from '../../../src/sn/amb/SessionExtension';
+// Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
+import { jest } from '@jest/globals';
+import { SessionExtension } from '../../../src/sn/amb/SessionExtension.js';
 
 // Mock Logger
-jest.mock('../../../src/util/Logger', () => ({
+jest.mock('../../../src/util/Logger.js', () => ({
     Logger: jest.fn().mockImplementation(() => ({
         debug: jest.fn(),
         info: jest.fn(),
@@ -61,7 +62,7 @@ describe('SessionExtension - Unit Tests', () => {
         it('should return message unchanged when channel is not META_CONNECT', () => {
             const message = { channel: '/some/other/channel', data: 'test' };
             
-            const result = sessionExtension.outgoing(message);
+            const result = sessionExtension.outgoing(message) as any;
             
             expect(result).toEqual(message);
             expect(result.ext).toBeUndefined();
@@ -70,7 +71,7 @@ describe('SessionExtension - Unit Tests', () => {
         it('should return message unchanged when _extendSession is false', () => {
             const message = { channel: '/meta/connect', data: 'test' };
             
-            const result = sessionExtension.outgoing(message);
+            const result = sessionExtension.outgoing(message) as any;
             
             expect(result).toEqual(message);
             expect(result.ext).toBeUndefined();
@@ -80,7 +81,7 @@ describe('SessionExtension - Unit Tests', () => {
             const message = { channel: '/meta/connect', data: 'test' };
             
             sessionExtension.extendSession();
-            const result = sessionExtension.outgoing(message);
+            const result = sessionExtension.outgoing(message) as any;
             
             expect(result.ext).toBeDefined();
             expect(result.ext.extendSession).toBe(true);
@@ -90,7 +91,7 @@ describe('SessionExtension - Unit Tests', () => {
             const message = { channel: '/meta/connect' };
             
             sessionExtension.extendSession();
-            const result = sessionExtension.outgoing(message);
+            const result = sessionExtension.outgoing(message) as any;
             
             expect(result.ext).toBeDefined();
             expect(result.ext.extendSession).toBe(true);
@@ -103,7 +104,7 @@ describe('SessionExtension - Unit Tests', () => {
             };
             
             sessionExtension.extendSession();
-            const result = sessionExtension.outgoing(message);
+            const result = sessionExtension.outgoing(message) as any;
             
             expect(result.ext.customProp).toBe('value');
             expect(result.ext.extendSession).toBe(true);
@@ -126,9 +127,9 @@ describe('SessionExtension - Unit Tests', () => {
             
             sessionExtension.extendSession();
             sessionExtension.outgoing(message1);
-            const result2 = sessionExtension.outgoing(message2);
+            const result2 = sessionExtension.outgoing(message2) as any;
             
-            expect(message1.ext.extendSession).toBe(true);
+            expect((message1 as any).ext.extendSession).toBe(true);
             expect(result2.ext).toBeUndefined(); // Not extended second time
         });
 
@@ -142,8 +143,8 @@ describe('SessionExtension - Unit Tests', () => {
             sessionExtension.extendSession();
             sessionExtension.outgoing(message2);
             
-            expect(message1.ext.extendSession).toBe(true);
-            expect(message2.ext.extendSession).toBe(true);
+            expect((message1 as any).ext.extendSession).toBe(true);
+            expect((message2 as any).ext.extendSession).toBe(true);
         });
     });
 
@@ -153,7 +154,7 @@ describe('SessionExtension - Unit Tests', () => {
             const message = { channel: '/meta/connect' };
             
             sessionExtension.extendSession();
-            const modifiedMessage = sessionExtension.outgoing(message);
+            const modifiedMessage = sessionExtension.outgoing(message) as any;
             
             expect(modifiedMessage).toBe(message); // Same object, modified in place
             expect(modifiedMessage.ext?.extendSession).toBe(true);
@@ -168,7 +169,7 @@ describe('SessionExtension - Unit Tests', () => {
             
             sessionExtension.extendSession();
             
-            const results = messages.map(msg => sessionExtension.outgoing(msg));
+            const results = messages.map(msg => sessionExtension.outgoing(msg) as any);
             
             expect(results[0].ext).toBeUndefined();
             expect(results[1].ext?.extendSession).toBe(true);

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import {Logger}  from "../../util/Logger";
-import {isEmptyObject, isNil} from "./Helper";
-import { ChannelListener } from "./ChannelListener";
-import {SubscriptionCommandSender} from "./SubscriptionCommandSender";
-import { ServerConnection } from "./ServerConnection";
+import {Logger}  from "../../util/Logger.js";
+import {isEmptyObject, isNil} from "./Helper.js";
+import { ChannelListener } from "./ChannelListener.js";
+import {SubscriptionCommandSender} from "./SubscriptionCommandSender.js";
+import { ServerConnection } from "./ServerConnection.js";
 
 export class Channel{
 

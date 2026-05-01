@@ -1,4 +1,4 @@
-// import properties from '../amb.Properties';
+// import properties from '../amb.Properties.js';
 
 // describe('properties', () => {
 // 	it('has default servletPath of amb', () => {

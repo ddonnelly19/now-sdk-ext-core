@@ -3,21 +3,19 @@
  * Uses mocks instead of real credentials
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+// Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
+import { jest } from '@jest/globals';
+
 import { 
-    ATFTestExecutor, 
-    TestResult, 
-    TestSuiteExecutionRequest, 
-    TestSuiteExecutionResponse, 
-    TestSuiteExecutionResult 
-} from '../../src/sn/atf/ATFTestExecutor';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../src/sn/ServiceNowInstance';
-import { createGetCredentialsMock, createMockServiceNowInstance } from './__mocks__/servicenow-sdk-mocks';
+    ATFTestExecutor} from '../../src/sn/atf/ATFTestExecutor.js';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../src/sn/ServiceNowInstance.js';
+import { createGetCredentialsMock } from './__mocks__/servicenow-sdk-mocks.js';
+import { getSafeUserSession } from '@servicenow/sdk-cli-core/dist/util/sessionToken.js';
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();
-jest.mock('@servicenow/sdk-cli/dist/auth', () => ({
-    getCredentials: mockGetCredentials
+jest.mock('@servicenow/sdk-cli-core/dist/util/sessionToken.js', () => ({
+    getSafeUserSession: jest.fn<typeof getSafeUserSession>().mockResolvedValue(null)
 }));
 
 const SECONDS = 1000;

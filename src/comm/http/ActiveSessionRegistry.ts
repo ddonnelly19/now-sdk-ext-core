@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { Logger } from "../../util/Logger";
+import { Logger } from "../../util/Logger.js";
 
 /**
  * Represents a managed, stateful workflow session (e.g., script tracing, impersonation).

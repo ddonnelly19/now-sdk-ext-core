@@ -4,13 +4,13 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { UserRequest } from '../../../../src/sn/user/UserRequest';
-import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse';
-import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks';
-import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory';
-import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory';
-import { SessionManager } from '../../../../src/comm/http/SessionManager';
-import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance';
+import { UserRequest } from '../../../../src/sn/user/UserRequest.js';
+import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
+import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
+import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
+import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
+import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
+import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance.js';
 
 // Mock factories
 jest.mock('../../../../src/auth/AuthenticationHandlerFactory');

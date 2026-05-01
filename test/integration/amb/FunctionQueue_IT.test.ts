@@ -1,4 +1,4 @@
-import {FunctionQueue} from "../../../src/sn/amb/FunctionQueue";
+import {FunctionQueue} from "../../../src/sn/amb/FunctionQueue.js";
 
 describe.skip('FunctionQueue', () => {
 	it('test initial state', () => {

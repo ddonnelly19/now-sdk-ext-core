@@ -1,8 +1,8 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest";
-import { TableAPIRequest } from "../../comm/http/TableAPIRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
+import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
 import {
     TableSchemaOptions,
     FieldSchema,
@@ -20,7 +20,7 @@ import {
     CatalogItemOptionResponse,
     CatalogUIPolicyRecord,
     CatalogUIPolicyResponse
-} from './SchemaModels';
+} from './SchemaModels.js';
 
 /**
  * SchemaDiscovery provides operations for discovering ServiceNow table schemas,

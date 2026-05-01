@@ -1,8 +1,8 @@
 
 
 
-export class AppUtil{
-    public static isGlobalApp():boolean{
-        return false;
-    }
+export class AppUtil {
+	public static isGlobalApp(): boolean {
+		return false;
+	}
 }

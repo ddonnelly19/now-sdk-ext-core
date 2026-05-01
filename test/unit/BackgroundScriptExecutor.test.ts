@@ -3,20 +3,23 @@
  * Uses mocks instead of real credentials
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../src/sn/ServiceNowInstance';
-import { BackgroundScriptExecutor, ScriptExecutionOutputLine } from '../../src/sn/BackgroundScriptExecutor';
-import { createGetCredentialsMock } from './__mocks__/servicenow-sdk-mocks';
-import { IHttpResponse } from '../../src/comm/http/IHttpResponse';
-import { AuthenticationHandlerFactory } from '../../src/auth/AuthenticationHandlerFactory';
-import { RequestHandlerFactory } from '../../src/comm/http/RequestHandlerFactory';
-import { MockAuthenticationHandler } from './__mocks__/servicenow-sdk-mocks';
-import { SessionManager } from '../../src/comm/http/SessionManager';
+// Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
+import { jest } from '@jest/globals';
+
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../src/sn/ServiceNowInstance.js';
+import { BackgroundScriptExecutor, ScriptExecutionOutputLine } from '../../src/sn/BackgroundScriptExecutor.js';
+import { createGetCredentialsMock } from './__mocks__/servicenow-sdk-mocks.js';
+import { IHttpResponse } from '../../src/comm/http/IHttpResponse.js';
+import { AuthenticationHandlerFactory } from '../../src/auth/AuthenticationHandlerFactory.js';
+import { RequestHandlerFactory } from '../../src/comm/http/RequestHandlerFactory.js';
+import { MockAuthenticationHandler } from './__mocks__/servicenow-sdk-mocks.js';
+import { SessionManager } from '../../src/comm/http/SessionManager.js';
+import { getCredentials } from '@servicenow/sdk-cli/dist/auth/index.js';
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();
 jest.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
-    getCredentials: mockGetCredentials
+    getCredentials: jest.fn().mockResolvedValue()
 }));
 
 // Mock factories
@@ -25,10 +28,10 @@ jest.mock('../../src/comm/http/RequestHandlerFactory');
 
 // Mock request handler
 class MockRequestHandler {
-    get = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<() => Promise<IHttpResponse<unknown>>>();
+    get = jest.fn();
+    post = jest.fn();
+    put = jest.fn();
+    delete = jest.fn();
 }
 
 // Mock response for scope name → sys_id resolution via sys_scope table
@@ -308,7 +311,7 @@ System: end
                 statusText: 'Unauthorized',
                 headers: { 'x-is-logged-in': 'false' },
                 config: {}
-            } as IHttpResponse<string>);
+            } as unknown as IHttpResponse<string>);
 
             const token = await executor.getBackgroundScriptCSRFToken();
             expect(token).toBeNull();
@@ -322,7 +325,7 @@ System: end
                 statusText: 'OK',
                 headers: { 'x-is-logged-in': 'true' },
                 config: {}
-            } as IHttpResponse<string>);
+            } as unknown as IHttpResponse<string>);
 
             const token = await executor.getBackgroundScriptCSRFToken();
             expect(token).toBeNull();
@@ -338,7 +341,7 @@ System: end
 
         it('should throw when instance is null', async () => {
             await expect(
-                executor.executeScript('gs.info("test")', 'global', null)
+                executor.executeScript('gs.info("test")', 'global', null as unknown as ServiceNowInstance)
             ).rejects.toThrow('instance must be a ServiceNowInstance');
         });
 
@@ -423,7 +426,7 @@ System: end
                 statusText: 'Internal Server Error',
                 headers: {},
                 config: {}
-            } as IHttpResponse<string>);
+            } as unknown as IHttpResponse<string>);
 
             await expect(
                 executor.executeScript('gs.info("test")', 'global', instance)
@@ -451,7 +454,7 @@ System: end
                 statusText: 'OK',
                 headers: {},
                 config: {}
-            } as IHttpResponse<string>);
+            } as unknown as IHttpResponse<string>);
 
             await expect(
                 executor.executeScript('gs.info("test")', 'global', instance)

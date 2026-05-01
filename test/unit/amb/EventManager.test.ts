@@ -2,8 +2,9 @@
  * Unit tests for EventManager
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { EventManager } from '../../../src/sn/amb/EventManager';
+// Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
+import { jest } from '@jest/globals';
+import { EventManager } from '../../../src/sn/amb/EventManager.js';
 
 // Mock Logger
 jest.mock('../../../src/util/Logger', () => ({

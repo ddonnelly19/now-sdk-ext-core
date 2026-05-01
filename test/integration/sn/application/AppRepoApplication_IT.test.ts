@@ -1,6 +1,6 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
 import {
     AppRepoApplication,
@@ -9,7 +9,7 @@ import {
     AppRepoInstallResponse,
     AppRepoPublishResponse,
     AppRepoOperationResult
-} from '../../../../src/sn/application/AppRepoApplication';
+} from '../../../../src/sn/application/AppRepoApplication.js';
 
 describe('AppRepoApplication', () => {
     let instance: ServiceNowInstance;

@@ -1,9 +1,9 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
-import { BatchOperations } from '../../../../src/sn/batch/BatchOperations';
-import { BatchCreateResult, BatchUpdateResult } from '../../../../src/sn/batch/BatchModels';
+import { BatchOperations } from '../../../../src/sn/batch/BatchOperations.js';
+import { BatchCreateResult, BatchUpdateResult } from '../../../../src/sn/batch/BatchModels.js';
 
 const SECONDS = 1000;
 
@@ -32,7 +32,7 @@ describe('BatchOperations - Integration Tests', () => {
     afterEach(async () => {
         // Clean up all created test incidents
         if (createdSysIds.length > 0 && instance) {
-            const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest');
+            const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest.js');
             const snReq = new ServiceNowRequest(instance);
 
             for (const sysId of createdSysIds) {
@@ -87,7 +87,7 @@ describe('BatchOperations - Integration Tests', () => {
             expect(result.errors.length).toBe(0);
 
             // Collect sys_ids for cleanup by querying back, since no saveAs was used
-            const { TableAPIRequest } = await import('../../../../src/comm/http/TableAPIRequest');
+            const { TableAPIRequest } = await import('../../../../src/comm/http/TableAPIRequest.js');
             const tableAPI = new TableAPIRequest(instance);
             const queryResp = await tableAPI.get<{ result: Array<{ sys_id: string }> }>('incident', {
                 sysparm_query: `short_descriptionLIKE[IT_TEST] Batch1 ${timestamp}^ORshort_descriptionLIKE[IT_TEST] Batch2 ${timestamp}`,
@@ -149,7 +149,7 @@ describe('BatchOperations - Integration Tests', () => {
             createdSysIds.push(parentSysId, childSysId);
 
             // Verify the child's parent field references the parent sys_id
-            const { TableAPIRequest } = await import('../../../../src/comm/http/TableAPIRequest');
+            const { TableAPIRequest } = await import('../../../../src/comm/http/TableAPIRequest.js');
             const tableAPI = new TableAPIRequest(instance);
             const childResp = await tableAPI.get<{ result: Array<{ sys_id: string; parent: { value: string } | string }> }>('incident', {
                 sysparm_query: `sys_id=${childSysId}`,
@@ -213,7 +213,7 @@ describe('BatchOperations - Integration Tests', () => {
     describe('batchUpdate', () => {
         it('should update a previously created incident', async () => {
             // First create an incident via TableAPIRequest
-            const { TableAPIRequest } = await import('../../../../src/comm/http/TableAPIRequest');
+            const { TableAPIRequest } = await import('../../../../src/comm/http/TableAPIRequest.js');
             const tableAPI = new TableAPIRequest(instance);
             const timestamp = new Date().toISOString();
 

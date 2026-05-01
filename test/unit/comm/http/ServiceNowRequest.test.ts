@@ -3,12 +3,12 @@
  * Tests all methods with proper mocking
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { ServiceNowRequest } from '../../../../src/comm/http/ServiceNowRequest';
-import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance';
-import { HTTPRequest } from '../../../../src/comm/http/HTTPRequest';
-import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse';
-import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks';
+
+import { ServiceNowRequest } from '../../../../src/comm/http/ServiceNowRequest.js';
+import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance.js';
+import { HTTPRequest } from '../../../../src/comm/http/HTTPRequest.js';
+import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
+import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
 
 // Create mock request handler
 class MockRequestHandler {
@@ -19,8 +19,8 @@ class MockRequestHandler {
 }
 
 // Import first
-import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory';
-import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory';
+import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
+import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
 
 // Then mock
 jest.mock('../../../../src/auth/AuthenticationHandlerFactory');

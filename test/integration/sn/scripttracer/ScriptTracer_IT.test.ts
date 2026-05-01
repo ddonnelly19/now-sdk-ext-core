@@ -4,16 +4,16 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
-import { adapt } from '../../../../src/sn/amb/cometd-nodejs-client';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
-import { ScriptTracer } from '../../../../src/sn/scripttracer/ScriptTracer';
-import { AMBClient } from '../../../../src/sn/amb/AMBClient';
-import { MessageClientBuilder } from '../../../../src/sn/amb/MessageClientBuilder';
-import { SessionManager } from '../../../../src/comm/http/SessionManager';
-import { TraceStatement } from '../../../../src/sn/scripttracer/ScriptTracerModels';
-import { HTTPRequest } from '../../../../src/comm/http/HTTPRequest';
+import { adapt } from '../../../../src/sn/amb/cometd-nodejs-client.js';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
+import { ScriptTracer } from '../../../../src/sn/scripttracer/ScriptTracer.js';
+import { AMBClient } from '../../../../src/sn/amb/AMBClient.js';
+import { MessageClientBuilder } from '../../../../src/sn/amb/MessageClientBuilder.js';
+import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
+import { TraceStatement } from '../../../../src/sn/scripttracer/ScriptTracerModels.js';
+import { HTTPRequest } from '../../../../src/comm/http/HTTPRequest.js';
 import { getCredentials } from '@servicenow/sdk-cli/dist/auth/index.js';
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
 const TIMEOUT = 90000;
 

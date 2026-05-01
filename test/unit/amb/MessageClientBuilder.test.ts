@@ -5,7 +5,7 @@
  * so we test only the standalone utility methods
  */
 
-import { describe, it, expect } from '@jest/globals';
+// Removed import from '@jest/globals' - Jest provides globals automatically
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';

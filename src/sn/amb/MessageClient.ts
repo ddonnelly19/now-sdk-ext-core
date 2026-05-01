@@ -5,14 +5,14 @@
 import { CometD } from "cometd";
 import {LongPollingTransport} from "cometd/LongPollingTransport";
 import {WebSocketTransport} from "cometd/WebSocketTransport";
-import {ServerConnection} from "./ServerConnection";
-import {ChannelListener} from "./ChannelListener";
-import {GraphQLSubscriptionExtension} from "./GraphQLSubscriptionExtension";
+import {ServerConnection} from "./ServerConnection.js";
+import {ChannelListener} from "./ChannelListener.js";
+import {GraphQLSubscriptionExtension} from "./GraphQLSubscriptionExtension.js";
 
-import {SessionExtension} from "./SessionExtension";
-import {TokenManagementExtension} from "./TokenManagementExtension";
-import { AMBConstants } from "./AMBConstants";
-import { Logger } from "../../util/Logger";
+import {SessionExtension} from "./SessionExtension.js";
+import {TokenManagementExtension} from "./TokenManagementExtension.js";
+import { AMBConstants } from "./AMBConstants.js";
+import { Logger } from "../../util/Logger.js";
 
 export type SubscriptionConfig = {
 	subscriptionCallback?:Function;

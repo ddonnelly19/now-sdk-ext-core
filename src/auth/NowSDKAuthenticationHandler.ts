@@ -1,87 +1,81 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-//import { UISession } from "@servicenow/sdk-cli-core/dist/util/UISession";
-import { IRequestHandler } from "../comm/http/IRequestHandler";
-import { Logger } from "../util/Logger";
-import { IAuthenticationHandler } from "./IAuthenticationHandler";
-//import { Creds, login } from "@servicenow/sdk-cli-core/dist/command/login";
-import { ICookieStore } from "../comm/http/ICookieStore";
-import { ServiceNowInstance } from "../sn/ServiceNowInstance";
-import { getSafeUserSession } from "@servicenow/sdk-cli-core/dist/util/sessionToken.js";
+import { IRequestHandler } from "../comm/http/IRequestHandler.js";
+import { Logger } from "../util/Logger.js";
+import { IAuthenticationHandler } from "./IAuthenticationHandler.js";
+import { ICookieStore } from "../comm/http/ICookieStore.js";
+import { ServiceNowInstance } from "../sn/ServiceNowInstance.js";
+import { getSafeUserSession } from "@servicenow/sdk-cli-core/dist/util/sessionToken.js"
 
 
-export class NowSDKAuthenticationHandler implements IAuthenticationHandler{
+export class NowSDKAuthenticationHandler implements IAuthenticationHandler {
 
-    private _requestHandler:IRequestHandler;
-  
-    private _isLoggedIn:boolean = false;
+	private _requestHandler!: IRequestHandler;
 
-    private _session:unknown;
+	private _isLoggedIn: boolean = false;
 
-    private _logger:Logger;
+	private _session?;
 
-    private _instance:ServiceNowInstance;
+	private _logger: Logger;
 
-    public constructor(instance:ServiceNowInstance){
-        this._logger = new Logger("NowSDKAuthenticationHandler");
-        this._instance = instance;
-    }
+	private _instance: ServiceNowInstance;
 
-    public async doLogin() : Promise<any>{
-        const session:unknown =  await this.login();
-        this._session = session;
+	public constructor(instance: ServiceNowInstance) {
+		this._logger = new Logger("NowSDKAuthenticationHandler");
+		this._instance = instance;
+	}
 
-        return session;
-    }
+	public async doLogin() {
+	
+		this._session = await this.login();
 
-    private async login() : Promise<unknown>{
+		return this._session;
+	}
 
-        try{
-            const auth = {credentials: this._instance.credential};
-            const session : unknown = await getSafeUserSession(auth, this._logger);
-            if(session){
-                this._requestHandler.setSession(session);
-                this.setLoggedIn(true);
-            }else{
-                throw new Error("Unable to login.");
-            }
-           
-            this._logger.debug("Login Attempt Complete.");
-            return session;
-        }catch(e){
-            this._logger.error("Error during login.", e);
-            throw e;
-        }
-        return null;
-    }
+	private async login() {
 
-    public getRequestHandler():IRequestHandler{
-        return this._requestHandler;
-    }
+		try {
+			const auth = { credentials: this._instance.credential };
+			const session = await getSafeUserSession(auth, this._logger);
+			if (session) {
+				this._requestHandler.setSession(session);
+				this.setLoggedIn(true);
+			} else {
+				throw new Error("Unable to login.");
+			}
 
-    public setRequestHandler(requestHandler:IRequestHandler){
-        this._requestHandler = requestHandler;
-    }
+			this._logger.debug("Login Attempt Complete.");
+			return session;
+		} catch (e) {
+			this._logger.error("Error during login.", e);
+			throw e;
+		}
+	
+	}
 
-    public isLoggedIn():boolean{
-        return this._isLoggedIn;
-    }
+	public getRequestHandler(): IRequestHandler {
+		return this._requestHandler;
+	}
 
-    public setLoggedIn(loggedIn:boolean){
-        this._isLoggedIn = loggedIn;
-    }
+	public setRequestHandler(requestHandler: IRequestHandler) {
+		this._requestHandler = requestHandler;
+	}
 
-    public getToken():string{
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        return (this._session as any).getToken() as string;
-    }
+	public isLoggedIn(): boolean {
+		return this._isLoggedIn;
+	}
 
-    public getCookies():ICookieStore{
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-        return (this._session as any).getCookies();
-    }
+	public setLoggedIn(loggedIn: boolean) {
+		this._isLoggedIn = loggedIn;
+	}
 
-    public getSession():unknown{
-        return this._session;
-    }
+	public getToken() {		
+		return (this._session).getToken() as string;
+	}
+
+	public getCookies(): ICookieStore {		
+		return this._session?.getCookies();
+	}
+
+	public getSession() {
+		return this._session;
+	}
 }

@@ -2,10 +2,11 @@
  * Unit tests for ChannelListener
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { ChannelListener } from '../../../src/sn/amb/ChannelListener';
-import { Channel } from '../../../src/sn/amb/Channel';
-import { ServerConnection } from '../../../src/sn/amb/ServerConnection';
+// Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
+import { jest } from '@jest/globals';
+import { ChannelListener } from '../../../src/sn/amb/ChannelListener.js';
+import { Channel } from '../../../src/sn/amb/Channel.js';
+import { ServerConnection } from '../../../src/sn/amb/ServerConnection.js';
 
 // Mock Logger
 jest.mock('../../../src/util/Logger', () => ({

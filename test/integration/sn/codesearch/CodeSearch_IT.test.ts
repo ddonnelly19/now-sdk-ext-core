@@ -1,9 +1,9 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
-import { CodeSearch } from '../../../../src/sn/codesearch/CodeSearch';
-import { CodeSearchResult, CodeSearchRecordTypeResult, CodeSearchGroup, CodeSearchTable, CodeSearchTableRecord } from '../../../../src/sn/codesearch/CodeSearchModels';
+import { CodeSearch } from '../../../../src/sn/codesearch/CodeSearch.js';
+import { CodeSearchResult, CodeSearchRecordTypeResult, CodeSearchGroup, CodeSearchTable, CodeSearchTableRecord } from '../../../../src/sn/codesearch/CodeSearchModels.js';
 
 describe('CodeSearch - Integration Tests', () => {
     let instance: ServiceNowInstance;

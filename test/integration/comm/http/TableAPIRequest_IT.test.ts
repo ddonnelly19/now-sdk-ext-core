@@ -1,8 +1,8 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
-import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest';
-import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
+import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest.js';
+import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
 
 const SECONDS = 1000;
 
@@ -101,7 +101,7 @@ describe('TableAPIRequest Integration Tests', () => {
                 try {
                     const deleteReq = new TableAPIRequest(instance);
                     // Use a direct ServiceNowRequest to delete since TableAPIRequest doesn't have delete
-                    const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest');
+                    const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest.js');
                     const snReq = new ServiceNowRequest(instance);
                     await snReq.delete({
                         path: `/api/now/table/incident/${createdSysId}`,

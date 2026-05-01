@@ -1,9 +1,9 @@
 
 import { mock } from "ts-jest-mocker";
-import {ChannelListener} from '../../../src/sn/amb/ChannelListener';
-import {ChannelRedirect} from '../../../src/sn/amb/ChannelRedirect';
-import {Channel} from "../../../src/sn/amb/Channel";
-import {ServerConnection} from "../../../src/sn/amb/ServerConnection";
+import {ChannelListener} from '../../../src/sn/amb/ChannelListener.js';
+import {ChannelRedirect} from '../../../src/sn/amb/ChannelRedirect.js';
+import {Channel} from "../../../src/sn/amb/Channel.js";
+import {ServerConnection} from "../../../src/sn/amb/ServerConnection.js";
 import { CometD } from "cometd";
 
 

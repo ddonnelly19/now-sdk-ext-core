@@ -1,9 +1,9 @@
-import { AMBClient } from "../amb/AMBClient";
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { SessionManager } from "../../comm/http/SessionManager";
-import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest";
-import { HTTPRequest } from "../../comm/http/HTTPRequest";
-import { Logger } from "../../util/Logger";
+import { AMBClient } from "../amb/AMBClient.js";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { SessionManager } from "../../comm/http/SessionManager.js";
+import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
+import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
+import { Logger } from "../../util/Logger.js";
 import {
     ScriptTracerState,
     ScriptTracerOptions,
@@ -13,7 +13,7 @@ import {
     DebuggerStartResponse,
     DebuggerConsoleMessage,
     DebuggerWatcherMessage,
-} from "./ScriptTracerModels";
+} from "./ScriptTracerModels.js";
 
 const DEBUGGER_START = "/api/now/js/debugger/start";
 const SCRIPTTRACER_START = "/api/now/js/scripttracer/start";

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { Channel } from "./Channel";
-import { Logger } from "../../util/Logger";
-import { ServerConnection } from "./ServerConnection";
+import { Channel } from "./Channel.js";
+import { Logger } from "../../util/Logger.js";
+import { ServerConnection } from "./ServerConnection.js";
 
 export class ChannelListener{
 
@@ -36,7 +36,7 @@ export class ChannelListener{
 	setNewChannel(channel:Channel) {
 		this._channel.unsubscribe(this);
 		this._channel = channel;
-		this.subscribe(this.messageCallback);
+		if (this.messageCallback) this.subscribe(this.messageCallback);
 	}
 
 	/**
@@ -46,12 +46,13 @@ export class ChannelListener{
 	 */
 	subscribe(/*Function*/ callback:Function) {
 		this.messageCallback = callback;
-		this.id = this._channel.subscribe(this);
+		this.id = this._channel.subscribe(this) ?? -1;
 		return this;
 	}
 
 	resubscribe() {
-		return this.subscribe(this.messageCallback);
+		if (this.messageCallback) return this.subscribe(this.messageCallback);
+		return this;
 	}
 
 	/**

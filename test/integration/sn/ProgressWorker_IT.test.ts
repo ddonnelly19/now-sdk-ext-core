@@ -1,36 +1,37 @@
-import { getCredentials } from "@servicenow/sdk-cli/dist/auth";
-import { ServiceNowInstance, ServiceNowSettingsInstance } from "../../../src/sn/ServiceNowInstance";
-import { ProgressWorker } from "../../../src/sn/ProgressWorker";
-import { SN_INSTANCE_ALIAS } from '../../test_utils/test_config';
+
+import { ServiceNowInstance, ServiceNowSettingsInstance } from "../../../src/sn/ServiceNowInstance.js";
+import { ProgressWorker } from "../../../src/sn/ProgressWorker.js";
+import { SN_INSTANCE_ALIAS } from '../../test_utils/test_config.js';
+import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
 
 describe('ProgressWorker', () => {
 
-    let instance: ServiceNowInstance;
-    const TEST_SCOPE = 'global';
-    let credential:any;
+	let instance: ServiceNowInstance;
+	const TEST_SCOPE = 'global';
+	let credential: any;
 
-    beforeEach(async () => {
+	beforeEach(async () => {
 
-        credential = await getCredentials(SN_INSTANCE_ALIAS);
+		credential = await getCredentials(SN_INSTANCE_ALIAS);
 
-         if(credential){
-            const snSettings:ServiceNowSettingsInstance = {
-            alias: SN_INSTANCE_ALIAS,
-            credential: credential
-            }
-            instance = new ServiceNowInstance(snSettings);
-        }
-         
-       
-        
-    });
+		if (credential) {
+			const snSettings: ServiceNowSettingsInstance = {
+				alias: SN_INSTANCE_ALIAS,
+				credential: credential
+			}
+			instance = new ServiceNowInstance(snSettings);
+		}
 
-    it('should get progress', async () => {
-      
-        const progressWorker = new ProgressWorker(instance);
-        const progressResult = await progressWorker.getProgress('96260c6093072a505ecb74718bba10d6');
-        console.log(progressResult);
-        console.log(progressResult.status);
-        expect(progressResult).toBeDefined();
-    });
+
+
+	});
+
+	it('should get progress', async () => {
+
+		const progressWorker = new ProgressWorker(instance);
+		const progressResult = await progressWorker.getProgress('96260c6093072a505ecb74718bba10d6');
+		console.log(progressResult);
+		console.log(progressResult?.status);
+		expect(progressResult).toBeDefined();
+	});
 });

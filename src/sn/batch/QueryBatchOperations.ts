@@ -1,16 +1,16 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest";
-import { TableAPIRequest } from "../../comm/http/TableAPIRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
-import { HTTPRequest } from "../../comm/http/HTTPRequest";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
+import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
+import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
 import {
     QueryUpdateOptions,
     QueryDeleteOptions,
     QueryUpdateResult,
     QueryDeleteResult,
     QueryMatchResponse
-} from './QueryBatchModels';
+} from './QueryBatchModels.js';
 
 /**
  * QueryBatchOperations provides query-based bulk update and delete operations.

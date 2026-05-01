@@ -1,5 +1,5 @@
 
-import { IHttpResponse } from "./IHttpResponse";
+import { IHttpResponse } from "./IHttpResponse.js";
 export class HttpResponse<T> implements IHttpResponse<T>{
 
     constructor(bodyObject: T){
@@ -7,12 +7,12 @@ export class HttpResponse<T> implements IHttpResponse<T>{
     }
 
     bodyObject?: T;
-    data: T;
-    body: string;
-    status: number;
-    statusText: string;
-    headers: object;
-    config: object;
+    data!: T;
+    body!: string;
+    status!: number;
+    statusText!: string;
+    headers!: object;
+    config!: object;
     request?: any;
-    cookies: any[];
+    cookies!: any[];
 }

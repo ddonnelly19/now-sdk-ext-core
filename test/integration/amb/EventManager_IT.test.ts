@@ -1,5 +1,5 @@
 import { Mock, mock } from "ts-jest-mocker";
-import {EventManager} from "../../../src/sn/amb/EventManager";
+import {EventManager} from "../../../src/sn/amb/EventManager.js";
 
 describe.skip('EventManager', () => {
 	const events = {

@@ -3,15 +3,15 @@
  * Caches ServiceNowRequest instances keyed by instance alias
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { SessionManager } from '../../../../src/comm/http/SessionManager';
-import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance';
-import { ServiceNowRequest } from '../../../../src/comm/http/ServiceNowRequest';
-import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks';
+
+import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
+import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance.js';
+import { ServiceNowRequest } from '../../../../src/comm/http/ServiceNowRequest.js';
+import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
 
 // Mock factories to prevent real auth/HTTP
-import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory';
-import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory';
+import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
+import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
 
 jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
 jest.mock('../../../../src/comm/http/RequestHandlerFactory');

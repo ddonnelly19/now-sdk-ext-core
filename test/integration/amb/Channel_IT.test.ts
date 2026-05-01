@@ -4,9 +4,9 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { Channel } from '../../../src/sn/amb/Channel';
-import { ServerConnection } from '../../../src/sn/amb/ServerConnection';
-import { ChannelListener } from '../../../src/sn/amb/ChannelListener';
+import { Channel } from '../../../src/sn/amb/Channel.js';
+import { ServerConnection } from '../../../src/sn/amb/ServerConnection.js';
+import { ChannelListener } from '../../../src/sn/amb/ChannelListener.js';
 
 // Mock Logger
 jest.mock('../../../src/util/Logger', () => ({
@@ -52,7 +52,7 @@ describe('Channel - Unit Tests', () => {
             unsubscribe: jest.fn(),
             publish: jest.fn(),
             getStatus: jest.fn().mockReturnValue('connected'),
-            batch: jest.fn((callback: () => void) => callback())
+            batch: jest.fn().mockImplementation((callback: unknown) => (callback as () => void)())
         };
 
         // Create mock ServerConnection

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import {Logger} from "../../util/Logger";
+import {Logger} from "../../util/Logger.js";
 
 export class EventManager {
      _logger:Logger = new Logger("EventManager");
-     _subscriptions:any[] = [];
+     _subscriptions:Array<{event:string, callback:Function, id:number}> = [];
      _idCounter = 0;
      _events:any;
 
@@ -36,7 +36,7 @@ export class EventManager {
     }
 
    private  _getSubscriptions(event:string) {
-        const subscriptions = [];
+        const subscriptions:Array<{event:string, callback:Function, id:number}> = [];
         for (let i = 0; i < this._subscriptions.length; i++) {
             if (this._subscriptions[i].event === event)
                 subscriptions.push(this._subscriptions[i]);

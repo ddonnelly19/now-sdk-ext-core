@@ -1,71 +1,72 @@
-import { IServiceNowInstance } from "./IServiceNowInstance";
+import { Creds } from "@servicenow/sdk-cli-core/dist/auth/index.js";
+import { IServiceNowInstance } from "./IServiceNowInstance.js";
 
 export interface ServiceNowSettingsInstance {
-    host?:string;
-    username?:string;
-    alias?:string;
-    isDefault?:boolean;
-    password?:string;
-    credential?:unknown;
+	host?: string;
+	username?: string;
+	alias?: string;
+	isDefault?: boolean;
+	password?: string;
+	credential?: Creds;
 }
 
-export class ServiceNowInstance implements IServiceNowInstance{
-    private _isDefault:boolean;
-    private _host:string;
-    private _username:string;
-    private _alias:string;
+export class ServiceNowInstance implements IServiceNowInstance {
+	private _isDefault!: boolean;
+	private _host!: string;
+	private _username!: string;
+	private _alias!: string;
 
-    private _password:string;
-    
-    private _credential:unknown;
+	private _password!: string;
 
-    constructor(snInstanceSettingsObj?:ServiceNowSettingsInstance | null){
-        if(typeof snInstanceSettingsObj != 'undefined' && snInstanceSettingsObj != null){
-            if(snInstanceSettingsObj.host){
-                this._host = snInstanceSettingsObj.host;
-            }
-            if(snInstanceSettingsObj.alias){
-                this._alias = snInstanceSettingsObj.alias;
-            }
-            if(snInstanceSettingsObj.username){
-                this._username = snInstanceSettingsObj.username;
-            }
-            if(snInstanceSettingsObj.isDefault){
-                this._isDefault = snInstanceSettingsObj.isDefault;
-            }
-            if(snInstanceSettingsObj.password){
-                this._password = snInstanceSettingsObj.password;
-            }
+	private _credential!: Creds;
 
-            if(snInstanceSettingsObj.credential){
-                this._credential = snInstanceSettingsObj.credential;
-            }
+	constructor(snInstanceSettingsObj?: ServiceNowSettingsInstance | null) {
+		if (typeof snInstanceSettingsObj != 'undefined' && snInstanceSettingsObj != null) {
+			if (snInstanceSettingsObj.host) {
+				this._host = snInstanceSettingsObj.host;
+			}
+			if (snInstanceSettingsObj.alias) {
+				this._alias = snInstanceSettingsObj.alias;
+			}
+			if (snInstanceSettingsObj.username) {
+				this._username = snInstanceSettingsObj.username;
+			}
+			if (snInstanceSettingsObj.isDefault) {
+				this._isDefault = snInstanceSettingsObj.isDefault;
+			}
+			if (snInstanceSettingsObj.password) {
+				this._password = snInstanceSettingsObj.password;
+			}
 
-        }
-    }
+			if (snInstanceSettingsObj.credential) {
+				this._credential = snInstanceSettingsObj.credential;
+			}
 
-    isDefault():boolean{
-        return this._isDefault;
-    }
+		}
+	}
 
-    getHost():string{
-        return this._host;
-    }
+	isDefault(): boolean {
+		return this._isDefault;
+	}
 
-    getUserName():string{
-        return this._username;
-    }
+	getHost(): string {
+		return this._host;
+	}
 
-    getAlias():string{
-        return this._alias;
-    }
+	getUserName(): string {
+		return this._username;
+	}
 
-    //todo: Do we store the password in Secrets or the entire SN Instance? Can we store the entire array of SN Instances in secrets?
-    getPassword():string{
-        return this._password;
-    }
+	getAlias(): string {
+		return this._alias;
+	}
 
-    public get credential():unknown{
-        return this._credential;
-    }
+	//todo: Do we store the password in Secrets or the entire SN Instance? Can we store the entire array of SN Instances in secrets?
+	getPassword(): string {
+		return this._password;
+	}
+
+	public get credential() {
+		return this._credential;
+	}
 }

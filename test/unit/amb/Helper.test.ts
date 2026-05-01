@@ -2,8 +2,8 @@
  * Unit tests for Helper utility functions
  */
 
-import { describe, it, expect } from '@jest/globals';
-import { isUndefined, isNull, isNil, isObject, isEmptyObject } from '../../../src/sn/amb/Helper';
+// Removed import from '@jest/globals' - Jest provides globals automatically
+import { isUndefined, isNull, isNil, isObject, isEmptyObject } from '../../../src/sn/amb/Helper.js';
 
 describe('Helper - Unit Tests', () => {
     describe('isUndefined', () => {

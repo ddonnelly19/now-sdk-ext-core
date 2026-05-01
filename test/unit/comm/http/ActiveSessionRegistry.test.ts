@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { ActiveSessionRegistry } from '../../../../src/comm/http/ActiveSessionRegistry';
+
+import { ActiveSessionRegistry } from '../../../../src/comm/http/ActiveSessionRegistry.js';
 
 describe('ActiveSessionRegistry', () => {
 

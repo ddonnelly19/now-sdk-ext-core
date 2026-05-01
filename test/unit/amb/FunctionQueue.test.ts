@@ -2,8 +2,8 @@
  * Unit tests for FunctionQueue
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
-import { FunctionQueue } from '../../../src/sn/amb/FunctionQueue';
+// Removed import from '@jest/globals' - Jest provides globals automatically
+import { FunctionQueue } from '../../../src/sn/amb/FunctionQueue.js';
 
 describe('FunctionQueue - Unit Tests', () => {
     let queue: FunctionQueue;

@@ -1,6 +1,6 @@
-import { HTTPRequest } from "./HTTPRequest";
-import { IHttpResponse } from "./IHttpResponse";
-import { Cookie } from 'tough-cookie';
+import { SessionOrToken, UserSession } from "@servicenow/sdk-cli-core/dist/auth/index.js";
+import { HTTPRequest } from "./HTTPRequest.js";
+import { IHttpResponse } from "./IHttpResponse.js";
 
 export interface IRequestHandler{
     post<T>(request: HTTPRequest) : Promise<IHttpResponse<T>> ;
@@ -12,6 +12,6 @@ export interface IRequestHandler{
     delete<T>(request: HTTPRequest) : Promise<IHttpResponse<T>> ;
 
   
-    setSession(session: any);
+    setSession(session: SessionOrToken);
 
 }

@@ -1,5 +1,5 @@
-import { describe, it, expect } from '@jest/globals';
-import { NowStringUtil } from '../../../src/util/NowStringUtil';
+
+import { NowStringUtil } from '../../../src/util/NowStringUtil.js';
 
 describe('NowStringUtil', () => {
     describe('isStringEmpty', () => {

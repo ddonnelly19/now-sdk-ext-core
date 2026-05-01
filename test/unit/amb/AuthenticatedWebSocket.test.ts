@@ -2,8 +2,8 @@
  * Unit tests for AuthenticatedWebSocket
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
-import { AuthenticatedWebSocket, createAuthenticatedWebSocketClass } from '../../../src/sn/amb/AuthenticatedWebSocket';
+// Removed import from '@jest/globals' - Jest provides globals automatically
+import { AuthenticatedWebSocket, createAuthenticatedWebSocketClass } from '../../../src/sn/amb/AuthenticatedWebSocket.js';
 
 describe('AuthenticatedWebSocket - Unit Tests', () => {
     beforeEach(() => {

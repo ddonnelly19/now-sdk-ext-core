@@ -1,7 +1,7 @@
-import {Properties as properties} from "./Properties";
-import {isNil, isObject} from "./Helper";
-import {Logger} from "../../util/Logger";
-import { FunctionQueue } from "./FunctionQueue";
+import {Properties as properties} from "./Properties.js";
+import {isNil, isObject} from "./Helper.js";
+import {Logger} from "../../util/Logger.js";
+import { FunctionQueue } from "./FunctionQueue.js";
 
 /**
  * Controls the flow of subscription-related (subscribe, resubscribe, unsubscribe) commands

@@ -1,16 +1,16 @@
 import { Parser } from 'xml2js';
-import { ServiceNowInstance } from '../ServiceNowInstance';
-import { ServiceNowRequest } from '../../comm/http/ServiceNowRequest';
-import { HTTPRequest } from '../../comm/http/HTTPRequest';
-import { IHttpResponse } from '../../comm/http/IHttpResponse';
-import { Logger } from '../../util/Logger';
-import { CSRFTokenHelper } from '../../util/CSRFTokenHelper';
+import { ServiceNowInstance } from '../ServiceNowInstance.js';
+import { ServiceNowRequest } from '../../comm/http/ServiceNowRequest.js';
+import { HTTPRequest } from '../../comm/http/HTTPRequest.js';
+import { IHttpResponse } from '../../comm/http/IHttpResponse.js';
+import { Logger } from '../../util/Logger.js';
+import { CSRFTokenHelper } from '../../util/CSRFTokenHelper.js';
 import {
     ExportRecordOptions,
     ExportRecordResult,
     ImportRecordsOptions,
     ImportRecordsResult
-} from './XMLRecordModels';
+} from './XMLRecordModels.js';
 
 const UPLOAD_ENDPOINT = '/upload.do';
 const SYS_UPLOAD_ENDPOINT = '/sys_upload.do';

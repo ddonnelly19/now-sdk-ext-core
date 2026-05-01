@@ -3,12 +3,12 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
-import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks';
-import { XMLRecordManager } from '../../../../src/sn/xml/XMLRecordManager';
-import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse';
-import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory';
-import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
+import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
+import { XMLRecordManager } from '../../../../src/sn/xml/XMLRecordManager.js';
+import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
+import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
+import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();

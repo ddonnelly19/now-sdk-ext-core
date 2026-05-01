@@ -1,8 +1,8 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
-import { HTTPRequest } from "../../comm/http/HTTPRequest";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
+import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
 import {
     AggregateQueryOptions,
     CountQueryOptions,
@@ -10,7 +10,7 @@ import {
     GroupedAggregateResult,
     AggregateResponse,
     GroupedAggregateResponse
-} from './AggregateModels';
+} from './AggregateModels.js';
 
 /**
  * AggregateQuery provides aggregate operations (COUNT, AVG, MIN, MAX, SUM)

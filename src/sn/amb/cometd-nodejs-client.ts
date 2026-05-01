@@ -17,9 +17,9 @@
 
 import {XMLHttpRequest} from "./XMLHttpRequest.js";
 import * as ws from "ws";
-import { Logger } from "../../util/Logger";
+import { Logger } from "../../util/Logger.js";
 
-export function adapt(options?:any) : any {
+export function adapt(options?) : any {
     const logger:Logger = new Logger("cometd");
     const p:any = global;
     let window:any = p["window"];

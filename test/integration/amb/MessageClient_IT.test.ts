@@ -1,9 +1,9 @@
-// import {MessageClient} from '../../src/amb/MessageClient';
+// import {MessageClient} from '../../src/amb/MessageClient.js';
 // import cometdLib from 'cometd';
-// import {ServerConnection} from '../../src/amb/ServerConnection';
-// import {Channel} from '../../src/amb/Channel';
-// import {ChannelRedirect} from '../../src/amb/ChannelRedirect';
-// import {GraphQLSubscriptionExtension} from "../../src/amb/GraphQLSubscriptionExtension";
+// import {ServerConnection} from '../../src/amb/ServerConnection.js';
+// import {Channel} from '../../src/amb/Channel.js';
+// import {ChannelRedirect} from '../../src/amb/ChannelRedirect.js';
+// import {GraphQLSubscriptionExtension} from "../../src/amb/GraphQLSubscriptionExtension.js";
 
 
 // jest.mock('cometd');

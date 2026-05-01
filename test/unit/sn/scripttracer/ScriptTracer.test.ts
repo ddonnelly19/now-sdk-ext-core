@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { ScriptTracer } from '../../../../src/sn/scripttracer/ScriptTracer';
-import { ScriptTracerOptions, TraceStatement, ScriptTracerAMBMessage } from '../../../../src/sn/scripttracer/ScriptTracerModels';
-import { AMBClient } from '../../../../src/sn/amb/AMBClient';
-import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance';
-import { SessionManager } from '../../../../src/comm/http/SessionManager';
-import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory';
-import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory';
-import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse';
-import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks';
+import { ScriptTracer } from '../../../../src/sn/scripttracer/ScriptTracer.js';
+import { ScriptTracerOptions, TraceStatement, ScriptTracerAMBMessage } from '../../../../src/sn/scripttracer/ScriptTracerModels.js';
+import { AMBClient } from '../../../../src/sn/amb/AMBClient.js';
+import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance.js';
+import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
+import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
+import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
+import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
+import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
 
 jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
 jest.mock('../../../../src/comm/http/RequestHandlerFactory');

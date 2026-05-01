@@ -4,10 +4,10 @@ import {
     TestSuiteExecutionRequest, 
     TestSuiteExecutionResponse, 
     TestSuiteExecutionResult 
-} from '../../src/sn/atf/ATFTestExecutor';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../src/sn/ServiceNowInstance';
+} from '../../src/sn/atf/ATFTestExecutor.js';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from '@servicenow/sdk-cli/dist/auth';
-import { SN_INSTANCE_ALIAS } from '../test_utils/test_config';
+import { SN_INSTANCE_ALIAS } from '../test_utils/test_config.js';
 
 const SECONDS = 1000;
 

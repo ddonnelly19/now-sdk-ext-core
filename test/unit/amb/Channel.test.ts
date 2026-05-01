@@ -3,10 +3,11 @@
  * Focuses on logic and state management
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { Channel } from '../../../src/sn/amb/Channel';
-import { ServerConnection } from '../../../src/sn/amb/ServerConnection';
-import { ChannelListener } from '../../../src/sn/amb/ChannelListener';
+// Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
+import { jest } from '@jest/globals';
+import { Channel } from '../../../src/sn/amb/Channel.js';
+import { ServerConnection } from '../../../src/sn/amb/ServerConnection.js';
+import { ChannelListener } from '../../../src/sn/amb/ChannelListener.js';
 
 // Mock Logger
 jest.mock('../../../src/util/Logger', () => ({

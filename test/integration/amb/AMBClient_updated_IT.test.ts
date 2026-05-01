@@ -2,17 +2,17 @@
 
 
 
-import { adapt } from "../../../src/sn/amb/cometd-nodejs-client";
-import { SubscriptionConfig } from "../../../src/sn/amb/MessageClient";
+import { adapt } from "../../../src/sn/amb/cometd-nodejs-client.js";
+import { SubscriptionConfig } from "../../../src/sn/amb/MessageClient.js";
 
-import { MessageClientBuilder } from "../../../src/sn/amb/MessageClientBuilder";
-import { Logger } from "../../../src/util/Logger";
+import { MessageClientBuilder } from "../../../src/sn/amb/MessageClientBuilder.js";
+import { Logger } from "../../../src/util/Logger.js";
 import { JSDOM } from 'jsdom'
-import { AMBClient } from "../../../src/sn/amb/AMBClient";
-import { ServiceNowInstance, ServiceNowSettingsInstance } from "../../../src/sn/ServiceNowInstance";
+import { AMBClient } from "../../../src/sn/amb/AMBClient.js";
+import { ServiceNowInstance, ServiceNowSettingsInstance } from "../../../src/sn/ServiceNowInstance.js";
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { TableAPIRequest } from "../../../src/comm/http/TableAPIRequest";
-import { SN_INSTANCE_ALIAS } from '../../test_utils/test_config';
+import { TableAPIRequest } from "../../../src/comm/http/TableAPIRequest.js";
+import { SN_INSTANCE_ALIAS } from '../../test_utils/test_config.js';
 
 const { window } = new JSDOM();
 

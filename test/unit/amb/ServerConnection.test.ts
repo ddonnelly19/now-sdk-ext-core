@@ -2,9 +2,10 @@
  * Unit tests for ServerConnection credential validation
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { ServerConnection } from '../../../src/sn/amb/ServerConnection';
-import { AMBConstants } from '../../../src/sn/amb/AMBConstants';
+// Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
+import { jest } from '@jest/globals';
+import { ServerConnection } from '../../../src/sn/amb/ServerConnection.js';
+import { AMBConstants } from '../../../src/sn/amb/AMBConstants.js';
 
 function createMockCometd() {
     return {

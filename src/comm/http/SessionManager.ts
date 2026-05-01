@@ -1,6 +1,6 @@
-import { ServiceNowInstance } from "../../sn/ServiceNowInstance";
-import { ServiceNowRequest } from "./ServiceNowRequest";
-import { Logger } from "../../util/Logger";
+import { ServiceNowInstance } from "../../sn/ServiceNowInstance.js";
+import { ServiceNowRequest } from "./ServiceNowRequest.js";
+import { Logger } from "../../util/Logger.js";
 
 /**
  * Singleton registry of authenticated ServiceNowRequest instances keyed by instance alias.

@@ -1,6 +1,6 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { BackgroundScriptExecutor, BackgroundScriptExecutionResult } from "../BackgroundScriptExecutor";
-import { Logger } from "../../util/Logger";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { BackgroundScriptExecutor, BackgroundScriptExecutionResult } from "../BackgroundScriptExecutor.js";
+import { Logger } from "../../util/Logger.js";
 import {
     ExecuteFlowOptions,
     ExecuteFlowByNameOptions,
@@ -37,9 +37,9 @@ import {
     FlowOperationsData,
     FlowActionReport,
     FlowExecutionSource
-} from './FlowModels';
-import { TableAPIRequest } from '../../comm/http/TableAPIRequest';
-import { ProcessFlowRequest } from '../../comm/http/ProcessFlowRequest';
+} from './FlowModels.js';
+import { TableAPIRequest } from '../../comm/http/TableAPIRequest.js';
+import { ProcessFlowRequest } from '../../comm/http/ProcessFlowRequest.js';
 
 const RESULT_MARKER = '___FLOW_EXEC_RESULT___';
 const VALID_TYPES: FlowObjectType[] = ['flow', 'subflow', 'action'];

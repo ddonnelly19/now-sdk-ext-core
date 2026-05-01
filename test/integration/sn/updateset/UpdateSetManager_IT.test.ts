@@ -1,16 +1,16 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
-import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
+import { Creds, getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
-import { UpdateSetManager } from '../../../../src/sn/updateset/UpdateSetManager';
-import { UpdateSetRecord, CloneUpdateSetResult, InspectUpdateSetResult, MoveRecordsResult } from '../../../../src/sn/updateset/UpdateSetModels';
-import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest';
+import { UpdateSetManager } from '../../../../src/sn/updateset/UpdateSetManager.js';
+import { UpdateSetRecord, CloneUpdateSetResult, InspectUpdateSetResult, MoveRecordsResult } from '../../../../src/sn/updateset/UpdateSetModels.js';
+import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest.js';
 
 const SECONDS = 1000;
 
 describe('UpdateSetManager - Integration Tests', () => {
     let instance: ServiceNowInstance;
-    let credential: unknown;
+    let credential: Creds;
     let updateSetManager: UpdateSetManager;
     let tableAPI: TableAPIRequest;
     let createdSysIds: string[] = [];
@@ -35,7 +35,7 @@ describe('UpdateSetManager - Integration Tests', () => {
     afterEach(async () => {
         // Clean up all created test update sets
         if (createdSysIds.length > 0 && instance) {
-            const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest');
+            const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest.js');
             const snReq = new ServiceNowRequest(instance);
 
             for (const sysId of createdSysIds) {

@@ -4,13 +4,13 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
-import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks';
-import { CatalogManager, VARIABLE_TYPE_MAP, getVariableTypeName } from '../../../../src/sn/catalog/CatalogManager';
-import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse';
-import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory';
-import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory';
-import { SessionManager } from '../../../../src/comm/http/SessionManager';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
+import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
+import { CatalogManager, VARIABLE_TYPE_MAP, getVariableTypeName } from '../../../../src/sn/catalog/CatalogManager.js';
+import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
+import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
+import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
+import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();

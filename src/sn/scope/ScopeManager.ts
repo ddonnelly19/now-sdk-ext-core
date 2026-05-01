@@ -1,9 +1,9 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest";
-import { TableAPIRequest } from "../../comm/http/TableAPIRequest";
-import { HTTPRequest } from "../../comm/http/HTTPRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
+import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
+import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
 import {
     ApplicationRecord,
     ApplicationResponse,
@@ -11,7 +11,7 @@ import {
     CurrentApplicationResponse,
     SetCurrentApplicationResult,
     ListApplicationsOptions
-} from './ScopeModels';
+} from './ScopeModels.js';
 
 /**
  * ScopeManager provides operations for managing ServiceNow application scopes.

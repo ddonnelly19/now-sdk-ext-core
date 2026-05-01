@@ -1,8 +1,8 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest";
-import { TableAPIRequest } from "../../comm/http/TableAPIRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
+import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
 import {
     AddCommentOptions,
     AssignTaskOptions,
@@ -12,7 +12,7 @@ import {
     TaskRecord,
     TaskRecordResponse,
     TaskRecordListResponse
-} from './TaskModels';
+} from './TaskModels.js';
 
 /**
  * Provides convenience operations for common task-related actions in ServiceNow,

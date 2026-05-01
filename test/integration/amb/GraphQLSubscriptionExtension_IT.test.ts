@@ -1,4 +1,4 @@
-import {GraphQLSubscriptionExtension} from '../../../src/sn/amb/GraphQLSubscriptionExtension';
+import {GraphQLSubscriptionExtension} from '../../../src/sn/amb/GraphQLSubscriptionExtension.js';
 
 describe.skip('GraphQLSubscriptionExtension', () => {
 	let graphQLSubscriptionExtension;

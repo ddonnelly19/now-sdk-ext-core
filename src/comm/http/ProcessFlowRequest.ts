@@ -1,10 +1,10 @@
 
-import { IServiceNowInstance } from "../../sn/IServiceNowInstance";
-import { ServiceNowInstance } from "../../sn/ServiceNowInstance";
-import { HTTPRequest } from "./HTTPRequest";
-import { IHttpResponse } from "./IHttpResponse";
-import { ServiceNowRequest } from "./ServiceNowRequest";
-import { PROCESSFLOW_API_BASE } from "../../constants/ServiceNow";
+import { IServiceNowInstance } from "../../sn/IServiceNowInstance.js";
+import { ServiceNowInstance } from "../../sn/ServiceNowInstance.js";
+import { HTTPRequest } from "./HTTPRequest.js";
+import { IHttpResponse } from "./IHttpResponse.js";
+import { ServiceNowRequest } from "./ServiceNowRequest.js";
+import { PROCESSFLOW_API_BASE } from "../../constants/ServiceNow.js";
 
 /**
  * HTTP wrapper for the ServiceNow ProcessFlow REST API (`/api/now/processflow/`).

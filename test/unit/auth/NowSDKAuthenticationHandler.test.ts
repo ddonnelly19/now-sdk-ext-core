@@ -4,10 +4,10 @@
  * Note: Full authentication flow tests are in integration tests
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
-import { NowSDKAuthenticationHandler } from '../../../src/auth/NowSDKAuthenticationHandler';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../src/sn/ServiceNowInstance';
-import { IRequestHandler } from '../../../src/comm/http/IRequestHandler';
+// Removed import from '@jest/globals' - Jest provides globals automatically
+import { NowSDKAuthenticationHandler } from '../../../src/auth/NowSDKAuthenticationHandler.js';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../src/sn/ServiceNowInstance.js';
+import { IRequestHandler } from '../../../src/comm/http/IRequestHandler.js';
 
 describe("NowSDKAuthenticationHandler - Unit Tests", () => {
     let authHandler: NowSDKAuthenticationHandler;

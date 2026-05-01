@@ -1,19 +1,19 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
 import {
     CompanyApplications,
     CompanyApplication,
     CompanyApplicationsResponse
-} from '../../../../src/sn/application/CompanyApplications';
+} from '../../../../src/sn/application/CompanyApplications.js';
 
 import {
     AppRepoApplication,
     AppRepoInstallRequest,
     AppRepoInstallResponse,
     AppRepoOperationResult
-} from '../../../../src/sn/application/AppRepoApplication';
+} from '../../../../src/sn/application/AppRepoApplication.js';
 
 describe('CompanyApplications Integration Tests', () => {
     let instance: ServiceNowInstance;

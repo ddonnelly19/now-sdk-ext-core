@@ -1,8 +1,8 @@
-// import MessageClient from "../amb.MessageClient";
-// import getClient from "../amb.MessageClientBuilder";
-// import ServerConnection from "../amb.ServerConnection";
-// import Channel from "../amb.Channel";
-// import ChannelListener from "../amb.ChannelListener";
+// import MessageClient from "../amb.MessageClient.js";
+// import getClient from "../amb.MessageClientBuilder.js";
+// import ServerConnection from "../amb.ServerConnection.js";
+// import Channel from "../amb.Channel.js";
+// import ChannelListener from "../amb.ChannelListener.js";
 
 
 // const connect = jest.fn();

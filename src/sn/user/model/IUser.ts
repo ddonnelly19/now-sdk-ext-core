@@ -1,4 +1,4 @@
-import { ReferenceLink } from "../../../model/types";
+import { ReferenceLink } from "../../../model/types.js";
 
 export interface IUser {
     get calendarIntegration(): string;

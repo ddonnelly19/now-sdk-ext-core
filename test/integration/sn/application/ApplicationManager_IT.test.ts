@@ -1,15 +1,15 @@
 
 
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
-import { BatchDefinition } from '../../../../src/sn/application/BatchDefinition';
+import { BatchDefinition } from '../../../../src/sn/application/BatchDefinition.js';
 import {
     ApplicationManager,
     ApplicationValidationResult,
     BatchValidationResult
-} from '../../../../src/sn/application/ApplicationManager';
+} from '../../../../src/sn/application/ApplicationManager.js';
 
 import * as path from 'path';
 import { fileURLToPath } from 'url';

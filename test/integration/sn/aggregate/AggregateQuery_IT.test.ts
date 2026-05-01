@@ -1,7 +1,7 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
-import { AggregateQuery } from '../../../../src/sn/aggregate/AggregateQuery';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
+import { AggregateQuery } from '../../../../src/sn/aggregate/AggregateQuery.js';
 
 const SECONDS = 1000;
 

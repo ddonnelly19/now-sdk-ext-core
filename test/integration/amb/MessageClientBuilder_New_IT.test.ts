@@ -1,10 +1,10 @@
 // import amb from "./amb.js"
 // import { adapt } from "cometd-nodejs-client";
-// import Logger from "../../../build/src/sn/amb/Logger"
+// import Logger from "../../../build/src/sn/amb/Logger.js"
 // const LOGGER = new Logger('index');
 
-import { AMBClient } from "../../../src/sn/amb/AMBClient";
-import { MessageClientBuilder } from "../../../src/sn/amb/MessageClientBuilder"
+import { AMBClient } from "../../../src/sn/amb/AMBClient.js";
+import { MessageClientBuilder } from "../../../src/sn/amb/MessageClientBuilder.js"
 
 
 

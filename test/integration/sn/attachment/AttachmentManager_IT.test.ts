@@ -1,8 +1,8 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
-import { AttachmentManager } from '../../../../src/sn/attachment/AttachmentManager';
-import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
+import { AttachmentManager } from '../../../../src/sn/attachment/AttachmentManager.js';
+import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest.js';
 
 describe('AttachmentManager', () => {
     let instance: ServiceNowInstance;
@@ -40,7 +40,7 @@ describe('AttachmentManager', () => {
     }
 
     async function deleteIncident(sysId: string): Promise<void> {
-        const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest');
+        const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest.js');
         const snReq = new ServiceNowRequest(instance);
         await snReq.delete({
             path: `/api/now/table/incident/${sysId}`,

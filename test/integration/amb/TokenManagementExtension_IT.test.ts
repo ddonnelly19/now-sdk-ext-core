@@ -1,5 +1,5 @@
-// import TokenManagementExtension from "../amb.TokenManagementExtension";
-// import properties from "../amb.Properties";
+// import TokenManagementExtension from "../amb.TokenManagementExtension.js";
+// import properties from "../amb.Properties.js";
 
 // const META_SUBSCRIBE = '/meta/subscribe';
 // const META_UNSUBSCRIBE = '/meta/unsubscribe';

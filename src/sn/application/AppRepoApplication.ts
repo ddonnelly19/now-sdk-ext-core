@@ -1,9 +1,9 @@
-import { ServiceNowInstance } from "../ServiceNowInstance";
-import { Logger } from "../../util/Logger";
-import { HTTPRequest } from "../../comm/http/HTTPRequest";
-import { IHttpResponse } from "../../comm/http/IHttpResponse";
-import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest";
-import { ProgressWorker, ProgressResult } from "../ProgressWorker";
+import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { Logger } from "../../util/Logger.js";
+import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
+import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
+import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
+import { ProgressWorker, ProgressResult } from "../ProgressWorker.js";
 
 /**
  * AppRepoApplication class for managing application repository operations
@@ -167,7 +167,7 @@ export class AppRepoApplication {
      * @param progressId Progress ID from the operation response
      * @returns Promise<ProgressResult> Current progress information
      */
-    public async getProgress(progressId: string): Promise<ProgressResult> {
+    public async getProgress(progressId: string): Promise<ProgressResult | null> {
         const progressWorker = new ProgressWorker(this._instance);
         return await progressWorker.getProgress(progressId);
     }
@@ -187,15 +187,15 @@ export class AppRepoApplication {
         const startTime = Date.now();
         let progress = await this.getProgress(progressId);
         
-        this._logger.info(`Waiting for operation completion. Progress: ${progress.percent_complete}%`);
+        this._logger.info(`Waiting for operation completion. Progress: ${progress?.percent_complete ?? 0}%`);
 
-        while (progress.percent_complete < 100 && (Date.now() - startTime) < timeoutMs) {
+        while (progress && progress.percent_complete < 100 && (Date.now() - startTime) < timeoutMs) {
             await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
             progress = await this.getProgress(progressId);
-            this._logger.info(`Operation progress: ${progress.percent_complete}% - ${progress.status_label}`);
+            if (progress) this._logger.info(`Operation progress: ${progress.percent_complete}% - ${progress.status_label}`);
         }
 
-        if (progress.percent_complete < 100) {
+        if (!progress || progress.percent_complete < 100) {
             throw new Error(`Operation timed out after ${timeoutMs}ms`);
         }
 

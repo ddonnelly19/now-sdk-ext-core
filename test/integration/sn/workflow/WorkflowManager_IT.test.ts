@@ -1,9 +1,9 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from '@servicenow/sdk-cli/dist/auth/index.js';
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
-import { WorkflowManager } from '../../../../src/sn/workflow/WorkflowManager';
-import { ServiceNowRequest } from '../../../../src/comm/http/ServiceNowRequest';
+import { WorkflowManager } from '../../../../src/sn/workflow/WorkflowManager.js';
+import { ServiceNowRequest } from '../../../../src/comm/http/ServiceNowRequest.js';
 
 const SECONDS = 1000;
 

@@ -1,8 +1,8 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
-import { SchemaDiscovery } from '../../../../src/sn/schema/SchemaDiscovery';
-import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
+import { SchemaDiscovery } from '../../../../src/sn/schema/SchemaDiscovery.js';
+import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest.js';
 
 const SECONDS = 1000;
 

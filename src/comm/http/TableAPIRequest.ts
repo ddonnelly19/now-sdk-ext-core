@@ -1,73 +1,73 @@
 
 
-import { IServiceNowInstance } from "../../sn/IServiceNowInstance";
-import { ServiceNowInstance } from "../../sn/ServiceNowInstance";
-import { HTTPRequest } from "./HTTPRequest";
-import { IHttpResponse } from "./IHttpResponse";
-import { SessionManager } from "./SessionManager";
+import { IServiceNowInstance } from "../../sn/IServiceNowInstance.js";
+import { ServiceNowInstance } from "../../sn/ServiceNowInstance.js";
+import { HTTPRequest } from "./HTTPRequest.js";
+import { IHttpResponse } from "./IHttpResponse.js";
+import { SessionManager } from "./SessionManager.js";
 
-export class TableAPIRequest{
+export class TableAPIRequest {
 
-    private _headers:object = {
-        "Content-Type":"application/json",
-        "Accept": "application/json"
-    };
+	private _headers: object = {
+		"Content-Type": "application/json",
+		"Accept": "application/json"
+	};
 
-    private _apiBase = "/api/now/table/{table_name}";
+	private _apiBase = "/api/now/table/{table_name}";
 
-    private _snInstance: IServiceNowInstance;
-    public get snInstance(): IServiceNowInstance {
-        return this._snInstance;
-    }
-    public set snInstance(value: IServiceNowInstance) {
-        this._snInstance = value;
-    }
+	private _snInstance: IServiceNowInstance;
+	public get snInstance() {
+		return this._snInstance;
+	}
+	public set snInstance(value) {
+		this._snInstance = value;
+	}
 
-    public constructor(instance:IServiceNowInstance){
-        this.snInstance = instance;
-    }
+	public constructor(instance: IServiceNowInstance) {
+		this._snInstance = instance;
+	}
 
-    public async get<T>(tableName:string, query:object): Promise<IHttpResponse<T>>{
-       
-        const uri:string = this.replaceVar(this._apiBase, {table_name:tableName});
+	public async get<T>(tableName: string, query: object): Promise<IHttpResponse<T>> {
 
-        return await this._doRequest<T>(uri, "get", query, null);
-    }
+		const uri: string = this.replaceVar(this._apiBase, { table_name: tableName });
 
-    public async post<T>(tableName:string, query:object, body:object): Promise<IHttpResponse<T>>{
-       
-        const uri:string = this.replaceVar(this._apiBase, {table_name:tableName});
+		return await this._doRequest<T>(uri, "get", query, null);
+	}
 
-        return await this._doRequest<T>(uri, "post", query, body);
-    }
+	public async post<T>(tableName: string, query: object, body: object): Promise<IHttpResponse<T>> {
 
-    public async put<T>(tableName:string, sysId:string, body:object): Promise<IHttpResponse<T>>{
-       
-        const uri:string = this.replaceVar(this._apiBase, {table_name:tableName}) + '/' + sysId;
+		const uri: string = this.replaceVar(this._apiBase, { table_name: tableName });
 
-        return await this._doRequest<T>(uri, "put", null, body);
-    }
+		return await this._doRequest<T>(uri, "post", query, body);
+	}
 
-    public async patch<T>(tableName:string, sysId:string, body:object): Promise<IHttpResponse<T>>{
-       
-        const uri:string = this.replaceVar(this._apiBase, {table_name:tableName}) + '/' + sysId;
+	public async put<T>(tableName: string, sysId: string, body: object): Promise<IHttpResponse<T>> {
 
-        return await this._doRequest<T>(uri, "patch", null, body);
-    }
+		const uri: string = this.replaceVar(this._apiBase, { table_name: tableName }) + '/' + sysId;
 
-    private async _doRequest<T>(uri:string, httpMethod:string, query: object | null, bodyData:object | null) : Promise<IHttpResponse<T>>{
-        const req = SessionManager.getInstance().getRequest(this.snInstance as ServiceNowInstance);
-        const request:HTTPRequest = { path: uri, method: httpMethod, headers: this._headers, query: query, body: null, json: bodyData};
-        return await req.executeRequest<T>(request);
-    }
+		return await this._doRequest<T>(uri, "put", null, body);
+	}
+
+	public async patch<T>(tableName: string, sysId: string, body: object): Promise<IHttpResponse<T>> {
+
+		const uri: string = this.replaceVar(this._apiBase, { table_name: tableName }) + '/' + sysId;
+
+		return await this._doRequest<T>(uri, "patch", null, body);
+	}
+
+	private async _doRequest<T>(uri: string, httpMethod: string, query: object | null, bodyData: object | null): Promise<IHttpResponse<T>> {
+		const req = SessionManager.getInstance().getRequest(this.snInstance as ServiceNowInstance);
+		const request: HTTPRequest = { path: uri, method: httpMethod, headers: this._headers, query: query, body: null, json: bodyData };
+		return await req.executeRequest<T>(request);
+	}
 
 
-    private replaceVar(strBaseString:string, variables:object):string{
-       let strNewString:string = strBaseString;
-        for(const prop in variables){
-            strNewString = strNewString.replace("{"+prop+"}", variables[prop] as string);
-        }
+	private replaceVar(strBaseString: string, variables: object): string {
+		let strNewString: string = strBaseString;
+		for (const prop in variables) {
+			strNewString = strNewString.replace("{" + prop + "}", variables[prop] as string);
+		}
 
-        return strNewString;
-    }
+		return strNewString;
+	}
 }

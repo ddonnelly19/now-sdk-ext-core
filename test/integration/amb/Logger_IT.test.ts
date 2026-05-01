@@ -1,6 +1,6 @@
 import winston from 'winston';
-import {Properties} from '../../../src/sn/amb/Properties';
-import {Logger} from '../../../src/util/Logger';
+import {Properties} from '../../../src/sn/amb/Properties.js';
+import {Logger} from '../../../src/util/Logger.js';
 import { Mock, mock } from 'ts-jest-mocker';
 
 describe.skip('Logger', () => {

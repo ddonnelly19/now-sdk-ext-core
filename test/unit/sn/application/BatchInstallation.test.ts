@@ -1,6 +1,6 @@
 import { describe, it, expect } from '@jest/globals';
-import { BatchInstallation } from '../../../../src/sn/application/BatchInstallation';
-import { BatchDefinition } from '../../../../src/sn/application/BatchDefinition';
+import { BatchInstallation } from '../../../../src/sn/application/BatchInstallation.js';
+import { BatchDefinition } from '../../../../src/sn/application/BatchDefinition.js';
 
 describe('BatchInstallation', () => {
     describe('packages getter and setter', () => {

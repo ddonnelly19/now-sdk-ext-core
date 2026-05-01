@@ -4,9 +4,9 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
-import { createGetCredentialsMock } from '../../__mocks__/servicenow-sdk-mocks';
-import { AppRepoApplication } from '../../../../src/sn/application/AppRepoApplication';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
+import { createGetCredentialsMock } from '../../__mocks__/servicenow-sdk-mocks.js';
+import { AppRepoApplication } from '../../../../src/sn/application/AppRepoApplication.js';
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();

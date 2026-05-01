@@ -8,7 +8,7 @@ import {
     DebuggerWatcherMessage,
     ScriptTracerResult,
     ScriptTracerState,
-} from '../../../../src/sn/scripttracer/ScriptTracerModels';
+} from '../../../../src/sn/scripttracer/ScriptTracerModels.js';
 
 describe('ScriptTracerModels', () => {
     describe('TraceStatement', () => {

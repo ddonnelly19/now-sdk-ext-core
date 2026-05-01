@@ -1,9 +1,9 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
-import { CatalogManager, getVariableTypeName } from '../../../../src/sn/catalog/CatalogManager';
-import { CatalogItemRecord, CatalogCategoryRecord, CatalogVariableRecord } from '../../../../src/sn/catalog/CatalogModels';
+import { CatalogManager, getVariableTypeName } from '../../../../src/sn/catalog/CatalogManager.js';
+import { CatalogItemRecord, CatalogCategoryRecord, CatalogVariableRecord } from '../../../../src/sn/catalog/CatalogModels.js';
 
 const SECONDS = 1000;
 

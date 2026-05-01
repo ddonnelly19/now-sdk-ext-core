@@ -1,10 +1,10 @@
-import { BatchDefinition } from "./BatchDefinition";
+import { BatchDefinition } from "./BatchDefinition.js";
 
 
 export class BatchInstallation {
 
-    #name:string;
-    #packages:BatchDefinition[];
+    #name!:string;
+    #packages!:BatchDefinition[];
 
     public get name(): string {
         return this.#name;

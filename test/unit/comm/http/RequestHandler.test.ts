@@ -3,9 +3,9 @@
  * Testing core functionality and logic
  */
 
-import { describe, it, expect } from '@jest/globals';
-import { RequestHandler } from '../../../../src/comm/http/RequestHandler';
-import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks';
+
+import { RequestHandler } from '../../../../src/comm/http/RequestHandler.js';
+import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
 
 describe('RequestHandler - Basic Tests', () => {
     let requestHandler: RequestHandler;

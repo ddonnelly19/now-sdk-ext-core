@@ -1,16 +1,17 @@
+import { Creds } from "@servicenow/sdk-cli-core/dist/auth/index.js";
 
 
-export interface IServiceNowInstance{
-    isDefault():boolean;
+export interface IServiceNowInstance {
+	isDefault(): boolean;
 
-    getHost():string;
+	getHost(): string;
 
-    getUserName():string;
+	getUserName(): string;
 
-    getAlias():string;
+	getAlias(): string;
 
-    //todo: Do we store the password in Secrets or the entire SN Instance? Can we store the entire array of SN Instances in secrets?
-    getPassword():string;
+	//todo: Do we store the password in Secrets or the entire SN Instance? Can we store the entire array of SN Instances in secrets?
+	getPassword(): string;
 
-    get credential():unknown;   
+	get credential(): Creds;
 }

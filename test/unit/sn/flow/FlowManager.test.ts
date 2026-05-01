@@ -4,14 +4,14 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
-import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks';
-import { FlowManager } from '../../../../src/sn/flow/FlowManager';
-import { BackgroundScriptExecutionResult, ScriptExecutionOutputLine } from '../../../../src/sn/BackgroundScriptExecutor';
-import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory';
-import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory';
-import { SessionManager } from '../../../../src/comm/http/SessionManager';
-import { ExecuteFlowOptions, FlowScriptResultEnvelope, FlowLifecycleEnvelope, ProcessFlowApiResponse } from '../../../../src/sn/flow/FlowModels';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
+import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
+import { FlowManager } from '../../../../src/sn/flow/FlowManager.js';
+import { BackgroundScriptExecutionResult, ScriptExecutionOutputLine } from '../../../../src/sn/BackgroundScriptExecutor.js';
+import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
+import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
+import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
+import { ExecuteFlowOptions, FlowScriptResultEnvelope, FlowLifecycleEnvelope, ProcessFlowApiResponse } from '../../../../src/sn/flow/FlowModels.js';
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();

@@ -1,8 +1,8 @@
-import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance';
+import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
-import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config';
-import { CMDBRelationships } from '../../../../src/sn/cmdb/CMDBRelationships';
-import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest';
+import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
+import { CMDBRelationships } from '../../../../src/sn/cmdb/CMDBRelationships.js';
+import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest.js';
 
 const SECONDS = 1000;
 
@@ -30,29 +30,23 @@ describe('CMDBRelationships - Integration Tests', () => {
     /**
      * Helper to find any CI that exists in the instance for testing.
      */
-    async function findAnyCISysId(): Promise<string | null> {
+    async function findAnyCISysId() {
         const response = await tableAPI.get<{ result: Array<{ sys_id: string; name?: string }> }>(
             'cmdb_ci',
             { sysparm_limit: 1, sysparm_fields: 'sys_id,name' }
         );
-
-        if (response && response.status === 200 && response.bodyObject?.result?.length > 0) {
-            return response.bodyObject.result[0].sys_id;
-        }
-        return null;
+		
+		return response.bodyObject?.result.map(a => a.sys_id).find(Boolean);
     }
 
     describe('getRelationships', () => {
         it('should get relationships for a CI', async () => {
             const ciSysId = await findAnyCISysId();
-            if (!ciSysId) {
-                console.log('  Skipping: no CMDB CIs found in instance');
-                return;
-            }
+			expect(ciSysId).toBeDefined();           
 
             console.log(`\nQuerying relationships for CI: ${ciSysId}`);
 
-            const result = await cmdb.getRelationships({ ciSysId, limit: 10 });
+            const result = await cmdb.getRelationships({ ciSysId: ciSysId!, limit: 10 });
 
             console.log(`  CI: ${result.ci.name} (${result.ci.sys_class_name})`);
             console.log(`  Relationships found: ${result.relationships.length}`);
