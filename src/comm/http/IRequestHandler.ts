@@ -1,4 +1,5 @@
-import { SessionOrToken, UserSession } from "@servicenow/sdk-cli-core/dist/auth/index.js";
+
+import { SessionOrToken } from "../../auth/IAuthenticationHandler.js";
 import { HTTPRequest } from "./HTTPRequest.js";
 import { IHttpResponse } from "./IHttpResponse.js";
 
@@ -12,6 +13,6 @@ export interface IRequestHandler{
     delete<T>(request: HTTPRequest) : Promise<IHttpResponse<T>> ;
 
   
-    setSession(session: SessionOrToken);
+    setSession(session: SessionOrToken): void;
 
 }

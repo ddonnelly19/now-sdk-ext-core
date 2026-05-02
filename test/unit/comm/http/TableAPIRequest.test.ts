@@ -4,6 +4,7 @@
  */
 
 
+import { jest } from '@jest/globals';
 import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest.js';
 import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
 import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
@@ -18,10 +19,10 @@ jest.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 // Mock request handler
 class MockRequestHandler {
-    get = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<() => Promise<IHttpResponse<unknown>>>();
+    get = jest.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
+    post = jest.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
+    put = jest.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
+    delete = jest.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
 }
 
 describe('TableAPIRequest', () => {
@@ -135,7 +136,7 @@ describe('TableAPIRequest', () => {
             mockRequestHandler.post.mockResolvedValue(mockSuccessResponse);
 
             const body = { short_description: 'Test' };
-            const query = { sysparm_display_value: 'true' };
+            const query = { sysparm_display_value: 'true' } as const;
             await tableAPI.post('incident', query, body);
 
             const callArgs = mockRequestHandler.post.mock.calls[0][0] as any;
@@ -174,18 +175,14 @@ describe('TableAPIRequest', () => {
     });
 
     describe('PATCH', () => {
-        it('should construct correct URL with sys_id appended', async () => {
-            // Note: PATCH is defined on TableAPIRequest but not supported by
-            // ServiceNowRequest.executeRequest (no "patch" case in the switch).
-            // This test verifies the URL construction at the TableAPIRequest level.
+        it('should throw because ServiceNowRequest.executeRequest does not handle PATCH', async () => {
+            // PATCH is defined on TableAPIRequest but ServiceNowRequest.executeRequest
+            // has no case for "patch" and throws "Method must be populated…".
             mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
-            // The underlying _doRequest calls executeRequest which will
-            // return null for "patch" since it's not handled by the switch.
-            // _doRequest catches errors and returns null.
 
-            const response = await tableAPI.patch('incident', 'xyz789', { priority: '1' });
-            // Since executeRequest has no case for 'patch', resp will be null
-            expect(response).toBeNull();
+            await expect(
+                tableAPI.patch('incident', 'xyz789', { priority: '1' })
+            ).rejects.toThrow();
         });
     });
 

@@ -7,12 +7,37 @@ import { Logger } from "../util/Logger.js";
 import { HTTPRequest } from "../comm/http/HTTPRequest.js";
 import { BG_SCRIPT_ENDPOINT } from "../constants/ServiceNow.js";
 import { IHttpResponse } from "../comm/http/IHttpResponse.js";
-import { isNil } from "../util/utils.js";
+import { isNil, isNotEmpty } from "../util/utils.js";
 import { CSRFTokenHelper } from "../util/CSRFTokenHelper.js";
 import { TableAPIRequest } from "../comm/http/TableAPIRequest.js";
 import { SessionManager } from "../comm/http/SessionManager.js";
 
 
+const SCRIPT_PREFIX = "*** Script: ";
+const DEBUG_PREFIX = "[DEBUG]";
+
+const SCRIPT_RESULT_PARSER_OPTIONS: X2jOptions = {
+	ignoreAttributes: false,
+	unpairedTags: ["hr", "br", "link", "meta", "img", "input", "HR", "BR", "LINK", "META", "IMG", "INPUT"],
+	stopNodes: ["*.pre", "*.script", "*.PRE", "*.SCRIPT"],
+	processEntities: true,
+	htmlEntities: true,
+	tagValueProcessor: (tagName: string, tagValue: unknown) => {
+		if (tagName === "PRE" || tagName === "pre") {
+			return `${String(tagValue)}\n`;
+		}
+		return tagValue;
+	}
+};
+
+const SCRIPT_RESULT_PARSER = new XMLParser(SCRIPT_RESULT_PARSER_OPTIONS);
+
+/**
+ * Executes JavaScript on ServiceNow using /sys.scripts.do or a sys_trigger fallback.
+ *
+ * Preferred path: background script page with CSRF protection and scoped execution.
+ * Fallback path: one-time sys_trigger record for instances where background scripts are restricted.
+ */
 export class BackgroundScriptExecutor {
 	snRequest: ServiceNowRequest;
 	instance: ServiceNowInstance;
@@ -30,22 +55,20 @@ export class BackgroundScriptExecutor {
 		this._tableAPI = new TableAPIRequest(this.instance);
 	}
 
+	/**
+	 * Execute a script using /sys.scripts.do and parse the HTML/XML response into structured output.
+	 *
+	 * @param script Script body to execute in ServiceNow.
+	 * @param scope Scope name or sys_id to run under.
+	 * @param instance ServiceNow instance to use for this call.
+	 */
 	public async executeScript(script: string, scope: string = this.scope, instance: ServiceNowInstance = this.instance): Promise<BackgroundScriptExecutionResult> {
-		if (!instance || !(instance instanceof ServiceNowInstance)) {
-			throw new Error("instance must be a ServiceNowInstance");
-		}
-		if (!scope || typeof scope != "string") {
-			throw new Error("scope must be a string");
-		}
-		if (!script || typeof script != "string") {
-			throw new Error("script must be a string");
-		}
-
+		this._validateExecuteScriptInputs(script, scope, instance);
 
 		try {
 
 			const gck: string | null = await this.getBackgroundScriptCSRFToken();
-			if (isNil(gck)) {
+			if (gck === null) {
 				throw new Error(
 					"Failed to obtain CSRF token from the ServiceNow instance. " +
 					"This may indicate an authentication failure or that the user " +
@@ -54,28 +77,16 @@ export class BackgroundScriptExecutor {
 			}
 			// Resolve scope name to sys_id if needed (sys.scripts.do expects a sys_id)
 			const resolvedScopeId = await this._resolveScopeToSysId(scope);
-
-			const fd: FormData = new FormData();
-			fd.append("script", script);
-			fd.append("sysparm_ck", gck ?? '');
-			fd.append("runscript", "Run script");
-			fd.append("sys_scope", resolvedScopeId);
-			fd.append("record_for_rollback", "off");
-			fd.append("quota_managed_transaction", "off");
-
-
-
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-			const params: URLSearchParams = new URLSearchParams(fd as any);
+			const params = this._buildExecuteScriptFormParams(script, resolvedScopeId, gck);
 			const request: HTTPRequest = {
 				path: BG_SCRIPT_ENDPOINT,
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
 				query: null,
 				body: params
 			};
-			this._logger.debug("Execute Background Script Request.", { request: request, formData: fd })
+			this._logger.debug("Execute Background Script Request.", { request, params: params.toString() });
 			const response: IHttpResponse<string> = await this.snRequest.post<string>(request);
-			if (response.status == 200) {
+			if (response.status === 200) {
 				const bodyXml: string = response?.data;
 				if (bodyXml) {
 					const resultObj: BackgroundScriptExecutionResult = this.parseScriptResult(bodyXml);
@@ -93,24 +104,13 @@ export class BackgroundScriptExecutor {
 		}
 	}
 
+	/**
+	 * Parse ServiceNow /sys.scripts.do HTML into normalized script output.
+	 */
 	public parseScriptResult(responseXML: string): BackgroundScriptExecutionResult {
-		const options: X2jOptions = {
-			ignoreAttributes: false,
-			unpairedTags: ["hr", "br", "link", "meta", "img", "input", "HR", "BR", "LINK", "META", "IMG", "INPUT"],
-			stopNodes: ["*.pre", "*.script", "*.PRE", "*.SCRIPT"],
-			processEntities: true,
-			htmlEntities: true,
-			tagValueProcessor: (tagName: string, tagValue: any) => {
-				if (tagName === "PRE" || tagName === "pre") {
-					return tagValue + "\n";
-				}
-				return tagValue;
-			}
-		};
-		const parser: XMLParser = new XMLParser(options);
 		let strippedResponseXML: string = responseXML.replace(/^\[[0-9:.]+\]/g, "");
 		strippedResponseXML = this.fixMalformedHTML(strippedResponseXML);
-		const jObj: ScriptExecutionXMLResult = parser.parse(strippedResponseXML) as ScriptExecutionXMLResult;
+		const jObj: ScriptExecutionXMLResult = SCRIPT_RESULT_PARSER.parse(strippedResponseXML) as ScriptExecutionXMLResult;
 
 		const compositeResult: CompositeScriptExecutionResult = this._parseBGScriptResult(jObj);
 		const affectedRecords = this._parseAffectedRecords(jObj);
@@ -121,8 +121,7 @@ export class BackgroundScriptExecutor {
 			consoleResult: compositeResult.consoleResult,
 			rawResult: compositeResult.rawResult,
 			scriptResults: compositeResult.scriptResults,
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			affectedRecords: affectedRecords ?? ''
+			affectedRecords: affectedRecords
 		};
 
 		this._logger.debug("parseScriptResult return value.", scriptResult);
@@ -130,6 +129,9 @@ export class BackgroundScriptExecutor {
 		return scriptResult;
 	}
 
+	/**
+	 * Retrieve CSRF token required for posting to /sys.scripts.do.
+	 */
 	public async getBackgroundScriptCSRFToken(): Promise<string | null> {
 		let csrfToken: string | null = null;
 
@@ -140,8 +142,8 @@ export class BackgroundScriptExecutor {
 			body: null
 		};
 		const response: IHttpResponse<string> = await this.snRequest.get<string>(request);
-		const isLoggedIn: boolean = response.headers["x-is-logged-in"] === "true" ? true : false
-		if (response.status == 200 && isLoggedIn && !isNil(response.data)) {
+		const isLoggedIn: boolean = response.headers["x-is-logged-in"] === "true";
+		if (response.status === 200 && isLoggedIn && !isNil(response.data)) {
 			csrfToken = CSRFTokenHelper.extractCSRFToken(response.data);
 			this._logger.debug("CSRF Token Received: " + csrfToken, { csrfToken: csrfToken });
 		} else {
@@ -174,24 +176,7 @@ export class BackgroundScriptExecutor {
 		now.setSeconds(now.getSeconds() + 1);
 		const nextAction = this._formatDateForServiceNow(now);
 
-		let finalScript = script;
-
-		// If autoDelete, wrap the script in try/finally that deletes the trigger record
-		if (autoDelete) {
-			finalScript =
-				`(function() {\n` +
-				`    try {\n` +
-				`        ${script}\n` +
-				`    } finally {\n` +
-				`        var gr = new GlideRecord('sys_trigger');\n` +
-				`        gr.addQuery('name', '${triggerName.replace(/'/g, "\\'")}');\n` +
-				`        gr.query();\n` +
-				`        if (gr.next()) {\n` +
-				`            gr.deleteRecord();\n` +
-				`        }\n` +
-				`    }\n` +
-				`})();`;
-		}
+		const finalScript = autoDelete ? this._wrapTriggerScriptForAutoDelete(script, triggerName) : script;
 
 		this._logger.info(`Creating sys_trigger '${triggerName}' with next_action: ${nextAction}`);
 
@@ -282,21 +267,22 @@ export class BackgroundScriptExecutor {
 		}
 
 		this._logger.info(`Resolving scope name '${scope}' to sys_id...`);
-		const query: Record<string, string | number> = {
+
+		const response = await this._tableAPI.get('sys_scope', {
 			sysparm_query: `scope=${scope}`,
 			sysparm_limit: 1,
-			sysparm_fields: 'sys_id,scope,name'
-		};
-
-		const response = await this._tableAPI.get<ScopeTableResult>('sys_scope', query);
+			sysparm_fields: 'sys_id,scope,name',
+		} as const);
 
 		if (response.status === 200 && response.bodyObject?.result) {
 			const results = response.bodyObject.result;
 			if (results.length > 0) {
 				const sysId = results[0].sys_id;
-				this._logger.info(`Resolved scope '${scope}' → sys_id '${sysId}' (${results[0].name})`);
-				this._scopeCache.set(scope, sysId);
-				return sysId;
+				if (isNotEmpty(sysId)) {
+					this._logger.info(`Resolved scope '${scope}' → sys_id '${sysId}' (${results[0].name})`);
+					this._scopeCache.set(scope, sysId);
+					return sysId;
+				}
 			}
 		}
 
@@ -329,43 +315,87 @@ export class BackgroundScriptExecutor {
 		// fast-xml-parser stores text in #text when the element has attributes (e.g. <PRE class="outputtext">),
 		// but stores it directly as a string when the element has no attributes (e.g. <PRE>).
 		const pre = parsedXMLObj?.HTML?.BODY?.PRE;
-		const result: string | undefined = (typeof pre === "string" ? pre : pre?.["#text"]) as string | undefined;
+		const result: string | undefined = typeof pre === "string" ? pre : pre?.["#text"];
 
-		if (isNil(result) || (result as string).trim().length === 0) {
-			return { rawResult: "", consoleResult: [], scriptResults: [] } as CompositeScriptExecutionResult;
+		if (result === undefined || result.trim().length === 0) {
+			return { rawResult: "", consoleResult: [], scriptResults: [] };
 		}
 
-		const spl: string[] = (result as string).split("\n");
+		const spl: string[] = result.split("\n");
 		spl.forEach((line: string, index: number) => {
-			if (isNil(line))
-				spl[index] = '';
-			else {
-				line = line.trim();
-				//If the output does not have a "*** Script: " before it, then it is system output
-				if (line.indexOf("*** Script: ") == -1) {
-
-					scriptResults.push(new ScriptExecutionOutputLine(line).asSystemLine());
-					//If the output does have a  "*** Script: " prefixing it, it is output from this script or a script being called
-				} else if (line.indexOf("*** Script: ") !== -1) {
-					line = line.replace("*** Script: ", "");
-					if (line.indexOf("[DEBUG]") !== -1) {
-						scriptResults.push(new ScriptExecutionOutputLine(line).asDebugLine());
-					} else {
-						scriptResults.push(new ScriptExecutionOutputLine(line).asScriptLine());
-					}
-				}
-				//Keep the original array intact in order to preserve the order with system outputs.
-				spl[index] = line;
+			if (isNil(line)) {
+				spl[index] = "";
+				return;
 			}
 
+			line = line.trim();
+			if (!line.startsWith(SCRIPT_PREFIX)) {
+				scriptResults.push(new ScriptExecutionOutputLine(line).asSystemLine());
+				spl[index] = line;
+				return;
+			}
+
+			const normalizedLine = line.replace(SCRIPT_PREFIX, "");
+			if (normalizedLine.includes(DEBUG_PREFIX)) {
+				scriptResults.push(new ScriptExecutionOutputLine(normalizedLine).asDebugLine());
+			} else {
+				scriptResults.push(new ScriptExecutionOutputLine(normalizedLine).asScriptLine());
+			}
+			spl[index] = normalizedLine;
 		});
 
-		const filteredSpl = spl.filter(line => line !== null);
+		const filteredSpl = spl.filter(line => !isNil(line));
 
-		return { rawResult: result, consoleResult: filteredSpl, scriptResults: scriptResults } as CompositeScriptExecutionResult;
+		return { rawResult: result, consoleResult: filteredSpl, scriptResults: scriptResults };
 	}
-	private _parseAffectedRecords(parsedXMLObj: ScriptExecutionXMLResult) {
-		return parsedXMLObj?.HTML?.BODY?.div
+
+	private _validateExecuteScriptInputs(script: string, scope: string, instance: ServiceNowInstance): void {
+		if (!instance || !(instance instanceof ServiceNowInstance)) {
+			throw new Error("instance must be a ServiceNowInstance");
+		}
+		if (!scope || typeof scope !== "string") {
+			throw new Error("scope must be a string");
+		}
+		if (!script || typeof script !== "string") {
+			throw new Error("script must be a string");
+		}
+	}
+
+	private _buildExecuteScriptFormParams(script: string, resolvedScopeId: string, csrfToken: string): URLSearchParams {
+		return new URLSearchParams({
+			script,
+			sysparm_ck: csrfToken,
+			runscript: "Run script",
+			sys_scope: resolvedScopeId,
+			record_for_rollback: "off",
+			quota_managed_transaction: "off"
+		});
+	}
+
+	private _wrapTriggerScriptForAutoDelete(script: string, triggerName: string): string {
+		const escapedTriggerName = triggerName.replace(/'/g, "\\'");
+		return [
+			"(function() {",
+			"    try {",
+			`        ${script}`,
+			"    } finally {",
+			"        var gr = new GlideRecord('sys_trigger');",
+			`        gr.addQuery('name', '${escapedTriggerName}');`,
+			"        gr.query();",
+			"        if (gr.next()) {",
+			"            gr.deleteRecord();",
+			"        }",
+			"    }",
+			"})();"
+		].join("\n");
+	}
+
+	private _parseAffectedRecords(parsedXMLObj: ScriptExecutionXMLResult): string {
+		const divNode = parsedXMLObj?.HTML?.BODY?.div;
+		if (typeof divNode === "string") {
+			return divNode;
+		}
+		return divNode?.["#text"] ?? "";
 	}
 }
 
@@ -375,7 +405,9 @@ interface ScriptExecutionXMLResult {
 			PRE?: string | {
 				"#text"?: string;
 			};
-			div?: string;
+			div?: string | {
+				"#text"?: string;
+			};
 		};
 	};
 }

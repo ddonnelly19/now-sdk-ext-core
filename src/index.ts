@@ -21,6 +21,7 @@ export * from './util/Logger.js';
 export * from './util/NowStringUtil.js';
 export * from './comm/http/HTTPRequest.js';
 export * from './comm/http/HttpResponse.js';
+export * from './comm/http/AxiosRequestHandler.js';
 export * from './comm/http/ICookieStore.js';
 export * from './comm/http/IHttpResponse.js';
 export * from './comm/http/IRequestHandler.js';

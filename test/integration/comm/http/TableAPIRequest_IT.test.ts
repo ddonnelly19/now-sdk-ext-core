@@ -99,7 +99,6 @@ describe('TableAPIRequest Integration Tests', () => {
             // Clean up: delete the test incident if one was created
             if (createdSysId && tableAPI) {
                 try {
-                    const deleteReq = new TableAPIRequest(instance);
                     // Use a direct ServiceNowRequest to delete since TableAPIRequest doesn't have delete
                     const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest.js');
                     const snReq = new ServiceNowRequest(instance);
@@ -109,9 +108,8 @@ describe('TableAPIRequest Integration Tests', () => {
                         query: null,
                         body: null
                     });
-                    console.log(`\nCleaned up test incident: ${createdSysId}`);
-                } catch (e) {
-                    console.warn(`Warning: Failed to clean up incident ${createdSysId}:`, e);
+                } catch {
+                    // Best-effort cleanup for integration tests.
                 }
                 createdSysId = null;
             }

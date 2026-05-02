@@ -1,13 +1,13 @@
 export interface ReferenceLink {
-    "link":string ;
-    "value":string;
+	"link": string;
+	"value": string;
 }
 
 
 export interface ServiceNowResponse<T> {
-    "result":T;
+	"result": T;
 }
 
 export interface ServiceNowTableResponse<T> {
-    "result":T[];
+	"result": T[];
 }

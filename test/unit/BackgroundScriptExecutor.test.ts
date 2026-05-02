@@ -264,6 +264,14 @@ System: end
             const result = executor.parseScriptResult(xml);
             expect(result.affectedRecords).toBeDefined();
         });
+
+        it('should extract affected records from div #text when div has attributes', () => {
+            const xml = `<HTML><BODY><PRE class="outputtext">*** Script: test
+</PRE><div class="outputmsg_text">1 record updated</div></BODY></HTML>`;
+
+            const result = executor.parseScriptResult(xml);
+            expect(result.affectedRecords).toBe("1 record updated");
+        });
     });
 
     describe('getBackgroundScriptCSRFToken', () => {

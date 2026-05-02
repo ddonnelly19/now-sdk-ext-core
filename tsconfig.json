@@ -1,5 +1,5 @@
 {
-	"compilerOptions": {		
+	"compilerOptions": {
 		/*"paths": {
 		
 			"@servicenow/*": [
@@ -27,8 +27,8 @@
 		"skipLibCheck": true,
 		"noImplicitAny": false,
 		"sourceMap": true,
-		"noEmit": true,		
-		"rootDir": ".",	
+		"noEmit": true,
+		"rootDir": ".",
 		"maxNodeModuleJsDepth": 0, // <--- ADD THIS
 		"allowJs": true,
 		"checkJs": false,
@@ -59,8 +59,8 @@
 		"jest.config.ts"
 	],
 	"exclude": [
-		"node_modules/",
-		"dist/",
+		"node_modules",
+		"dist",
 		"logs",
 		"build",
 		"scratch_code",

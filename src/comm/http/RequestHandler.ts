@@ -5,11 +5,10 @@ import { HttpResponse } from './HttpResponse.js';
 import { IRequestHandler } from './IRequestHandler.js';
 import { Cookie } from 'tough-cookie';
 import { ICookieStore } from './ICookieStore.js';
-import { IAuthenticationHandler } from '../../auth/IAuthenticationHandler.js';
+import { IAuthenticationHandler, SessionOrToken } from '../../auth/IAuthenticationHandler.js';
 import { Logger } from '../../util/Logger.js';
 import { makeRequest } from "@servicenow/sdk-cli-core/dist/http/index.js";
 import { DOMParser } from '@xmldom/xmldom';
-import { SessionOrToken } from '@servicenow/sdk-cli-core/dist/auth/index.js';
 
 //axios.defaults.withCredentials = true;
 
@@ -93,7 +92,7 @@ export class RequestHandler implements IRequestHandler {
 		//     rest: { method: request.method }
 		// }
 
-		const resp = await makeRequest(config);
+		const resp = await (config);
 		let responseBodyString: string | null = null;
 		if (!resp.ok) {
 

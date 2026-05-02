@@ -10,90 +10,91 @@ import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../src/sn/
 import { IRequestHandler } from '../../../src/comm/http/IRequestHandler.js';
 
 describe("NowSDKAuthenticationHandler - Unit Tests", () => {
-    let authHandler: NowSDKAuthenticationHandler;
-    let mockInstance: ServiceNowInstance;
+	let authHandler: NowSDKAuthenticationHandler;
+	let mockInstance: ServiceNowInstance;
 
-    beforeEach(() => {
-        // Create a minimal mock instance
-        const snSettings: ServiceNowSettingsInstance = {
-            alias: 'test-instance',
-            host: '<servicenow_instance_url>',
-            username: 'test.user',
-            password: 'test-password',
-            credential: {
-                host: '<servicenow_instance_url>',
-                username: 'test.user',
-                password: 'test-password',
-                instanceUrl: 'https://<servicenow_instance_url>'
-            }
-        };
-        mockInstance = new ServiceNowInstance(snSettings);
-        
-        // Create auth handler
-        authHandler = new NowSDKAuthenticationHandler(mockInstance);
-    });
+	beforeEach(() => {
+		// Create a minimal mock instance
+		const snSettings: ServiceNowSettingsInstance = {
+			alias: 'test-instance',
+			host: '<servicenow_instance_url>',
+			username: 'test.user',
+			password: 'test-password',
+			credential: {
+				type: "basic",
+				//  host: '<servicenow_instance_url>',
+				username: 'test.user',
+				password: 'test-password',
+				instanceUrl: 'https://<servicenow_instance_url>'
+			}
+		};
+		mockInstance = new ServiceNowInstance(snSettings);
 
-    it("should create instance with ServiceNow instance", () => {
-        expect(authHandler).toBeInstanceOf(NowSDKAuthenticationHandler);
-    });
+		// Create auth handler
+		authHandler = new NowSDKAuthenticationHandler(mockInstance);
+	});
 
-    it("should initially not be logged in", () => {
-        expect(authHandler.isLoggedIn()).toBe(false);
-    });
+	it("should create instance with ServiceNow instance", () => {
+		expect(authHandler).toBeInstanceOf(NowSDKAuthenticationHandler);
+	});
 
-    it("setLoggedIn should update login state", () => {
-        expect(authHandler.isLoggedIn()).toBe(false);
-        
-        authHandler.setLoggedIn(true);
-        expect(authHandler.isLoggedIn()).toBe(true);
-        
-        authHandler.setLoggedIn(false);
-        expect(authHandler.isLoggedIn()).toBe(false);
-    });
+	it("should initially not be logged in", () => {
+		expect(authHandler.isLoggedIn()).toBe(false);
+	});
 
-    it("should have request handler getter/setter", () => {
-        const mockRequestHandler = { 
-            setSession: () => {},
-            get: () => Promise.resolve({} as any),
-            post: () => Promise.resolve({} as any),
-            put: () => Promise.resolve({} as any),
-            delete: () => Promise.resolve({} as any)
-        };
-        
-        authHandler.setRequestHandler(mockRequestHandler as IRequestHandler);
-        const retrievedHandler = authHandler.getRequestHandler();
-        
-        expect(retrievedHandler).toBe(mockRequestHandler);
-    });
+	it("setLoggedIn should update login state", () => {
+		expect(authHandler.isLoggedIn()).toBe(false);
 
-    it("should store instance reference", () => {
-        expect((authHandler as any)._instance).toBe(mockInstance);
-    });
+		authHandler.setLoggedIn(true);
+		expect(authHandler.isLoggedIn()).toBe(true);
 
-    it("should have logger", () => {
-        expect((authHandler as any)._logger).toBeDefined();
-    });
+		authHandler.setLoggedIn(false);
+		expect(authHandler.isLoggedIn()).toBe(false);
+	});
 
-    it("should have isLoggedIn method", () => {
-        expect(typeof authHandler.isLoggedIn).toBe('function');
-    });
+	it("should have request handler getter/setter", () => {
+		const mockRequestHandler: IRequestHandler = {
+			setSession: (_) => { },
+			get: () => Promise.resolve({} as any),
+			post: () => Promise.resolve({} as any),
+			put: () => Promise.resolve({} as any),
+			delete: () => Promise.resolve({} as any)
+		};
 
-    it("should have getSession method", () => {
-        expect(typeof authHandler.getSession).toBe('function');
-    });
+		authHandler.setRequestHandler(mockRequestHandler);
+		const retrievedHandler = authHandler.getRequestHandler();
 
-    it("should have doLogin method", () => {
-        expect(typeof authHandler.doLogin).toBe('function');
-    });
+		expect(retrievedHandler).toBe(mockRequestHandler);
+	});
 
-    it("should have getToken method", () => {
-        expect(typeof authHandler.getToken).toBe('function');
-    });
+	it("should store instance reference", () => {
+		expect((authHandler as any)._instance).toBe(mockInstance);
+	});
 
-    it("should have getCookies method", () => {
-        expect(typeof authHandler.getCookies).toBe('function');
-    });
+	it("should have logger", () => {
+		expect((authHandler as any)._logger).toBeDefined();
+	});
 
-    // Note: Actual authentication flow tests (doLogin, getToken, getCookies)
-    // are in integration tests as they require real getSafeUserSession behavior
+	it("should have isLoggedIn method", () => {
+		expect(typeof authHandler.isLoggedIn).toBe('function');
+	});
+
+	it("should have getSession method", () => {
+		expect(typeof authHandler.getSession).toBe('function');
+	});
+
+	it("should have doLogin method", () => {
+		expect(typeof authHandler.doLogin).toBe('function');
+	});
+
+	it("should have getToken method", () => {
+		expect(typeof authHandler.getToken).toBe('function');
+	});
+
+	it("should have getCookies method", () => {
+		expect(typeof authHandler.getCookies).toBe('function');
+	});
+
+	// Note: Actual authentication flow tests (doLogin, getToken, getCookies)
+	// are in integration tests as they require real getSafeUserSession behavior
 });

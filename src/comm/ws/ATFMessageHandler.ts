@@ -1,9 +1,9 @@
 import * as WebSocket from 'ws';
 
 
-export class ATFMessageHandler{
+export class ATFMessageHandler {
 
-    ATFMessageHandler(wsSocket:WebSocket){
+	ATFMessageHandler(wsSocket: WebSocket) {
 
-    }
+	}
 }

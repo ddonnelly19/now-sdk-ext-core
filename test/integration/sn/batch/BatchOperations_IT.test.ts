@@ -1,5 +1,5 @@
 import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
-import { getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
+import { Creds, getCredentials } from "@servicenow/sdk-cli/dist/auth/index.js";
 import { SN_INSTANCE_ALIAS } from '../../../test_utils/test_config.js';
 
 import { BatchOperations } from '../../../../src/sn/batch/BatchOperations.js';
@@ -9,7 +9,7 @@ const SECONDS = 1000;
 
 describe('BatchOperations - Integration Tests', () => {
     let instance: ServiceNowInstance;
-    let credential: unknown;
+    let credential: Creds;
     let batchOps: BatchOperations;
     let createdSysIds: string[] = [];
 
@@ -20,7 +20,7 @@ describe('BatchOperations - Integration Tests', () => {
         if (credential) {
             const snSettings: ServiceNowSettingsInstance = {
                 alias: SN_INSTANCE_ALIAS,
-                credential: credential
+                credential
             };
             instance = new ServiceNowInstance(snSettings);
             batchOps = new BatchOperations(instance);
@@ -32,10 +32,12 @@ describe('BatchOperations - Integration Tests', () => {
     afterEach(async () => {
         // Clean up all created test incidents
         if (createdSysIds.length > 0 && instance) {
+            const idsToDelete = [...createdSysIds];
+            createdSysIds = [];
             const { ServiceNowRequest } = await import('../../../../src/comm/http/ServiceNowRequest.js');
             const snReq = new ServiceNowRequest(instance);
 
-            for (const sysId of createdSysIds) {
+            for (const sysId of idsToDelete) {
                 try {
                     await snReq.delete({
                         path: `/api/now/table/incident/${sysId}`,
@@ -43,9 +45,8 @@ describe('BatchOperations - Integration Tests', () => {
                         query: null,
                         body: null
                     });
-                    console.log(`Cleaned up test incident: ${sysId}`);
-                } catch (e) {
-                    console.warn(`Warning: Failed to clean up incident ${sysId}:`, e);
+                } catch {
+                    // Best-effort cleanup for integration tests.
                 }
             }
         }
@@ -159,10 +160,10 @@ describe('BatchOperations - Integration Tests', () => {
             expect(childResp.status).toBe(200);
             expect(childResp.bodyObject?.result?.length).toBeGreaterThan(0);
 
-            const childRecord = childResp.bodyObject.result[0];
-            const parentValue = typeof childRecord.parent === 'object' && childRecord.parent !== null
+            const childRecord = childResp.bodyObject?.result[0];
+            const parentValue = typeof childRecord?.parent === 'object' && childRecord.parent !== null
                 ? (childRecord.parent as { value: string }).value
-                : childRecord.parent;
+                : childRecord?.parent;
 
             console.log('Child parent field value:', parentValue);
             console.log('Expected parent sys_id:', parentSysId);
@@ -229,8 +230,9 @@ describe('BatchOperations - Integration Tests', () => {
             expect(createResp).toBeDefined();
             expect(createResp.status).toBe(201);
 
-            const createdSysId = createResp.bodyObject.result.sys_id;
-            createdSysIds.push(createdSysId);
+            const createdSysId = createResp.bodyObject?.result.sys_id;
+			expect(createdSysId).toBeDefined();
+            createdSysIds.push(createdSysId!);
 
             console.log('\nCreated incident for update test:', createdSysId);
 
@@ -239,7 +241,7 @@ describe('BatchOperations - Integration Tests', () => {
                 updates: [
                     {
                         table: 'incident',
-                        sysId: createdSysId,
+                        sysId: createdSysId!,
                         data: { short_description: `[IT_TEST] Updated ${timestamp}` }
                     }
                 ]
@@ -264,8 +266,8 @@ describe('BatchOperations - Integration Tests', () => {
             expect(verifyResp.status).toBe(200);
             expect(verifyResp.bodyObject?.result?.length).toBeGreaterThan(0);
 
-            console.log('Updated short_description:', verifyResp.bodyObject.result[0].short_description);
-            expect(verifyResp.bodyObject.result[0].short_description).toContain('[IT_TEST] Updated');
+            console.log('Updated short_description:', verifyResp.bodyObject?.result[0].short_description);
+            expect(verifyResp.bodyObject?.result[0].short_description).toContain('[IT_TEST] Updated');
         }, 60 * SECONDS);
     });
 });

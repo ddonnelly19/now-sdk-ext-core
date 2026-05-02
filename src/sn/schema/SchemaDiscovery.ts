@@ -10,15 +10,12 @@ import {
     FieldExplanation,
     ValidationIssue,
     CatalogValidationResult,
-    SysDbObjectRecord,
     SysDbObjectResponse,
     SysDictionaryRecord,
     SysDictionaryResponse,
     SysChoiceRecord,
     SysChoiceResponse,
-    CatalogItemOptionRecord,
     CatalogItemOptionResponse,
-    CatalogUIPolicyRecord,
     CatalogUIPolicyResponse
 } from './SchemaModels.js';
 

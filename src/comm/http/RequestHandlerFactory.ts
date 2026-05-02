@@ -1,11 +1,14 @@
 import { IAuthenticationHandler } from "../../auth/IAuthenticationHandler.js";
-import { IServiceNowInstance } from "../../sn/IServiceNowInstance.js";
 import { IRequestHandler } from "./IRequestHandler.js";
-import { RequestHandler } from "./RequestHandler.js";
+import { AxiosRequestHandler } from "./AxiosRequestHandler.js";
 
-export class RequestHandlerFactory{
+export class RequestHandlerFactory {
 
-    public static createRequestHandler( authHandler:IAuthenticationHandler):IRequestHandler{
-        return new RequestHandler( authHandler);
-    }
+	public static createRequestHandler(authHandler: IAuthenticationHandler): IRequestHandler {
+		return new RequestHandler(authHandler);
+	}
+	
+	public static createAxiosRequestHandler(authHandler: IAuthenticationHandler): IRequestHandler {
+		return new AxiosRequestHandler(authHandler);
+	}
 }

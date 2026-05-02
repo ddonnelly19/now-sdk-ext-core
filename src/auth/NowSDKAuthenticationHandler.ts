@@ -1,18 +1,20 @@
 import { IRequestHandler } from "../comm/http/IRequestHandler.js";
 import { Logger } from "../util/Logger.js";
-import { IAuthenticationHandler } from "./IAuthenticationHandler.js";
-import { ICookieStore } from "../comm/http/ICookieStore.js";
+import { IAuthenticationHandler, SessionOrToken } from "./IAuthenticationHandler.js";
+
 import { ServiceNowInstance } from "../sn/ServiceNowInstance.js";
 import { getSafeUserSession } from "@servicenow/sdk-cli-core/dist/util/sessionToken.js"
+import { RequestHandler } from "../comm/http/RequestHandler.js";
+import { RequestHandlerFactory } from "../comm/http/RequestHandlerFactory.js";
 
 
 export class NowSDKAuthenticationHandler implements IAuthenticationHandler {
 
-	private _requestHandler!: IRequestHandler;
+	private _requestHandler = RequestHandlerFactory.createRequestHandler(this)
 
 	private _isLoggedIn: boolean = false;
 
-	private _session?;
+	private _session?: SessionOrToken;
 
 	private _logger: Logger;
 
@@ -33,8 +35,8 @@ export class NowSDKAuthenticationHandler implements IAuthenticationHandler {
 	private async login() {
 
 		try {
-			const auth = { credentials: this._instance.credential };
-			const session = await getSafeUserSession(auth, this._logger);
+			const auth = { credentials: this._instance.credential };			
+			const session: SessionOrToken = await getSafeUserSession(auth, this._logger);
 			if (session) {
 				this._requestHandler.setSession(session);
 				this.setLoggedIn(true);
@@ -51,7 +53,7 @@ export class NowSDKAuthenticationHandler implements IAuthenticationHandler {
 	
 	}
 
-	public getRequestHandler(): IRequestHandler {
+	public getRequestHandler() {
 		return this._requestHandler;
 	}
 
@@ -68,11 +70,11 @@ export class NowSDKAuthenticationHandler implements IAuthenticationHandler {
 	}
 
 	public getToken() {		
-		return (this._session).getToken() as string;
+		return this._session?.userToken
 	}
 
-	public getCookies(): ICookieStore {		
-		return this._session?.getCookies();
+	public getCookies() {		
+		return this._session?.cookie;
 	}
 
 	public getSession() {

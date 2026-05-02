@@ -114,7 +114,11 @@ export class XMLHttpRequest {
 					if (headers.hasOwnProperty(name)) {
 						if (/^set-cookie$/i.test(name)) {
 							const header = headers[name];
-							setCookies.push(header)
+							if (Array.isArray(header)) {
+								setCookies.push(...header);
+							} else if (typeof header === "string") {
+								setCookies.push(header);
+							}
 						}
 					}
 				}
@@ -300,8 +304,8 @@ export class XMLHttpRequest {
 		}
 	}
 
-	private secure(uri: { host?: any; href?: any; protocol: any; }) {
-		return /^https/i.test(uri.protocol);
+	private secure(uri: { host?: any; href?: any; protocol?: any; }) {
+		return /^https/i.test(uri.protocol ?? "");
 	}
 
 	private debug(...args: any[]) {

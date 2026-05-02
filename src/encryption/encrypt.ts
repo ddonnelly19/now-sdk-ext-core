@@ -1,8 +1,9 @@
 import { randomBytes, createCipheriv } from 'crypto';
+import { WithImplicitCoercion } from 'node:buffer';
 
 
 
-const encryptSymmetric = (key, plaintext) => {
+export const encryptSymmetric = (key: WithImplicitCoercion<string>, plaintext: string) => {
   const iv = randomBytes(12).toString('base64');
   const cipher = createCipheriv(
     "aes-256-gcm", 

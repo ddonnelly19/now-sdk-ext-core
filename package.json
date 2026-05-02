@@ -29,6 +29,7 @@
 		"@servicenow/sdk-cli": "^4.6.0",
 		"@servicenow/sdk-cli-core": "^3.0.2",
 		"@xmldom/xmldom": "^0.9.10",
+		"axios": "^1.16.0",
 		"cometd": "^9.0.0",
 		"dotenv": "^17.4.2",
 		"fast-xml-parser": "^5.7.2",
@@ -42,11 +43,14 @@
 	},
 	"devDependencies": {
 		"@types/jest": "^30.0.0",
+		"@types/jsdom": "^28.0.1",
 		"@types/ws": "^8.18.1",
 		"@types/xml2js": "^0.4.14",
 		"crypto-js": "^4.2.0",
 		"jest": "^30.3.0",
+		"jsdom": "^29.1.1",
 		"ts-jest": "^29.4.9",
+		"ts-jest-mocker": "^1.3.0",
 		"typescript": "^6.0.3"
 	}
 }

@@ -7,9 +7,9 @@ import {ServerConnection} from "../../../src/sn/amb/ServerConnection.js";
 import { CometD } from "cometd";
 
 
-let channels:any = {};
+let channels = {};
 
-let testChannelRedirect;
+let testChannelRedirect: ChannelRedirect;
 describe.skip('ChannelRedirect', () => {
 	let mockChannel:any = null;
 	let mockChannelListener:any = null;
@@ -73,7 +73,7 @@ describe.skip('ChannelRedirect', () => {
 		return mockSrvConn;
 	}
 
-	function getMockChannel(channelName){
+	function getMockChannel(channelName: string){
 		let channelMock = mock(Channel);
 		channelMock.getName.mockReturnValue(channelName);
 
