@@ -1,4 +1,4 @@
-import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { IServiceNowInstance } from "../IServiceNowInstance.js";
 import { Logger } from "../../util/Logger.js";
 import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
 import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
@@ -42,12 +42,12 @@ export class ApplicationManager {
   
 
 
-    public constructor(instance:ServiceNowInstance){
+    public constructor(instance:IServiceNowInstance){
         this._instance = instance;
         this._req = new ServiceNowRequest(instance);
     }
 
-    private _instance:ServiceNowInstance;
+    private _instance:IServiceNowInstance;
 
    public async installBatch(batchDefinitionPath:string) : Promise<boolean> {
 

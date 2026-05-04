@@ -1,9 +1,6 @@
-
-import { IServiceNowInstance } from "../../sn/IServiceNowInstance.js";
-import { ServiceNowInstance } from "../../sn/ServiceNowInstance.js";
-import { HTTPRequest } from "./HTTPRequest.js";
-import { IHttpResponse } from "./IHttpResponse.js";
-import { ServiceNowRequest } from "./ServiceNowRequest.js";
+import type { IServiceNowInstance } from "../../sn/IServiceNowInstance.js";
+import type { IHttpResponse } from "./IHttpResponse.js";
+import { executeJsonSessionRequest } from "./JsonSessionRequest.js";
 import { PROCESSFLOW_API_BASE } from "../../constants/ServiceNow.js";
 
 /**
@@ -20,16 +17,11 @@ import { PROCESSFLOW_API_BASE } from "../../constants/ServiceNow.js";
  * const res = await pfr.post<TestResponse>('flow/{flow_sys_id}/test', { flow_sys_id: id }, queryParams, body);
  * ```
  *
- * Note: The `as ServiceNowInstance` cast in `_doRequest` mirrors the pattern
+ * Note: The `as IServiceNowInstance` cast in `_doRequest` mirrors the pattern
  * used by TableAPIRequest. The root fix (accepting IServiceNowInstance in
  * ServiceNowRequest's constructor) is a broader refactor tracked separately.
  */
 export class ProcessFlowRequest {
-
-    private _headers: Record<string, string> = {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-    };
 
     private _snInstance: IServiceNowInstance;
 
@@ -61,9 +53,7 @@ export class ProcessFlowRequest {
     }
 
     private _doRequest<T>(uri: string, httpMethod: string, query: Record<string, string> | null, bodyData: object | null): Promise<IHttpResponse<T>> {
-        const req: ServiceNowRequest = new ServiceNowRequest(this._snInstance as ServiceNowInstance);
-        const request: HTTPRequest = { path: uri, method: httpMethod, headers: this._headers, query: query, body: null, json: bodyData };
-        return req.executeRequest<T>(request);
+        return executeJsonSessionRequest<T>(this._snInstance, uri, httpMethod, query, bodyData as Record<string, unknown> | null);
     }
 
     private _buildUri(pathTemplate: string, pathVars: Record<string, string>): string {

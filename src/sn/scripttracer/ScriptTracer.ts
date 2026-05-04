@@ -1,5 +1,5 @@
 import { AMBClient } from "../amb/AMBClient.js";
-import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { IServiceNowInstance } from "../IServiceNowInstance.js";
 import { SessionManager } from "../../comm/http/SessionManager.js";
 import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
 import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
@@ -25,12 +25,12 @@ export class ScriptTracer {
     private _sessionId: string | null = null;
     private _traceStatements: TraceStatement[] = [];
     private _ambClient: AMBClient;
-    private _instance: ServiceNowInstance;
+    private _instance: IServiceNowInstance;
     private _options: ScriptTracerOptions;
     private _logger: Logger = new Logger("ScriptTracer");
     private _channelListeners: Array<{ channel: any; listener: any }> = [];
 
-    public constructor(ambClient: AMBClient, instance: ServiceNowInstance, options?: ScriptTracerOptions) {
+    public constructor(ambClient: AMBClient, instance: IServiceNowInstance, options?: ScriptTracerOptions) {
         this._ambClient = ambClient;
         this._instance = instance;
         this._options = options || {};

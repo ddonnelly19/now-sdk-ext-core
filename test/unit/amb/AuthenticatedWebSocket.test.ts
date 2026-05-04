@@ -1,8 +1,7 @@
-/**
+﻿/**
  * Unit tests for AuthenticatedWebSocket
  */
 
-// Removed import from '@jest/globals' - Jest provides globals automatically
 import { AuthenticatedWebSocket, createAuthenticatedWebSocketClass } from '../../../src/sn/amb/AuthenticatedWebSocket.js';
 
 describe('AuthenticatedWebSocket - Unit Tests', () => {

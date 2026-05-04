@@ -1,8 +1,7 @@
-/**
+﻿/**
  * Unit tests for AMBConstants
  */
 
-// Removed import from '@jest/globals' - Jest provides globals automatically
 import { AMBConstants } from '../../../src/sn/amb/AMBConstants.js';
 
 describe('AMBConstants - Unit Tests', () => {

@@ -1,4 +1,4 @@
-import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { IServiceNowInstance } from "../IServiceNowInstance.js";
 import { BackgroundScriptExecutor, BackgroundScriptExecutionResult } from "../BackgroundScriptExecutor.js";
 import { Logger } from "../../util/Logger.js";
 import {
@@ -66,14 +66,14 @@ interface FlowLogRecord {
 export class FlowManager {
     private _logger: Logger = new Logger("FlowManager");
     private _bgExecutor: BackgroundScriptExecutor;
-    private _instance: ServiceNowInstance;
+    private _instance: IServiceNowInstance;
     private _defaultScope: string;
 
     /**
      * @param instance ServiceNow instance connection
      * @param scope Default scope for script execution (default: "global")
      */
-    public constructor(instance: ServiceNowInstance, scope: string = 'global') {
+    public constructor(instance: IServiceNowInstance, scope: string = 'global') {
         this._instance = instance;
         this._defaultScope = scope;
         this._bgExecutor = new BackgroundScriptExecutor(instance, scope);

@@ -4,7 +4,7 @@
  */
 
 // Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 import { 
     ATFTestExecutor} from '../../src/sn/atf/ATFTestExecutor.js';
@@ -14,8 +14,8 @@ import { getSafeUserSession } from '@servicenow/sdk-cli-core/dist/util/sessionTo
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();
-jest.mock('@servicenow/sdk-cli-core/dist/util/sessionToken.js', () => ({
-    getSafeUserSession: jest.fn<typeof getSafeUserSession>().mockResolvedValue(null)
+vi.mock('@servicenow/sdk-cli-core/dist/util/sessionToken.js', () => ({
+    getSafeUserSession: vi.fn<typeof getSafeUserSession>().mockResolvedValue(null)
 }));
 
 const SECONDS = 1000;
@@ -25,7 +25,7 @@ describe('ATFTestExecutor - Unit Tests', () => {
     let testExecutor: ATFTestExecutor;
 
     beforeEach(async () => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         
         const alias: string = 'test-instance';
         const credential = await mockGetCredentials(alias);

@@ -21,7 +21,18 @@
 	"type": "module",
 	"author": "",
 	"license": "MIT",
-	"scripts": {},
+	"scripts": {
+		"build": "npm run clean && npm run build-index-export && npm run buildts",
+		"buildts": "tsc && tsc-alias",
+		"build-index-export": "ctix build",
+		"clean": "rimraf dist",
+		"lint": "tsc --noEmit && eslint src",
+		"test": "npm run test:unit",
+		"test:unit": "vitest run --reporter=verbose test/unit",
+		"test:integration": "vitest run --reporter=verbose test/integration",
+		"test:all": "vitest run --reporter=verbose",
+		"watch-test": "vitest --reporter=verbose test/unit"
+	},
 	"publishConfig": {
 		"access": "public"
 	},
@@ -42,15 +53,15 @@
 		"xml2js": "^0.6.2"
 	},
 	"devDependencies": {
-		"@types/jest": "^30.0.0",
 		"@types/jsdom": "^28.0.1",
 		"@types/ws": "^8.18.1",
 		"@types/xml2js": "^0.4.14",
+		"@vitest/coverage-v8": "^4.1.5",
+		"cross-env": "^10.1.0",
 		"crypto-js": "^4.2.0",
-		"jest": "^30.3.0",
 		"jsdom": "^29.1.1",
-		"ts-jest": "^29.4.9",
-		"ts-jest-mocker": "^1.3.0",
-		"typescript": "^6.0.3"
+		"rimraf": "^6.1.3",
+		"typescript": "^6.0.3",
+		"vitest": "^4.1.5"
 	}
 }

@@ -1,11 +1,10 @@
-/**
+﻿/**
  * Unit tests for MessageClientBuilder
  * Note: Full client building tests are in integration tests due to browser dependencies
  * AMBClient import requires CometD which needs browser environment,
  * so we test only the standalone utility methods
  */
 
-// Removed import from '@jest/globals' - Jest provides globals automatically
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';

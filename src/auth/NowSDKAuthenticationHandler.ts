@@ -2,9 +2,8 @@ import { IRequestHandler } from "../comm/http/IRequestHandler.js";
 import { Logger } from "../util/Logger.js";
 import { IAuthenticationHandler, SessionOrToken } from "./IAuthenticationHandler.js";
 
-import { ServiceNowInstance } from "../sn/ServiceNowInstance.js";
+import { IServiceNowInstance } from "../sn/IServiceNowInstance.js";
 import { getSafeUserSession } from "@servicenow/sdk-cli-core/dist/util/sessionToken.js"
-import { RequestHandler } from "../comm/http/RequestHandler.js";
 import { RequestHandlerFactory } from "../comm/http/RequestHandlerFactory.js";
 
 
@@ -18,9 +17,9 @@ export class NowSDKAuthenticationHandler implements IAuthenticationHandler {
 
 	private _logger: Logger;
 
-	private _instance: ServiceNowInstance;
+	private _instance: IServiceNowInstance;
 
-	public constructor(instance: ServiceNowInstance) {
+	public constructor(instance: IServiceNowInstance) {
 		this._logger = new Logger("NowSDKAuthenticationHandler");
 		this._instance = instance;
 	}

@@ -1,9 +1,9 @@
-/**
+﻿/**
  * Unit tests for CrossClientChannel
  */
 
 // Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { CrossClientChannel } from '../../../src/sn/amb/CrossClientChannel.js';
 
 describe('CrossClientChannel - Unit Tests', () => {
@@ -42,17 +42,16 @@ describe('CrossClientChannel - Unit Tests', () => {
         });
 
         // NOTE: To fix "jest is not defined", ensure you have @types/jest installed and imported.
-        // Since we are using @jest/globals and not the global jest, replace jest.fn() with a compatible mock.
-        // Use a simple mock function as the listener.
+                // Use a simple mock function as the listener.
 
         it('should not throw when called', () => {
-            const listener = jest.fn();
+            const listener = vi.fn();
             expect(() => crossClientChannel.on('event', listener)).not.toThrow();
         });
 
         it('should accept event name and listener', () => {
             const eventName = 'test.event';
-            const listener = jest.fn();
+            const listener = vi.fn();
             
             expect(() => crossClientChannel.on(eventName, listener)).not.toThrow();
         });

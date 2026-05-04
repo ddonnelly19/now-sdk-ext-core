@@ -1,5 +1,5 @@
 import { Parser } from 'xml2js';
-import { ServiceNowInstance } from '../ServiceNowInstance.js';
+import { IServiceNowInstance } from '../IServiceNowInstance.js';
 import { ServiceNowRequest } from '../../comm/http/ServiceNowRequest.js';
 import { HTTPRequest } from '../../comm/http/HTTPRequest.js';
 import { IHttpResponse } from '../../comm/http/IHttpResponse.js';
@@ -23,7 +23,7 @@ export class XMLRecordManager {
     private _snRequest: ServiceNowRequest;
     private _logger: Logger = new Logger('XMLRecordManager');
 
-    public constructor(instance: ServiceNowInstance) {
+    public constructor(instance: IServiceNowInstance) {
         this._snRequest = new ServiceNowRequest(instance);
     }
 

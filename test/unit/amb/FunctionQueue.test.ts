@@ -1,8 +1,7 @@
-/**
+﻿/**
  * Unit tests for FunctionQueue
  */
 
-// Removed import from '@jest/globals' - Jest provides globals automatically
 import { FunctionQueue } from '../../../src/sn/amb/FunctionQueue.js';
 
 describe('FunctionQueue - Unit Tests', () => {

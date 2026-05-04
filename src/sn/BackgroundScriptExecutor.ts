@@ -1,3 +1,4 @@
+import { IServiceNowInstance } from "./IServiceNowInstance.js";
 import { ServiceNowInstance } from "./ServiceNowInstance.js";
 
 import { ServiceNowRequest } from "../comm/http/ServiceNowRequest.js";
@@ -40,14 +41,14 @@ const SCRIPT_RESULT_PARSER = new XMLParser(SCRIPT_RESULT_PARSER_OPTIONS);
  */
 export class BackgroundScriptExecutor {
 	snRequest: ServiceNowRequest;
-	instance: ServiceNowInstance;
+	instance: IServiceNowInstance;
 	scope: string;
 	private _tableAPI: TableAPIRequest;
 	private _scopeCache: Map<string, string> = new Map();
 
 	_logger: Logger = new Logger("BackgroundScriptExecutor");
 
-	public constructor(instance: ServiceNowInstance, scope: string) {
+	public constructor(instance: IServiceNowInstance, scope: string) {
 
 		this.instance = instance;
 		this.scope = scope;
@@ -62,7 +63,7 @@ export class BackgroundScriptExecutor {
 	 * @param scope Scope name or sys_id to run under.
 	 * @param instance ServiceNow instance to use for this call.
 	 */
-	public async executeScript(script: string, scope: string = this.scope, instance: ServiceNowInstance = this.instance): Promise<BackgroundScriptExecutionResult> {
+	public async executeScript(script: string, scope: string = this.scope, instance: IServiceNowInstance = this.instance): Promise<BackgroundScriptExecutionResult> {
 		this._validateExecuteScriptInputs(script, scope, instance);
 
 		try {
@@ -349,7 +350,7 @@ export class BackgroundScriptExecutor {
 		return { rawResult: result, consoleResult: filteredSpl, scriptResults: scriptResults };
 	}
 
-	private _validateExecuteScriptInputs(script: string, scope: string, instance: ServiceNowInstance): void {
+	private _validateExecuteScriptInputs(script: string, scope: string, instance: IServiceNowInstance): void {
 		if (!instance || !(instance instanceof ServiceNowInstance)) {
 			throw new Error("instance must be a ServiceNowInstance");
 		}
@@ -472,7 +473,7 @@ export class ScriptExecutionOutputLine {
 // };
 
 export interface BackgroundScriptExecutorOptions {
-	instance?: ServiceNowInstance;
+	instance?: IServiceNowInstance;
 	scope?: string;
 }
 

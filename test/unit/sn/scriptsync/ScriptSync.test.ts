@@ -1,28 +1,37 @@
 /**
  * Unit tests for ScriptSync
  * Uses mocks instead of real credentials
- *
- * NOTE: Node built-in modules (like 'fs') cannot be mocked with jest.mock()
- * in ESM mode. We use jest.unstable_mockModule() + dynamic imports instead.
  */
 
-import { describe, it, expect, beforeEach, jest, afterEach } from '@jest/globals';
+import { vi } from 'vitest';
+
+// Hoist mock variables so they can be used in vi.mock() factories
+const { mockWriteFileSync, mockReadFileSync, mockReaddirSync, mockGetCredentials } = vi.hoisted(() => ({
+    mockWriteFileSync: vi.fn(),
+    mockReadFileSync: vi.fn().mockReturnValue('mock file content'),
+    mockReaddirSync: vi.fn().mockReturnValue([]),
+    mockGetCredentials: vi.fn().mockResolvedValue({
+        host: 'test-instance.service-now.com',
+        username: 'mock.user',
+        password: 'mock-password',
+        instanceUrl: 'https://test-instance.service-now.com',
+        token: 'mock-oauth-token',
+        type: 'basic',
+        alias: 'test-instance',
+        authType: 'basic'
+    })
+}));
+
 import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
-import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
+import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
 import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
 import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
 import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
 import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
 
-// Define mock fs functions
-const mockWriteFileSync = jest.fn();
-const mockReadFileSync = jest.fn<(...args: any[]) => any>().mockReturnValue('mock file content');
-const mockReaddirSync = jest.fn<(...args: any[]) => any>().mockReturnValue([]);
-
-// Use jest.unstable_mockModule for ESM compatibility with Node built-in 'fs'.
-// Must use jest.requireActual (sync/CJS) to avoid circular import OOM.
-jest.unstable_mockModule('fs', () => {
-    const actual = jest.requireActual<typeof import('fs')>('fs');
+// Mock the 'fs' built-in module
+vi.mock('fs', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('fs')>();
     return {
         ...actual,
         writeFileSync: mockWriteFileSync,
@@ -32,26 +41,23 @@ jest.unstable_mockModule('fs', () => {
 });
 
 // Mock getCredentials
-const mockGetCredentials = createGetCredentialsMock();
-jest.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
+vi.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
     getCredentials: mockGetCredentials
 }));
 
 // Mock factories
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
 
-// Dynamic imports — must come after jest.unstable_mockModule so ScriptSync
-// receives the mocked 'fs' module instead of the real one.
-const { ScriptSync } = await import('../../../../src/sn/scriptsync/ScriptSync.js');
-const { SCRIPT_TYPES } = await import('../../../../src/sn/scriptsync/ScriptSyncModels.js');
+import { ScriptSync } from '../../../../src/sn/scriptsync/ScriptSync.js';
+import { SCRIPT_TYPES } from '../../../../src/sn/scriptsync/ScriptSyncModels.js';
 
 // Mock request handler
 class MockRequestHandler {
-    get = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<() => Promise<IHttpResponse<unknown>>>();
+    get = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    post = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    put = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    delete = vi.fn<() => Promise<IHttpResponse<unknown>>>();
 }
 
 function createMockResponse(data: any, status: number = 200) {
@@ -83,7 +89,7 @@ describe('ScriptSync - Unit Tests', () => {
     let mockRequestHandler: MockRequestHandler;
 
     beforeEach(async () => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         SessionManager.resetInstance();
 
         // Reset fs mock defaults
@@ -94,9 +100,9 @@ describe('ScriptSync - Unit Tests', () => {
         mockAuthHandler = new MockAuthenticationHandler();
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         const alias = 'test-instance';
@@ -113,7 +119,7 @@ describe('ScriptSync - Unit Tests', () => {
     });
 
     afterEach(() => {
-        jest.restoreAllMocks();
+        vi.restoreAllMocks();
     });
 
     describe('Constructor', () => {

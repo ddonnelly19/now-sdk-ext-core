@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+﻿import { vi, Mock } from 'vitest';
 import { ScriptTracer } from '../../../../src/sn/scripttracer/ScriptTracer.js';
 import { ScriptTracerOptions, TraceStatement, ScriptTracerAMBMessage } from '../../../../src/sn/scripttracer/ScriptTracerModels.js';
 import { AMBClient } from '../../../../src/sn/amb/AMBClient.js';
@@ -9,37 +9,37 @@ import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerF
 import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
 import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
 
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 class MockRequestHandler {
-    get = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<() => Promise<IHttpResponse<unknown>>>();
+    get = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    post = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    put = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    delete = vi.fn<() => Promise<IHttpResponse<unknown>>>();
 }
 
 function createMockChannel() {
     return {
-        subscribe: jest.fn(),
-        unsubscribe: jest.fn(),
+        subscribe: vi.fn(),
+        unsubscribe: vi.fn(),
     };
 }
 
 function createMockAMBClient(): Partial<AMBClient> {
     const serverConnection = {
-        getUserToken: jest.fn().mockReturnValue('abcdef1234567890abcdef1234567890extra'),
+        getUserToken: vi.fn().mockReturnValue('abcdef1234567890abcdef1234567890extra'),
     };
     return {
-        getChannel: jest.fn().mockReturnValue(createMockChannel()),
-        getServerConnection: jest.fn().mockReturnValue(serverConnection),
+        getChannel: vi.fn().mockReturnValue(createMockChannel()),
+        getServerConnection: vi.fn().mockReturnValue(serverConnection),
     };
 }
 
 function createMockInstance(): ServiceNowInstance {
     return {
-        getAlias: jest.fn().mockReturnValue('test-instance'),
-        getHost: jest.fn().mockReturnValue('https://test.service-now.com'),
+        getAlias: vi.fn().mockReturnValue('test-instance'),
+        getHost: vi.fn().mockReturnValue('https://test.service-now.com'),
     } as unknown as ServiceNowInstance;
 }
 
@@ -61,15 +61,15 @@ describe('ScriptTracer', () => {
     let mockRequestHandler: MockRequestHandler;
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         SessionManager.resetInstance();
 
         mockAuthHandler = new MockAuthenticationHandler();
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         mockAMBClient = createMockAMBClient();
@@ -127,7 +127,7 @@ describe('ScriptTracer', () => {
 
     describe('start()', () => {
         it('transitions idle → starting → tracing', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -140,7 +140,7 @@ describe('ScriptTracer', () => {
         });
 
         it('calls debugger/start then scripttracer/start', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -158,7 +158,7 @@ describe('ScriptTracer', () => {
         });
 
         it('uses SessionManager to get request', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -171,7 +171,7 @@ describe('ScriptTracer', () => {
         });
 
         it('subscribes to /scripttracer/{sessionId}', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -179,14 +179,14 @@ describe('ScriptTracer', () => {
             const tracer = new ScriptTracer(mockAMBClient as AMBClient, mockInstance);
             await tracer.start();
 
-            const getChannelCalls = (mockAMBClient.getChannel as jest.Mock).mock.calls;
+            const getChannelCalls = (mockAMBClient.getChannel as Mock).mock.calls;
             const channelNames = getChannelCalls.map((c: any) => c[0]);
             const sessionId = tracer.sessionId;
             expect(channelNames).toContain(`/scripttracer/${sessionId}`);
         });
 
         it('subscribes to /debugger/watcher/console/{sessionId}', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -194,14 +194,14 @@ describe('ScriptTracer', () => {
             const tracer = new ScriptTracer(mockAMBClient as AMBClient, mockInstance);
             await tracer.start();
 
-            const getChannelCalls = (mockAMBClient.getChannel as jest.Mock).mock.calls;
+            const getChannelCalls = (mockAMBClient.getChannel as Mock).mock.calls;
             const channelNames = getChannelCalls.map((c: any) => c[0]);
             const sessionId = tracer.sessionId;
             expect(channelNames).toContain(`/debugger/watcher/console/${sessionId}`);
         });
 
         it('subscribes to /debugger/watcher/{sessionId}', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -209,14 +209,14 @@ describe('ScriptTracer', () => {
             const tracer = new ScriptTracer(mockAMBClient as AMBClient, mockInstance);
             await tracer.start();
 
-            const getChannelCalls = (mockAMBClient.getChannel as jest.Mock).mock.calls;
+            const getChannelCalls = (mockAMBClient.getChannel as Mock).mock.calls;
             const channelNames = getChannelCalls.map((c: any) => c[0]);
             const sessionId = tracer.sessionId;
             expect(channelNames).toContain(`/debugger/watcher/${sessionId}`);
         });
 
         it('subscribes to /debugger/sessionlog/{sessionId}', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -224,14 +224,14 @@ describe('ScriptTracer', () => {
             const tracer = new ScriptTracer(mockAMBClient as AMBClient, mockInstance);
             await tracer.start();
 
-            const getChannelCalls = (mockAMBClient.getChannel as jest.Mock).mock.calls;
+            const getChannelCalls = (mockAMBClient.getChannel as Mock).mock.calls;
             const channelNames = getChannelCalls.map((c: any) => c[0]);
             const sessionId = tracer.sessionId;
             expect(channelNames).toContain(`/debugger/sessionlog/${sessionId}`);
         });
 
         it('returns success with sessionId', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -245,7 +245,7 @@ describe('ScriptTracer', () => {
         });
 
         it('throws on REST failure', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockRejectedValue(new Error('Network error'));
 
             const tracer = new ScriptTracer(mockAMBClient as AMBClient, mockInstance);
@@ -254,7 +254,7 @@ describe('ScriptTracer', () => {
         });
 
         it('throws if already tracing', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -268,7 +268,7 @@ describe('ScriptTracer', () => {
 
     describe('stop()', () => {
         it('calls scripttracer/stop', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -290,13 +290,13 @@ describe('ScriptTracer', () => {
         });
 
         it('unsubscribes from all channels', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
 
             const mockChannel = createMockChannel();
-            (mockAMBClient.getChannel as jest.Mock).mockReturnValue(mockChannel);
+            (mockAMBClient.getChannel as Mock).mockReturnValue(mockChannel);
 
             const tracer = new ScriptTracer(mockAMBClient as AMBClient, mockInstance);
             await tracer.start();
@@ -312,7 +312,7 @@ describe('ScriptTracer', () => {
         });
 
         it('transitions to stopped', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -338,17 +338,17 @@ describe('ScriptTracer', () => {
     describe('trace handling', () => {
         function setupChannelListenerCapture(ambClient: Partial<AMBClient>) {
             const listeners = new Map<string, (msg: any) => void>();
-            (ambClient.getChannel as jest.Mock).mockImplementation((channelName: string) => ({
-                subscribe: jest.fn().mockImplementation((listener: any) => {
+            (ambClient.getChannel as Mock).mockImplementation((channelName: string) => ({
+                subscribe: vi.fn().mockImplementation((listener: any) => {
                     listeners.set(channelName, listener);
                 }),
-                unsubscribe: jest.fn(),
+                unsubscribe: vi.fn(),
             }));
             return listeners;
         }
 
         it('collects statements from AMB messages', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
@@ -386,14 +386,14 @@ describe('ScriptTracer', () => {
         });
 
         it('invokes onTrace callback', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );
 
             const listeners = setupChannelListenerCapture(mockAMBClient);
 
-            const onTrace = jest.fn();
+            const onTrace = vi.fn();
             const tracer = new ScriptTracer(mockAMBClient as AMBClient, mockInstance, { onTrace });
             await tracer.start();
 
@@ -424,7 +424,7 @@ describe('ScriptTracer', () => {
         });
 
         it('clearTraceStatements resets', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(
                 createSuccessResponse({ result: { token: 'ABCDEF1234567890ABCDEF1234567890' } })
             );

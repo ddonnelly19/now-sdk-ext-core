@@ -1,4 +1,4 @@
-import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { IServiceNowInstance } from "../IServiceNowInstance.js";
 import { Logger } from "../../util/Logger.js";
 import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
 import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
@@ -28,13 +28,13 @@ export class SyslogReader {
 	private _logger: Logger = new Logger("SyslogReader");
 	private _tableAPI: TableAPIRequest;
 	private _processorRequest: ServiceNowProcessorRequest;
-	private _instance: ServiceNowInstance;
+	private _instance: IServiceNowInstance;
 	private _tailInterval?: NodeJS.Timeout;
 	private _lastFetchedSysId?: string;
 	private _lastSequence?: string;
 	private _isTailing: boolean = false;
 
-	public constructor(instance: ServiceNowInstance) {
+	public constructor(instance: IServiceNowInstance) {
 		this._instance = instance;
 		this._tableAPI = new TableAPIRequest(instance);
 		this._processorRequest = new ServiceNowProcessorRequest(instance);
@@ -49,11 +49,6 @@ export class SyslogReader {
 	public async querySyslog(encodedQuery?: string, limit: number = 100): Promise<SyslogRecord[]> {
 		this._logger.info(`Querying syslog table with query: ${encodedQuery || 'none'}`);
 
-		const query = ;
-
-		if (encodedQuery) {
-			query.sysparm_query = encodedQuery;
-		}
 
 		const response = await this._tableAPI.get(
 			this.SYSLOG_TABLE,

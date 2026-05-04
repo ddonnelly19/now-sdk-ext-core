@@ -3,7 +3,7 @@
  * Tests compareVersions, validateApplication, validateBatchInstallation, getApplicationDetails
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { createGetCredentialsMock } from '../../__mocks__/servicenow-sdk-mocks.js';
 import { ApplicationManager, APP_TAB_CONTEXT } from '../../../../src/sn/application/ApplicationManager.js';
@@ -21,20 +21,20 @@ import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerF
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();
-jest.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
+vi.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
     getCredentials: mockGetCredentials
 }));
 
 // Mock factories
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 // Mock request handler
 class MockRequestHandler {
-    get = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<() => Promise<IHttpResponse<unknown>>>();
+    get = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    post = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    put = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    delete = vi.fn<() => Promise<IHttpResponse<unknown>>>();
 }
 
 /**
@@ -63,14 +63,14 @@ describe('ApplicationManager - Unit Tests', () => {
     let mockRequestHandler: MockRequestHandler;
 
     beforeEach(async () => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
         mockAuthHandler = new MockAuthenticationHandler();
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         const alias = 'test-instance';
@@ -176,7 +176,7 @@ describe('ApplicationManager - Unit Tests', () => {
                 version: '2.0.0'
             });
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { app_info_on_instance: mockAppDetails } },
                 status: 200,
@@ -193,7 +193,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should return null on non-200 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: null,
                 status: 404,
@@ -208,7 +208,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should construct correct URL with appID', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { app_info_on_instance: createMockAppDetails() } },
                 status: 200,
@@ -228,7 +228,7 @@ describe('ApplicationManager - Unit Tests', () => {
 
     describe('validateApplication', () => {
         it('should return not_installed when app details are null', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: null,
                 status: 404,
@@ -250,7 +250,7 @@ describe('ApplicationManager - Unit Tests', () => {
         it('should return not_installed when app exists but is not installed', async () => {
             const appDetails = createMockAppDetails({ isInstalled: false, version: '1.0.0' });
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { app_info_on_instance: appDetails } },
                 status: 200,
@@ -271,7 +271,7 @@ describe('ApplicationManager - Unit Tests', () => {
         it('should return valid when installed version matches requested', async () => {
             const appDetails = createMockAppDetails({ isInstalled: true, version: '2.0.0' });
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { app_info_on_instance: appDetails } },
                 status: 200,
@@ -293,7 +293,7 @@ describe('ApplicationManager - Unit Tests', () => {
         it('should return update_needed when installed version is older', async () => {
             const appDetails = createMockAppDetails({ isInstalled: true, version: '1.0.0' });
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { app_info_on_instance: appDetails } },
                 status: 200,
@@ -315,7 +315,7 @@ describe('ApplicationManager - Unit Tests', () => {
         it('should return mismatch when installed version is newer', async () => {
             const appDetails = createMockAppDetails({ isInstalled: true, version: '3.0.0' });
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { app_info_on_instance: appDetails } },
                 status: 200,
@@ -335,7 +335,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should return error when getApplicationDetails throws', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockRejectedValue(new Error('Network error'));
 
             const pkg = new BatchDefinition('abc123', true, '', '1.0.0', '1.0.0', 'application');
@@ -353,7 +353,7 @@ describe('ApplicationManager - Unit Tests', () => {
                 name: 'My Cool App'
             });
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { app_info_on_instance: appDetails } },
                 status: 200,
@@ -378,7 +378,7 @@ describe('ApplicationManager - Unit Tests', () => {
                 isInstalledAndUpdateAvailable: true
             });
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { app_info_on_instance: appDetails } },
                 status: 200,
@@ -419,7 +419,7 @@ describe('ApplicationManager - Unit Tests', () => {
         }
 
         it('should validate all packages in batch', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             const app1Details = createMockAppDetails({ isInstalled: true, version: '1.0.0' });
             const app2Details = createMockAppDetails({ isInstalled: true, version: '2.0.0' });
@@ -444,7 +444,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should count applications needing installation', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             setupMockForApp(null); // not found
             setupMockForApp(createMockAppDetails({ isInstalled: true, version: '1.0.0' }));
@@ -464,7 +464,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should count applications needing upgrade', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             setupMockForApp(createMockAppDetails({ isInstalled: true, version: '1.0.0' }));
             setupMockForApp(createMockAppDetails({ isInstalled: true, version: '1.0.0' }));
@@ -482,7 +482,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should set isValid to false when there are errors', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             mockRequestHandler.get.mockRejectedValueOnce(new Error('Network timeout'));
 
@@ -498,7 +498,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should handle empty batch', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             const batch = new (BatchInstallation as any)();
             batch.packages = [];
@@ -511,7 +511,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should handle mixed statuses', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             // valid
             setupMockForApp(createMockAppDetails({ isInstalled: true, version: '1.0.0' }));
@@ -597,7 +597,7 @@ describe('ApplicationManager - Unit Tests', () => {
 
     describe('searchApplications', () => {
         it('should POST to correct URL with tab_context query param', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: { result: { apps: [] } },
                 status: 200,
@@ -616,7 +616,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should include search_key when provided', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: { result: { apps: [] } },
                 status: 200,
@@ -637,7 +637,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should include pagination params when provided', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: { result: { apps: [] } },
                 status: 200,
@@ -664,7 +664,7 @@ describe('ApplicationManager - Unit Tests', () => {
                 createMockAppDetails({ sys_id: 'app2', name: 'App 2' })
             ];
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: { result: { apps: mockApps } },
                 status: 200,
@@ -682,7 +682,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should return empty array on non-200 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: null,
                 status: 500,
@@ -697,7 +697,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should pass requestBody as JSON body when provided', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: { result: { apps: [] } },
                 status: 200,
@@ -718,7 +718,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should send empty object as JSON body when no requestBody', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: { result: { apps: [] } },
                 status: 200,
@@ -737,7 +737,7 @@ describe('ApplicationManager - Unit Tests', () => {
 
     describe('installStoreApplication', () => {
         it('should GET install URL with correct query params', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { tracker_id: 'tracker-123' } },
                 status: 200,
@@ -758,7 +758,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should include optional customization_version and load_demo_data', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { tracker_id: 'tracker-123' } },
                 status: 200,
@@ -781,7 +781,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should return operation result with tracker_id', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { tracker_id: 'tracker-abc', status: 'initiated' } },
                 status: 200,
@@ -798,7 +798,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should throw on non-200 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: null,
                 status: 403,
@@ -815,7 +815,7 @@ describe('ApplicationManager - Unit Tests', () => {
 
     describe('updateStoreApplication', () => {
         it('should GET update URL with correct query params', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { tracker_id: 'tracker-456' } },
                 status: 200,
@@ -836,7 +836,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should include optional params', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { tracker_id: 'tracker-456' } },
                 status: 200,
@@ -859,7 +859,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should return operation result', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: { tracker_id: 'tracker-456', status: 'initiated' } },
                 status: 200,
@@ -874,7 +874,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should throw on non-200 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: null,
                 status: 500,
@@ -891,7 +891,7 @@ describe('ApplicationManager - Unit Tests', () => {
 
     describe('installStoreApplicationAndWait', () => {
         it('should install and poll until complete', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             // First call: install returns tracker_id
             mockRequestHandler.get.mockResolvedValueOnce({
@@ -935,7 +935,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should resolve tracker_id from links.progress.id as fallback', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             // Install returns links.progress.id instead of tracker_id
             mockRequestHandler.get.mockResolvedValueOnce({
@@ -970,7 +970,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should throw when no tracker ID is returned', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             mockRequestHandler.get.mockResolvedValueOnce({
                 data: { result: { status: 'initiated' } },
@@ -989,7 +989,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should return failure on timeout', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             // Install returns tracker
             mockRequestHandler.get.mockResolvedValueOnce({
@@ -1022,7 +1022,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should return failure when installation has error', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             // Install returns tracker
             mockRequestHandler.get.mockResolvedValueOnce({
@@ -1055,7 +1055,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should return failure when status is 3 (failed)', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             // Install returns tracker
             mockRequestHandler.get.mockResolvedValueOnce({
@@ -1091,7 +1091,7 @@ describe('ApplicationManager - Unit Tests', () => {
 
     describe('updateStoreApplicationAndWait', () => {
         it('should update and poll until complete', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             // Update returns tracker
             mockRequestHandler.get.mockResolvedValueOnce({
@@ -1128,7 +1128,7 @@ describe('ApplicationManager - Unit Tests', () => {
         });
 
         it('should throw when no tracker ID is returned', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             mockRequestHandler.get.mockResolvedValueOnce({
                 data: { result: {} },

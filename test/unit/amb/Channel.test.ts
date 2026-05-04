@@ -1,35 +1,35 @@
-/**
+﻿/**
  * Unit tests for Channel class
  * Focuses on logic and state management
  */
 
 // Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
-import { jest } from '@jest/globals';
+import { vi, Mock } from 'vitest';
 import { Channel } from '../../../src/sn/amb/Channel.js';
 import { ServerConnection } from '../../../src/sn/amb/ServerConnection.js';
 import { ChannelListener } from '../../../src/sn/amb/ChannelListener.js';
 
 // Mock Logger
-jest.mock('../../../src/util/Logger', () => ({
-    Logger: jest.fn().mockImplementation(() => ({
-        debug: jest.fn(),
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-        addErrorMessage: jest.fn(),
-        addWarnMessage: jest.fn()
-    }))
+vi.mock('../../../src/util/Logger', () => ({
+    Logger: vi.fn().mockImplementation(function(this: any) {
+        this.debug = vi.fn();
+        this.info = vi.fn();
+        this.warn = vi.fn();
+        this.error = vi.fn();
+        this.addErrorMessage = vi.fn();
+        this.addWarnMessage = vi.fn();
+    })
 }));
 
 describe('Channel - Unit Tests', () => {
     let mockCometD: {
-        subscribe: jest.Mock;
-        unsubscribe: jest.Mock;
-        publish: jest.Mock;
-        getStatus: jest.Mock;
+        subscribe: Mock;
+        unsubscribe: Mock;
+        publish: Mock;
+        getStatus: Mock;
     };
     let mockServerConnection: {
-        getSubscriptionCommandSender: jest.Mock;
+        getSubscriptionCommandSender: Mock;
     };
     let channel: Channel;
     const channelName = 'testChannelName';
@@ -37,15 +37,15 @@ describe('Channel - Unit Tests', () => {
 	beforeEach(() => {
         // Create mock CometD
         mockCometD = {
-            subscribe: jest.fn().mockReturnValue({ id: 'sub-123' }),
-            unsubscribe: jest.fn(),
-            publish: jest.fn(),
-            getStatus: jest.fn().mockReturnValue('connected')
+            subscribe: vi.fn().mockReturnValue({ id: 'sub-123' }),
+            unsubscribe: vi.fn(),
+            publish: vi.fn(),
+            getStatus: vi.fn().mockReturnValue('connected')
         };
 
         // Create mock ServerConnection
         mockServerConnection = {
-            getSubscriptionCommandSender: jest.fn().mockReturnValue(null)
+            getSubscriptionCommandSender: vi.fn().mockReturnValue(null)
         };
 
         // Create channel instance
@@ -59,10 +59,10 @@ describe('Channel - Unit Tests', () => {
 
     function createMockListener(id: number = 1) {
         return {
-            getCallback: jest.fn().mockReturnValue(() => 'listener callback'),
-            getSubscriptionCallback: jest.fn().mockReturnValue(null),
-            getID: jest.fn().mockReturnValue(id),
-            resubscribe: jest.fn()
+            getCallback: vi.fn().mockReturnValue(() => 'listener callback'),
+            getSubscriptionCallback: vi.fn().mockReturnValue(null),
+            getID: vi.fn().mockReturnValue(id),
+            resubscribe: vi.fn()
         };
     }
 

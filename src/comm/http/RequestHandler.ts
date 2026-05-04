@@ -92,7 +92,7 @@ export class RequestHandler implements IRequestHandler {
 		//     rest: { method: request.method }
 		// }
 
-		const resp = await (config);
+		const resp = await makeRequest(config);
 		let responseBodyString: string | null = null;
 		if (!resp.ok) {
 

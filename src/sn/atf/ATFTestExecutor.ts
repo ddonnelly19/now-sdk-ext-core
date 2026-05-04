@@ -4,16 +4,16 @@ import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
 import { ReferenceLink, ServiceNowTableResponse } from "../../model/types.js";
 import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
 import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
-import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { IServiceNowInstance } from "../IServiceNowInstance.js";
 import { ProgressResult, ProgressResultResponse } from "../ProgressWorker.js";
 
 
 export class ATFTestExecutor {
 	_req: ServiceNowRequest;
 
-	_instance: ServiceNowInstance;
+	_instance: IServiceNowInstance;
 
-	public constructor(instance: ServiceNowInstance) {
+	public constructor(instance: IServiceNowInstance) {
 		this._instance = instance;
 		this._req = new ServiceNowRequest(instance);
 	}

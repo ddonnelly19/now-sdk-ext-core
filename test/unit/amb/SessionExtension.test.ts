@@ -3,17 +3,17 @@
  */
 
 // Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { SessionExtension } from '../../../src/sn/amb/SessionExtension.js';
 
 // Mock Logger
-jest.mock('../../../src/util/Logger.js', () => ({
-    Logger: jest.fn().mockImplementation(() => ({
-        debug: jest.fn(),
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn()
-    }))
+vi.mock('../../../src/util/Logger.js', () => ({
+    Logger: vi.fn().mockImplementation(function(this: any) {
+        this.debug = vi.fn();
+        this.info = vi.fn();
+        this.warn = vi.fn();
+        this.error = vi.fn();
+    })
 }));
 
 describe('SessionExtension - Unit Tests', () => {

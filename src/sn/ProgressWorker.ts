@@ -1,7 +1,7 @@
 import { HTTPRequest } from "../comm/http/HTTPRequest.js";
 import { IHttpResponse } from "../comm/http/IHttpResponse.js";
 import { ServiceNowRequest } from "../comm/http/ServiceNowRequest.js";
-import { ServiceNowInstance } from "./ServiceNowInstance.js";
+import { IServiceNowInstance } from "./IServiceNowInstance.js";
 
 
 export class ProgressWorker {
@@ -9,8 +9,8 @@ export class ProgressWorker {
 	_req: ServiceNowRequest;
 
 
-	_instance: ServiceNowInstance;
-	public constructor(instance: ServiceNowInstance) {
+	_instance: IServiceNowInstance;
+	public constructor(instance: IServiceNowInstance) {
 		this._instance = instance;
 		this._req = new ServiceNowRequest(instance);
 	}

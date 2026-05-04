@@ -1,4 +1,4 @@
-import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { IServiceNowInstance } from "../IServiceNowInstance.js";
 import { Logger } from "../../util/Logger.js";
 import { ServiceNowRequest } from "../../comm/http/ServiceNowRequest.js";
 import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
@@ -35,9 +35,9 @@ export class UpdateSetManager {
     private _logger: Logger = new Logger("UpdateSetManager");
     private _req: ServiceNowRequest;
     private _tableAPI: TableAPIRequest;
-    private _instance: ServiceNowInstance;
+    private _instance: IServiceNowInstance;
 
-    public constructor(instance: ServiceNowInstance) {
+    public constructor(instance: IServiceNowInstance) {
         this._instance = instance;
         this._req = new ServiceNowRequest(instance);
         this._tableAPI = new TableAPIRequest(instance);

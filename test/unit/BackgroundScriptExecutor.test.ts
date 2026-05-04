@@ -4,7 +4,7 @@
  */
 
 // Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../src/sn/ServiceNowInstance.js';
 import { BackgroundScriptExecutor, ScriptExecutionOutputLine } from '../../src/sn/BackgroundScriptExecutor.js';
@@ -18,20 +18,20 @@ import { getCredentials } from '@servicenow/sdk-cli/dist/auth/index.js';
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();
-jest.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
-    getCredentials: jest.fn().mockResolvedValue()
+vi.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
+    getCredentials: vi.fn().mockResolvedValue()
 }));
 
 // Mock factories
-jest.mock('../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../src/comm/http/RequestHandlerFactory');
 
 // Mock request handler
 class MockRequestHandler {
-    get = jest.fn();
-    post = jest.fn();
-    put = jest.fn();
-    delete = jest.fn();
+    get = vi.fn();
+    post = vi.fn();
+    put = vi.fn();
+    delete = vi.fn();
 }
 
 // Mock response for scope name → sys_id resolution via sys_scope table
@@ -53,15 +53,15 @@ describe('BackgroundScriptExecutor - Unit Tests', () => {
     const TEST_SCOPE = 'global';
 
     beforeEach(async () => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         SessionManager.resetInstance();
 
         mockAuthHandler = new MockAuthenticationHandler();
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         const alias:string = 'test-instance';
@@ -284,7 +284,7 @@ System: end
                 </body></html>
             `;
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: htmlWithToken,
                 status: 200,
@@ -298,7 +298,7 @@ System: end
         });
 
         it('should return null when not logged in', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: '<html></html>',
                 status: 200,
@@ -312,7 +312,7 @@ System: end
         });
 
         it('should return null when status is not 200', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: null,
                 status: 401,
@@ -326,7 +326,7 @@ System: end
         });
 
         it('should return null when response data is empty', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: null,
                 status: 200,
@@ -384,7 +384,7 @@ System: end
             const scriptResultXml = `<HTML><BODY><PRE class="outputtext">*** Script: Hello
 </PRE><div></div></BODY></HTML>`;
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             // First GET: CSRF token, Second GET: scope resolution
             mockRequestHandler.get
@@ -416,7 +416,7 @@ System: end
         it('should throw on non-200 response', async () => {
             const csrfHtml = `<input name="sysparm_ck" type="hidden" value="testtoken123">`;
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             mockRequestHandler.get
                 .mockResolvedValueOnce({
@@ -444,7 +444,7 @@ System: end
         it('should throw when response body is empty on 200', async () => {
             const csrfHtml = `<input name="sysparm_ck" type="hidden" value="testtoken123">`;
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             mockRequestHandler.get
                 .mockResolvedValueOnce({
@@ -474,7 +474,7 @@ System: end
             const scriptResultXml = `<HTML><BODY><PRE class="outputtext">*** Script: default
 </PRE><div></div></BODY></HTML>`;
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             mockRequestHandler.get
                 .mockResolvedValueOnce({
@@ -501,7 +501,7 @@ System: end
         });
 
         it('should throw descriptive error when CSRF token is null', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             // Return response that will cause null CSRF token (not logged in)
             mockRequestHandler.get.mockResolvedValue({
@@ -518,7 +518,7 @@ System: end
         });
 
         it('should preserve original error cause on failure', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             const originalError = new Error('Network timeout');
             mockRequestHandler.get.mockRejectedValue(originalError);
@@ -911,7 +911,7 @@ System: end
             const scriptResultXml = `<HTML><BODY><PRE class="outputtext">*** Script: auto test
 </PRE><div></div></BODY></HTML>`;
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             mockRequestHandler.get
                 .mockResolvedValueOnce({
@@ -941,7 +941,7 @@ System: end
 
         it('should fall back to executeScriptViaTrigger when executeScript fails', async () => {
             // Make executeScript fail (no CSRF token = not logged in)
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             mockRequestHandler.get.mockResolvedValue({
                 data: '<html></html>',
@@ -984,7 +984,7 @@ System: end
             const scriptResultXml = `<HTML><BODY><PRE class="outputtext">*** Script: scoped
 </PRE><div></div></BODY></HTML>`;
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             mockRequestHandler.get
                 .mockResolvedValueOnce({
@@ -1014,7 +1014,7 @@ System: end
             const scriptResultXml = `<HTML><BODY><PRE class="outputtext">*** Script: default scope
 </PRE><div></div></BODY></HTML>`;
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             mockRequestHandler.get
                 .mockResolvedValueOnce({
@@ -1042,7 +1042,7 @@ System: end
 
         it('should propagate error if both methods fail', async () => {
             // Make executeScript fail
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             mockRequestHandler.get.mockResolvedValue({
                 data: '<html></html>',

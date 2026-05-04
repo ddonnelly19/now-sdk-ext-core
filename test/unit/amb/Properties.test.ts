@@ -2,7 +2,6 @@
  * Unit tests for Properties singleton
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
 import { Properties } from '../../../src/sn/amb/Properties.js';
 
 describe('Properties - Unit Tests', () => {

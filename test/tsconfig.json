@@ -1,11 +1,12 @@
 {
 	"extends": "../tsconfig",
 	"compilerOptions": {
-		"noEmit": true,	
+		"noEmit": true,
 	},
 	"include": [
 		"**/*.ts",
 		"**/*.test.ts",
-		"../src/**/*"
+		"../src/**/*",
+		"../lib.d.ts"
 	]
 }

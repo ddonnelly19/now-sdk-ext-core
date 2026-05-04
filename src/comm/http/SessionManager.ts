@@ -1,4 +1,4 @@
-import { ServiceNowInstance } from "../../sn/ServiceNowInstance.js";
+import { IServiceNowInstance } from "../../sn/IServiceNowInstance.js";
 import { ServiceNowRequest } from "./ServiceNowRequest.js";
 import { Logger } from "../../util/Logger.js";
 
@@ -31,7 +31,7 @@ export class SessionManager {
      * Get or create a ServiceNowRequest for this instance.
      * Keyed by alias (falls back to host).
      */
-    getRequest(instance: ServiceNowInstance): ServiceNowRequest {
+    getRequest(instance: IServiceNowInstance): ServiceNowRequest {
         const key = this.getKey(instance);
         let request = this._sessions.get(key);
         if (!request) {
@@ -46,7 +46,7 @@ export class SessionManager {
      * Get or create a ServiceNowRequest and ensure it is authenticated.
      * Uses an in-flight promise guard to prevent duplicate concurrent auth calls.
      */
-    async getAuthenticatedRequest(instance: ServiceNowInstance): Promise<ServiceNowRequest> {
+    async getAuthenticatedRequest(instance: IServiceNowInstance): Promise<ServiceNowRequest> {
         const key = this.getKey(instance);
         const request = this.getRequest(instance);
 
@@ -97,10 +97,10 @@ export class SessionManager {
         return this._sessions.has(alias);
     }
 
-    private getKey(instance: ServiceNowInstance): string {
-        const key = instance.getAlias() ?? instance.getHost();
+    private getKey(instance: IServiceNowInstance): string {
+        const key = instance.getAlias() || instance.getHost();
         if (!key) {
-            throw new Error("ServiceNowInstance must have an alias or host to identify the session");
+            throw new Error("IServiceNowInstance must have an alias or host to identify the session");
         }
         return key;
     }

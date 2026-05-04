@@ -3,17 +3,17 @@
  */
 
 // Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { EventManager } from '../../../src/sn/amb/EventManager.js';
 
 // Mock Logger
-jest.mock('../../../src/util/Logger', () => ({
-    Logger: jest.fn().mockImplementation(() => ({
-        debug: jest.fn(),
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn()
-    }))
+vi.mock('../../../src/util/Logger', () => ({
+    Logger: vi.fn().mockImplementation(function(this: any) {
+        this.debug = vi.fn();
+        this.info = vi.fn();
+        this.warn = vi.fn();
+        this.error = vi.fn();
+    })
 }));
 
 describe('EventManager - Unit Tests', () => {
@@ -61,7 +61,7 @@ describe('EventManager - Unit Tests', () => {
 
     describe('subscribe', () => {
         it('should subscribe to event with callback', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             const id = eventManager.subscribe('connection.opened', callback);
             
             expect(id).toBe(0);
@@ -69,9 +69,9 @@ describe('EventManager - Unit Tests', () => {
         });
 
         it('should increment ID for each subscription', () => {
-            const callback1 = jest.fn();
-            const callback2 = jest.fn();
-            const callback3 = jest.fn();
+            const callback1 = vi.fn();
+            const callback2 = vi.fn();
+            const callback3 = vi.fn();
             
             const id1 = eventManager.subscribe('event1', callback1);
             const id2 = eventManager.subscribe('event2', callback2);
@@ -83,8 +83,8 @@ describe('EventManager - Unit Tests', () => {
         });
 
         it('should allow multiple subscriptions to same event', () => {
-            const callback1 = jest.fn();
-            const callback2 = jest.fn();
+            const callback1 = vi.fn();
+            const callback2 = vi.fn();
             
             eventManager.subscribe('connection.opened', callback1);
             eventManager.subscribe('connection.opened', callback2);
@@ -94,7 +94,7 @@ describe('EventManager - Unit Tests', () => {
         });
 
         it('should store event, callback, and ID', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             const id = eventManager.subscribe('test.event', callback);
             
             const subscriptions = (eventManager as unknown as {_subscriptions: {event: string, callback: Function, id: number}[]})._subscriptions;
@@ -108,7 +108,7 @@ describe('EventManager - Unit Tests', () => {
 
     describe('unsubscribe', () => {
         it('should remove subscription by ID', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             const id = eventManager.subscribe('event', callback);
             
             eventManager.unsubscribe(id);
@@ -118,9 +118,9 @@ describe('EventManager - Unit Tests', () => {
         });
 
         it('should only remove specified subscription', () => {
-            const id1 = eventManager.subscribe('event1', jest.fn());
-            const id2 = eventManager.subscribe('event2', jest.fn());
-            const id3 = eventManager.subscribe('event3', jest.fn());
+            const id1 = eventManager.subscribe('event1', vi.fn());
+            const id2 = eventManager.subscribe('event2', vi.fn());
+            const id3 = eventManager.subscribe('event3', vi.fn());
             
             eventManager.unsubscribe(id2);
             
@@ -129,7 +129,7 @@ describe('EventManager - Unit Tests', () => {
         });
 
         it('should handle unsubscribe of non-existent ID', () => {
-            eventManager.subscribe('event', jest.fn());
+            eventManager.subscribe('event', vi.fn());
             
             expect(() => eventManager.unsubscribe(999)).not.toThrow();
         });
@@ -141,8 +141,8 @@ describe('EventManager - Unit Tests', () => {
 
     describe('publish', () => {
         it('should call all subscribed callbacks for event', () => {
-            const callback1 = jest.fn();
-            const callback2 = jest.fn();
+            const callback1 = vi.fn();
+            const callback2 = vi.fn();
             
             eventManager.subscribe('test.event', callback1);
             eventManager.subscribe('test.event', callback2);
@@ -154,7 +154,7 @@ describe('EventManager - Unit Tests', () => {
         });
 
         it('should pass arguments to callbacks', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             eventManager.subscribe('test.event', callback);
             
             const args = [{ data: 'test' }, 123, 'string'];
@@ -164,8 +164,8 @@ describe('EventManager - Unit Tests', () => {
         });
 
         it('should not call callbacks for different events', () => {
-            const callback1 = jest.fn();
-            const callback2 = jest.fn();
+            const callback1 = vi.fn();
+            const callback2 = vi.fn();
             
             eventManager.subscribe('event1', callback1);
             eventManager.subscribe('event2', callback2);
@@ -181,7 +181,7 @@ describe('EventManager - Unit Tests', () => {
         });
 
         it('should handle publish with no arguments', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             eventManager.subscribe('event', callback);
             
             eventManager.publish('event');
@@ -191,9 +191,9 @@ describe('EventManager - Unit Tests', () => {
 
         it('should call callbacks in subscription order', () => {
             const callOrder: number[] = [];
-            const callback1 = jest.fn(() => callOrder.push(1));
-            const callback2 = jest.fn(() => callOrder.push(2));
-            const callback3 = jest.fn(() => callOrder.push(3));
+            const callback1 = vi.fn(() => callOrder.push(1));
+            const callback2 = vi.fn(() => callOrder.push(2));
+            const callback3 = vi.fn(() => callOrder.push(3));
             
             eventManager.subscribe('event', callback1);
             eventManager.subscribe('event', callback2);
@@ -207,7 +207,7 @@ describe('EventManager - Unit Tests', () => {
 
     describe('Complex scenarios', () => {
         it('should handle subscribe, publish, unsubscribe, publish cycle', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             const id = eventManager.subscribe('event', callback);
             
             eventManager.publish('event');
@@ -219,9 +219,9 @@ describe('EventManager - Unit Tests', () => {
         });
 
         it('should handle multiple events and subscriptions', () => {
-            const event1Callback1 = jest.fn();
-            const event1Callback2 = jest.fn();
-            const event2Callback = jest.fn();
+            const event1Callback1 = vi.fn();
+            const event1Callback2 = vi.fn();
+            const event2Callback = vi.fn();
             
             eventManager.subscribe('event1', event1Callback1);
             eventManager.subscribe('event1', event1Callback2);
@@ -238,7 +238,7 @@ describe('EventManager - Unit Tests', () => {
             const ids: number[] = [];
             
             for (let i = 0; i < 10; i++) {
-                ids.push(eventManager.subscribe('event', jest.fn()));
+                ids.push(eventManager.subscribe('event', vi.fn()));
             }
             
             for (let i = 0; i < 5; i++) {

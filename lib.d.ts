@@ -449,7 +449,11 @@ interface Boolean {
 	valueOf(): boolean;
 }
 
-
+type Merge<U> = {
+  [K in (U extends any ? keyof U : never)]: U extends any 
+    ? (K extends keyof U ? U[K] : undefined) 
+    : never;
+};
 type UnionToIntersection<U> =
   (U extends any ? (k: U) => void : never) extends
   ((k: infer I) => void)

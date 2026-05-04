@@ -1,4 +1,3 @@
-import { describe, it, expect } from '@jest/globals';
 import { BatchInstallation } from '../../../../src/sn/application/BatchInstallation.js';
 import { BatchDefinition } from '../../../../src/sn/application/BatchDefinition.js';
 

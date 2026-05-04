@@ -5,7 +5,7 @@ import Utf8 from "crypto-js/enc-utf8.js";
 import {Logger} from "../../util/Logger.js";
 import { ServerConnection } from "./ServerConnection.js";
 import { ChannelListener } from "./ChannelListener.js";
-import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { IServiceNowInstance } from "../IServiceNowInstance.js";
 import { SessionManager } from "../../comm/http/SessionManager.js";
 import { HTTPRequest } from "../../comm/http/HTTPRequest.js";
 
@@ -17,10 +17,10 @@ export class AMBClient{
     _ambClient:MessageClient;
     _serverConnection:ServerConnection;
     initiatedConnection = false;
-    private _instance: ServiceNowInstance | null = null;
+    private _instance: IServiceNowInstance | null = null;
     private _authenticated: boolean = false;
 
-    constructor(clientSubscriptions:any, instance?: ServiceNowInstance){
+    constructor(clientSubscriptions:any, instance?: IServiceNowInstance){
         this._logger = new Logger("AMBClient");
 		this._ambClient = new MessageClient();
 		this._clientSubscriptions = clientSubscriptions;

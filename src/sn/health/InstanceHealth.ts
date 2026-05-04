@@ -1,4 +1,4 @@
-import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { IServiceNowInstance } from "../IServiceNowInstance.js";
 import { Logger } from "../../util/Logger.js";
 import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
 import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
@@ -30,9 +30,9 @@ export class InstanceHealth {
     private _logger: Logger = new Logger("InstanceHealth");
     private _tableAPI: TableAPIRequest;
     private _aggregateQuery: AggregateQuery;
-    private _instance: ServiceNowInstance;
+    private _instance: IServiceNowInstance;
 
-    public constructor(instance: ServiceNowInstance, aggregateQuery?: AggregateQuery) {
+    public constructor(instance: IServiceNowInstance, aggregateQuery?: AggregateQuery) {
         this._instance = instance;
         this._tableAPI = new TableAPIRequest(instance);
         this._aggregateQuery = aggregateQuery || new AggregateQuery(instance);

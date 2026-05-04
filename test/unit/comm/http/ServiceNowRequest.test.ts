@@ -4,6 +4,7 @@
  */
 
 
+import { vi } from 'vitest';
 import { ServiceNowRequest } from '../../../../src/comm/http/ServiceNowRequest.js';
 import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { HTTPRequest } from '../../../../src/comm/http/HTTPRequest.js';
@@ -12,10 +13,10 @@ import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.
 
 // Create mock request handler
 class MockRequestHandler {
-    get = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<() => Promise<IHttpResponse<unknown>>>();
+    get = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    post = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    put = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    delete = vi.fn<() => Promise<IHttpResponse<unknown>>>();
 }
 
 // Import first
@@ -23,25 +24,25 @@ import { AuthenticationHandlerFactory } from '../../../../src/auth/Authenticatio
 import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
 
 // Then mock
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 describe('ServiceNowRequest', () => {
     let serviceNowRequest: ServiceNowRequest;
     let mockInstance: ServiceNowInstance;
     let mockAuthHandler: MockAuthenticationHandler;
     let mockRequestHandler: MockRequestHandler;
-    let mockCreateAuthHandler: ReturnType<typeof jest.spyOn>;
-    let mockCreateRequestHandler: ReturnType<typeof jest.spyOn>;
+    let mockCreateAuthHandler: ReturnType<typeof vi.spyOn>;
+    let mockCreateRequestHandler: ReturnType<typeof vi.spyOn>;
 
     beforeEach(() => {
         // Clear all mocks
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
         // Create mock instance
         mockInstance = {
-            getAlias: jest.fn().mockReturnValue('test-instance'),
-            getHost: jest.fn().mockReturnValue('<servicenow_instance_url>')
+            getAlias: vi.fn().mockReturnValue('test-instance'),
+            getHost: vi.fn().mockReturnValue('<servicenow_instance_url>')
         } as unknown as ServiceNowInstance;
 
         // Create mock handlers
@@ -49,9 +50,9 @@ describe('ServiceNowRequest', () => {
         mockRequestHandler = new MockRequestHandler();
 
         // Setup factory mocks using spyOn
-        mockCreateAuthHandler = jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        mockCreateAuthHandler = vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        mockCreateRequestHandler = jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        mockCreateRequestHandler = vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         // Create ServiceNowRequest instance
@@ -79,7 +80,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should work with null instance', () => {
-            const reqWithoutInstance = new ServiceNowRequest(null);
+            const reqWithoutInstance = new ServiceNowRequest(null as any);
             expect(reqWithoutInstance).toBeInstanceOf(ServiceNowRequest);
             expect(mockCreateAuthHandler).toHaveBeenCalled();
         });
@@ -95,7 +96,7 @@ describe('ServiceNowRequest', () => {
                 config: {}
             };
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(mockResponse);
 
             const request: HTTPRequest = {
@@ -122,7 +123,7 @@ describe('ServiceNowRequest', () => {
                 config: {}
             };
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(false);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(false);
             mockRequestHandler.get.mockResolvedValue(mockResponse);
 
             const request: HTTPRequest = {
@@ -140,7 +141,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should handle GET request with query parameters', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({ data: {}, status: 200 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -170,7 +171,7 @@ describe('ServiceNowRequest', () => {
                 config: {}
             };
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(mockResponse);
 
             const request: HTTPRequest = {
@@ -189,7 +190,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should login before POST request when not logged in', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(false);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(false);
             mockRequestHandler.post.mockResolvedValue({ data: {}, status: 201 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -206,7 +207,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should handle POST with form fields', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({ data: {}, status: 200 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -237,7 +238,7 @@ describe('ServiceNowRequest', () => {
                 config: {}
             };
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.put.mockResolvedValue(mockResponse);
 
             const request: HTTPRequest = {
@@ -256,7 +257,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should login before PUT request when not logged in', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(false);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(false);
             mockRequestHandler.put.mockResolvedValue({ data: {}, status: 200 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -283,7 +284,7 @@ describe('ServiceNowRequest', () => {
                 config: {}
             };
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.delete.mockResolvedValue(mockResponse);
 
             const request: HTTPRequest = {
@@ -302,7 +303,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should login before DELETE request when not logged in', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(false);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(false);
             mockRequestHandler.delete.mockResolvedValue({ data: null, status: 204 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -321,7 +322,7 @@ describe('ServiceNowRequest', () => {
 
     describe('executeRequest', () => {
         it('should route to GET for get method', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({ data: {}, status: 200 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -338,7 +339,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should route to POST for post method', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({ data: {}, status: 201 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -355,7 +356,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should route to PUT for put method', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.put.mockResolvedValue({ data: {}, status: 200 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -372,7 +373,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should route to DELETE for delete method', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.delete.mockResolvedValue({ data: null, status: 204 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -389,7 +390,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should handle uppercase method names', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({ data: {}, status: 200 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -406,7 +407,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should handle method names with spaces', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({ data: {}, status: 200 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -468,8 +469,8 @@ describe('ServiceNowRequest', () => {
     describe('getUserSession', () => {
         it('should return session when logged in', async () => {
             const mockSession = { username: 'test', host: '<servicenow_instance_url>' };
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
-            mockAuthHandler.getSession = jest.fn().mockReturnValue(mockSession);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
+            mockAuthHandler.getSession = vi.fn().mockReturnValue(mockSession);
 
             const session = await serviceNowRequest.getUserSession();
 
@@ -480,8 +481,8 @@ describe('ServiceNowRequest', () => {
 
         it('should login and return session when not logged in', async () => {
             const mockSession = { username: 'test', host: '<servicenow_instance_url>' };
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(false);
-            mockAuthHandler.doLogin = jest.fn<() => Promise<void>>().mockResolvedValue(mockSession as unknown as void);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(false);
+            mockAuthHandler.doLogin = vi.fn<() => Promise<void>>().mockResolvedValue(mockSession as unknown as void);
 
             const session = await serviceNowRequest.getUserSession();
 
@@ -493,7 +494,7 @@ describe('ServiceNowRequest', () => {
 
     describe('isLoggedIn', () => {
         it('should return true when authenticated', () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             const result = serviceNowRequest.isLoggedIn();
 
@@ -502,7 +503,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should return false when not authenticated', () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(false);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(false);
 
             const result = serviceNowRequest.isLoggedIn();
 
@@ -529,7 +530,7 @@ describe('ServiceNowRequest', () => {
 
     describe('ensureLoggedIn (private method)', () => {
         it('should login when not authenticated', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(false);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(false);
             mockRequestHandler.get.mockResolvedValue({ data: {}, status: 200 } as IHttpResponse<unknown>);
 
             const request: HTTPRequest = {
@@ -545,7 +546,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should be called before each request when not logged in', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(false);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(false);
             mockRequestHandler.get.mockResolvedValue({ data: {}, status: 200 } as IHttpResponse<unknown>);
             mockRequestHandler.post.mockResolvedValue({ data: {}, status: 201 } as IHttpResponse<unknown>);
 
@@ -572,7 +573,7 @@ describe('ServiceNowRequest', () => {
 
     describe('Integration scenarios', () => {
         it('should handle multiple sequential requests', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({ data: { result: [] }, status: 200 } as IHttpResponse<unknown>);
             mockRequestHandler.post.mockResolvedValue({ data: { result: {} }, status: 201 } as IHttpResponse<unknown>);
             mockRequestHandler.put.mockResolvedValue({ data: { result: {} }, status: 200 } as IHttpResponse<unknown>);
@@ -593,7 +594,7 @@ describe('ServiceNowRequest', () => {
 
         it('should handle authentication state changes', async () => {
             // First request: not logged in
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValueOnce(false);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValueOnce(false);
             mockRequestHandler.get.mockResolvedValue({ data: {}, status: 200 } as IHttpResponse<unknown>);
 
             const request1: HTTPRequest = {
@@ -607,7 +608,7 @@ describe('ServiceNowRequest', () => {
             expect(mockAuthHandler.doLogin).toHaveBeenCalledTimes(1);
 
             // Second request: now logged in
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             const request2: HTTPRequest = {
                 path: '/api/endpoint2',
@@ -621,7 +622,7 @@ describe('ServiceNowRequest', () => {
         });
 
         it('should handle different request types in sequence', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             
             const mockGetResponse = { data: { result: { id: '1' } }, status: 200 } as IHttpResponse<unknown>;
             const mockPostResponse = { data: { result: { id: '2' } }, status: 201 } as IHttpResponse<unknown>;

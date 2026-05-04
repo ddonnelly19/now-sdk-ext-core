@@ -3,7 +3,7 @@
  * These mocks can be used across multiple test files
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { getSafeUserSession } from '@servicenow/sdk-cli-core/dist/util/sessionToken.js';
 import { getCredentials } from '@servicenow/sdk-cli/dist/auth/index.js';
 import { ServiceNowInstance } from '../../../src/index.js';
@@ -67,7 +67,7 @@ export class MockResponse {
  * Mock for makeRequest from @servicenow/sdk-cli-core
  */
 export const createMakeRequestMock = () => {
-    return jest.fn().mockImplementation(async (config: any) => {
+    return vi.fn().mockImplementation(async (config: any) => {
         // Default successful response
         const body = { result: 'success' };
         const response = new MockResponse(body, {
@@ -87,7 +87,7 @@ export const createMakeRequestMock = () => {
  * Mock for parseResponseBody from @servicenow/sdk-cli-core
  */
 export const createParseResponseBodyMock = () => {
-    return jest.fn().mockImplementation(async (response: any) => {
+    return vi.fn().mockImplementation(async (response: any) => {
         if (typeof response === 'string') {
             try {
                 return JSON.parse(response);
@@ -103,7 +103,7 @@ export const createParseResponseBodyMock = () => {
  * Mock for parseXml from @servicenow/sdk-cli-core
  */
 export const createParseXmlMock = () => {
-    return jest.fn().mockImplementation(async (xmlString: string) => {
+    return vi.fn().mockImplementation(async (xmlString: string) => {
         // Simple XML parsing mock
         return {
             xml: {
@@ -203,25 +203,25 @@ export class MockAuthenticationHandler {
     private _requestHandler: any = null;
     private _cookieStore: any = null;
 
-    doLogin = jest.fn().mockResolvedValue(undefined);
+    doLogin = vi.fn().mockResolvedValue(undefined);
     
-    getRequestHandler = jest.fn().mockReturnValue(this._requestHandler);
+    getRequestHandler = vi.fn().mockReturnValue(this._requestHandler);
     
-    setRequestHandler = jest.fn().mockImplementation((handler: any) => {
+    setRequestHandler = vi.fn().mockImplementation((handler: any) => {
         this._requestHandler = handler;
     });
 
-    isLoggedIn = jest.fn().mockReturnValue(this._isLoggedIn);
+    isLoggedIn = vi.fn().mockReturnValue(this._isLoggedIn);
     
-    setLoggedIn = jest.fn().mockImplementation((loggedIn: boolean) => {
+    setLoggedIn = vi.fn().mockImplementation((loggedIn: boolean) => {
         this._isLoggedIn = loggedIn;
     });
 
-    getToken = jest.fn().mockReturnValue(this._token);
+    getToken = vi.fn().mockReturnValue(this._token);
     
-    getCookies = jest.fn().mockReturnValue(this._cookieStore);
+    getCookies = vi.fn().mockReturnValue(this._cookieStore);
     
-    getSession = jest.fn().mockReturnValue(this._session);
+    getSession = vi.fn().mockReturnValue(this._session);
 
     // Helper methods for testing
     setToken(token: string) {
@@ -241,14 +241,14 @@ export class MockAuthenticationHandler {
  * Mock Logger
  */
 export class MockLogger {
-    debug = jest.fn();
-    info = jest.fn();
-    warn = jest.fn();
-    error = jest.fn();
-    log = jest.fn();
+    debug = vi.fn();
+    info = vi.fn();
+    warn = vi.fn();
+    error = vi.fn();
+    log = vi.fn();
 
-    getLabel = jest.fn().mockReturnValue('MockLogger');
-    setLogger = jest.fn();
+    getLabel = vi.fn().mockReturnValue('MockLogger');
+    setLogger = vi.fn();
 
     // Helper to check if error was logged
     hasErrorBeenLogged(message?: string): boolean {
@@ -278,19 +278,19 @@ export class MockLogger {
 export class MockCookieStore {
     private cookies: Map<string, any> = new Map();
 
-    getCookie = jest.fn().mockImplementation((name: string) => {
+    getCookie = vi.fn().mockImplementation((name: string) => {
         return this.cookies.get(name);
     });
 
-    setCookie = jest.fn().mockImplementation((name: string, cookie: any) => {
+    setCookie = vi.fn().mockImplementation((name: string, cookie: any) => {
         this.cookies.set(name, cookie);
     });
 
-    getAllCookies = jest.fn().mockImplementation(() => {
+    getAllCookies = vi.fn().mockImplementation(() => {
         return Array.from(this.cookies.values());
     });
 
-    clearCookies = jest.fn().mockImplementation(() => {
+    clearCookies = vi.fn().mockImplementation(() => {
         this.cookies.clear();
     });
 }
@@ -299,7 +299,7 @@ export class MockCookieStore {
  * Mock for getCredentials from @servicenow/sdk-cli
  */
 export const createGetCredentialsMock = () => {
-    return jest.fn<typeof getCredentials>().mockImplementation(async (aliasOrArgs: string | unknown) => {
+    return vi.fn<typeof getCredentials>().mockImplementation(async (aliasOrArgs: string | unknown) => {
         const alias = typeof aliasOrArgs === 'string' ? aliasOrArgs : (aliasOrArgs as {auth?: string})?.auth || 'test-instance';
         
         // Return mock credentials with all required properties
@@ -321,16 +321,16 @@ export const createGetCredentialsMock = () => {
  * Mock for getSafeUserSession from @servicenow/sdk-cli-core
  */
 export const createGetSafeUserSessionMock = () => {
-    return jest.fn<typeof getSafeUserSession>().mockImplementation(async (auth: unknown, logger: unknown) => {
+    return vi.fn<typeof getSafeUserSession>().mockImplementation(async (auth: unknown, logger: unknown) => {
         const authObj = auth as {credentials?: {username?: string, host?: string}};
         return {
             username: authObj?.credentials?.username || 'mock.user',
             host: authObj?.credentials?.host || '<servicenow_instance_url>',
             token: 'mock-session-token',
             sessionId: 'mock-session-id',
-            setSession: jest.fn(),
-            getToken: jest.fn().mockReturnValue('mock-session-token'),
-            getCookies: jest.fn().mockReturnValue({}),
+            setSession: vi.fn(),
+            getToken: vi.fn().mockReturnValue('mock-session-token'),
+            getCookies: vi.fn().mockReturnValue({}),
             instanceUrl: 'https://<servicenow_instance_url>'
         };
     });
@@ -341,10 +341,10 @@ export const createGetSafeUserSessionMock = () => {
  */
 export const createMockServiceNowInstance = (alias: string = 'test-instance') => {
     return {
-        getAlias: jest.fn<ServiceNowInstance["getAlias"]>().mockReturnValue(alias),
-        getHost: jest.fn<ServiceNowInstance["getHost"]>().mockReturnValue(`${alias}.service-now.com`),
-        getInstanceUrl: jest.fn<ServiceNowInstance["getInstanceUrl"]>().mockReturnValue(`https://${alias}.service-now.com`),
-        getCredential: jest.fn<ServiceNowInstance["getCredential"]>().mockReturnValue({
+        getAlias: vi.fn<ServiceNowInstance["getAlias"]>().mockReturnValue(alias),
+        getHost: vi.fn<ServiceNowInstance["getHost"]>().mockReturnValue(`${alias}.service-now.com`),
+        getInstanceUrl: vi.fn<ServiceNowInstance["getInstanceUrl"]>().mockReturnValue(`https://${alias}.service-now.com`),
+        getCredential: vi.fn<ServiceNowInstance["getCredential"]>().mockReturnValue({
             host: `${alias}.service-now.com`,
             username: 'mock.user',
             password: 'mock-password'

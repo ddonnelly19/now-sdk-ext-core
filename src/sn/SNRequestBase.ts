@@ -1,10 +1,10 @@
 import { ServiceNowRequest } from "../comm/http/ServiceNowRequest.js";
 import { Logger } from "../util/Logger.js";
-import { ServiceNowInstance } from "./ServiceNowInstance.js";
+import { IServiceNowInstance } from "./IServiceNowInstance.js";
 
 
 export abstract class SNRequestBase {
-	private _snInstance: ServiceNowInstance;
+	private _snInstance: IServiceNowInstance;
 
 
 	private _req: ServiceNowRequest;
@@ -12,7 +12,7 @@ export abstract class SNRequestBase {
 
 	_logger: Logger = new Logger("ATFTestExecutor");
 
-	public constructor(instance: ServiceNowInstance) {
+	public constructor(instance: IServiceNowInstance) {
 		this._snInstance = instance;
 		this._req = new ServiceNowRequest(this._snInstance);
 	}
@@ -24,10 +24,10 @@ export abstract class SNRequestBase {
 		this._req = value;
 	}
 
-	public get snInstance(): ServiceNowInstance {
+	public get snInstance(): IServiceNowInstance {
 		return this._snInstance;
 	}
-	public set snInstance(value: ServiceNowInstance) {
+	public set snInstance(value: IServiceNowInstance) {
 		this._snInstance = value;
 	}
 

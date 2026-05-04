@@ -3,19 +3,19 @@
  */
 
 // Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { ServerConnection } from '../../../src/sn/amb/ServerConnection.js';
 import { AMBConstants } from '../../../src/sn/amb/AMBConstants.js';
 
 function createMockCometd() {
     return {
-        getExtension: jest.fn().mockReturnValue(null),
-        addListener: jest.fn(),
-        configure: jest.fn(),
-        handshake: jest.fn(),
-        disconnect: jest.fn(),
-        getTransport: jest.fn().mockReturnValue({ type: 'websocket', abort: jest.fn() }),
-        getClientId: jest.fn().mockReturnValue('test-client-id'),
+        getExtension: vi.fn().mockReturnValue(null),
+        addListener: vi.fn(),
+        configure: vi.fn(),
+        handshake: vi.fn(),
+        disconnect: vi.fn(),
+        getTransport: vi.fn().mockReturnValue({ type: 'websocket', abort: vi.fn() }),
+        getClientId: vi.fn().mockReturnValue('test-client-id'),
     };
 }
 

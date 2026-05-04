@@ -4,7 +4,7 @@
  */
 
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { TableAPIRequest } from '../../../../src/comm/http/TableAPIRequest.js';
 import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
 import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
@@ -14,15 +14,15 @@ import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
 
 // Mock factories
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 // Mock request handler
 class MockRequestHandler {
-    get = jest.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
+    get = vi.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
+    post = vi.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
+    put = vi.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
+    delete = vi.fn<(req: unknown) => Promise<IHttpResponse<unknown>>>();
 }
 
 describe('TableAPIRequest', () => {
@@ -41,20 +41,20 @@ describe('TableAPIRequest', () => {
     };
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         SessionManager.resetInstance();
 
         mockAuthHandler = new MockAuthenticationHandler();
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         mockInstance = {
-            getAlias: jest.fn().mockReturnValue('test-instance'),
-            getHost: jest.fn().mockReturnValue('<servicenow_instance_url>')
+            getAlias: vi.fn().mockReturnValue('test-instance'),
+            getHost: vi.fn().mockReturnValue('<servicenow_instance_url>')
         } as unknown as ServiceNowInstance;
 
         tableAPI = new TableAPIRequest(mockInstance);
@@ -68,7 +68,7 @@ describe('TableAPIRequest', () => {
 
         it('should allow setting snInstance via setter', () => {
             const newInstance = {
-                getAlias: jest.fn().mockReturnValue('new-instance')
+                getAlias: vi.fn().mockReturnValue('new-instance')
             } as unknown as ServiceNowInstance;
 
             tableAPI.snInstance = newInstance;
@@ -78,7 +78,7 @@ describe('TableAPIRequest', () => {
 
     describe('GET', () => {
         it('should construct correct URL for table GET', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(mockSuccessResponse);
 
             await tableAPI.get('incident', { sysparm_limit: 10 });
@@ -90,7 +90,7 @@ describe('TableAPIRequest', () => {
         });
 
         it('should pass query parameters', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(mockSuccessResponse);
 
             const query = { sysparm_query: 'active=true', sysparm_limit: 5 };
@@ -102,7 +102,7 @@ describe('TableAPIRequest', () => {
         });
 
         it('should return response from underlying request', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(mockSuccessResponse);
 
             const response = await tableAPI.get('incident', {});
@@ -110,7 +110,7 @@ describe('TableAPIRequest', () => {
         });
 
         it('should throw when request throws', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockRejectedValue(new Error('Network error'));
 
             await expect(tableAPI.get('incident', {})).rejects.toThrow();
@@ -119,7 +119,7 @@ describe('TableAPIRequest', () => {
 
     describe('POST', () => {
         it('should construct correct URL for table POST', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(mockSuccessResponse);
 
             const body = { short_description: 'New incident' };
@@ -132,7 +132,7 @@ describe('TableAPIRequest', () => {
         });
 
         it('should pass body and query', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(mockSuccessResponse);
 
             const body = { short_description: 'Test' };
@@ -145,7 +145,7 @@ describe('TableAPIRequest', () => {
         });
 
         it('should throw when request throws', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockRejectedValue(new Error('Bad request'));
 
             await expect(tableAPI.post('incident', {}, {})).rejects.toThrow();
@@ -154,7 +154,7 @@ describe('TableAPIRequest', () => {
 
     describe('PUT', () => {
         it('should construct correct URL with sys_id appended', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.put.mockResolvedValue(mockSuccessResponse);
 
             await tableAPI.put('incident', 'abc123', { state: '6' });
@@ -167,7 +167,7 @@ describe('TableAPIRequest', () => {
         });
 
         it('should throw when request throws', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.put.mockRejectedValue(new Error('Forbidden'));
 
             await expect(tableAPI.put('incident', 'abc', {})).rejects.toThrow();
@@ -178,7 +178,7 @@ describe('TableAPIRequest', () => {
         it('should throw because ServiceNowRequest.executeRequest does not handle PATCH', async () => {
             // PATCH is defined on TableAPIRequest but ServiceNowRequest.executeRequest
             // has no case for "patch" and throws "Method must be populated…".
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             await expect(
                 tableAPI.patch('incident', 'xyz789', { priority: '1' })
@@ -188,7 +188,7 @@ describe('TableAPIRequest', () => {
 
     describe('replaceVar (tested via public methods)', () => {
         it('should replace table_name in URL template', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(mockSuccessResponse);
 
             await tableAPI.get('sys_user_group', {});
@@ -198,7 +198,7 @@ describe('TableAPIRequest', () => {
         });
 
         it('should handle table names with special characters', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(mockSuccessResponse);
 
             await tableAPI.get('x_custom_app_my_table', {});
@@ -210,7 +210,7 @@ describe('TableAPIRequest', () => {
 
     describe('Headers', () => {
         it('should set Content-Type and Accept headers to application/json', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(mockSuccessResponse);
 
             await tableAPI.get('incident', {});

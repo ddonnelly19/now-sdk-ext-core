@@ -3,7 +3,7 @@
  * Tests CMDB relationship queries and BFS graph traversal
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { CMDBRelationships } from '../../../../src/sn/cmdb/CMDBRelationships.js';
 import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
 import { MockAuthenticationHandler, createGetCredentialsMock } from '../../__mocks__/servicenow-sdk-mocks.js';
@@ -13,9 +13,9 @@ import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
 import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 
 // Mock dependencies
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
-jest.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
     getCredentials: createGetCredentialsMock()
 }));
 
@@ -23,10 +23,10 @@ const mockGetCredentials = createGetCredentialsMock();
 
 // Mock request handler
 class MockRequestHandler {
-    get = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<() => Promise<IHttpResponse<unknown>>>();
+    get = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    post = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    put = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    delete = vi.fn<() => Promise<IHttpResponse<unknown>>>();
 }
 
 function createMockResponse(data: unknown, status: number = 200): IHttpResponse<unknown> {
@@ -108,16 +108,16 @@ describe('CMDBRelationships - Unit Tests', () => {
     let mockRequestHandler: MockRequestHandler;
 
     beforeEach(async () => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         SessionManager.resetInstance();
 
         mockAuthHandler = new MockAuthenticationHandler();
-        mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+        mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         const credential = await mockGetCredentials('test-instance');

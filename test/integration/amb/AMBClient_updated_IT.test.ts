@@ -1,7 +1,4 @@
 
-
-
-
 import { adapt } from "../../../src/sn/amb/cometd-nodejs-client.js";
 import { SubscriptionConfig } from "../../../src/sn/amb/MessageClient.js";
 

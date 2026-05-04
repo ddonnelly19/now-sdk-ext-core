@@ -3,7 +3,7 @@
  * Uses mocks instead of real credentials
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
 import { CatalogManager, VARIABLE_TYPE_MAP, getVariableTypeName } from '../../../../src/sn/catalog/CatalogManager.js';
@@ -14,20 +14,20 @@ import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();
-jest.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
+vi.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
     getCredentials: mockGetCredentials
 }));
 
 // Mock factories
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 // Mock request handler
 class MockRequestHandler {
-    get = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<() => Promise<IHttpResponse<unknown>>>();
+    get = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    post = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    put = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    delete = vi.fn<() => Promise<IHttpResponse<unknown>>>();
 }
 
 function createMockResponse(data: any, status: number = 200) {
@@ -81,15 +81,15 @@ describe('CatalogManager - Unit Tests', () => {
     let mockRequestHandler: MockRequestHandler;
 
     beforeEach(async () => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         SessionManager.resetInstance();
 
         mockAuthHandler = new MockAuthenticationHandler();
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         const alias = 'test-instance';

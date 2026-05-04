@@ -1,10 +1,9 @@
-/**
+﻿/**
  * Unit tests for NowSDKAuthenticationHandler
  * Tests structure and basic functionality
  * Note: Full authentication flow tests are in integration tests
  */
 
-// Removed import from '@jest/globals' - Jest provides globals automatically
 import { NowSDKAuthenticationHandler } from '../../../src/auth/NowSDKAuthenticationHandler.js';
 import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../src/sn/ServiceNowInstance.js';
 import { IRequestHandler } from '../../../src/comm/http/IRequestHandler.js';

@@ -1,11 +1,10 @@
-/**
+﻿/**
  * Unit tests for AMBClient
  * Basic structural tests - full AMB tests are in integration tests
  * Note: AMBClient requires browser-like environment (window, WebSocket)
  * so full functionality testing is done in integration tests
  */
 
-// Removed import from '@jest/globals' - Jest provides globals automatically
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';

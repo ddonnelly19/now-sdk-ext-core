@@ -3,7 +3,7 @@
  * Uses mocks instead of real credentials
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
 import { CodeSearch } from '../../../../src/sn/codesearch/CodeSearch.js';
@@ -15,20 +15,20 @@ import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();
-jest.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
+vi.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
     getCredentials: mockGetCredentials
 }));
 
 // Mock factories
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 // Mock request handler
 class MockRequestHandler {
-    get = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<() => Promise<IHttpResponse<unknown>>>();
+    get = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    post = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    put = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    delete = vi.fn<() => Promise<IHttpResponse<unknown>>>();
 }
 
 /**
@@ -137,15 +137,15 @@ describe('CodeSearch - Unit Tests', () => {
     let mockRequestHandler: MockRequestHandler;
 
     beforeEach(async () => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         SessionManager.resetInstance();
 
         mockAuthHandler = new MockAuthenticationHandler();
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         const alias = 'test-instance';
@@ -250,14 +250,14 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should throw when table is provided without search_group', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
 
             await expect(codeSearch.searchRaw({ term: 'test', table: 'sys_script_include' }))
                 .rejects.toThrow('search_group is required when searching a specific table');
         });
 
         it('should NOT throw when table is provided with search_group', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([]));
 
             await expect(codeSearch.searchRaw({
@@ -270,7 +270,7 @@ describe('CodeSearch - Unit Tests', () => {
 
     describe('searchRaw() - API calls', () => {
         it('should return raw record type groups on success', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const mockGroup = createMockRecordTypeResult();
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([mockGroup]));
 
@@ -283,7 +283,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should throw on non-200 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createErrorResponse(500));
 
             await expect(codeSearch.searchRaw({ term: 'test' }))
@@ -291,7 +291,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should construct correct URL path', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([]));
 
             await codeSearch.searchRaw({ term: 'test' });
@@ -301,7 +301,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should include term in query parameters', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([]));
 
             await codeSearch.searchRaw({ term: 'GlideRecord' });
@@ -311,7 +311,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should include search_group when provided', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([]));
 
             await codeSearch.searchRaw({ term: 'test', search_group: 'myGroup' });
@@ -321,7 +321,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should include table when provided', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([]));
 
             await codeSearch.searchRaw({ term: 'test', table: 'sys_script_include', search_group: 'myGroup' });
@@ -331,7 +331,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should include current_app and search_all_scopes when provided', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([]));
 
             await codeSearch.searchRaw({
@@ -346,7 +346,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should include limit when provided', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([]));
 
             await codeSearch.searchRaw({ term: 'test', limit: 50 });
@@ -356,7 +356,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should include extended_matching when provided', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([]));
 
             await codeSearch.searchRaw({ term: 'test', extended_matching: true });
@@ -366,7 +366,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should not include undefined optional parameters', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([]));
 
             await codeSearch.searchRaw({ term: 'test' });
@@ -378,7 +378,7 @@ describe('CodeSearch - Unit Tests', () => {
 
     describe('search() - flattened results', () => {
         it('should return flattened results from raw response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const mockGroup = createMockRecordTypeResult();
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([mockGroup]));
 
@@ -395,7 +395,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should flatten multiple groups and hits', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const group1 = createMockRecordTypeResult();
             const group2 = createMockRecordTypeResult({
                 recordType: 'sys_script',
@@ -421,7 +421,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should skip groups with no hits', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const emptyGroup: CodeSearchRecordTypeResult = {
                 recordType: 'sys_empty',
                 tableLabel: 'Empty Table',
@@ -439,7 +439,7 @@ describe('CodeSearch - Unit Tests', () => {
 
     describe('searchInApp()', () => {
         it('should delegate to search with correct current_app and search_all_scopes', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([createMockRecordTypeResult()]));
 
             const results = await codeSearch.searchInApp('GlideRecord', 'x_myapp');
@@ -452,7 +452,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should pass through additional options', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([]));
 
             await codeSearch.searchInApp('test', 'x_myapp', { search_group: 'myGroup', limit: 25 });
@@ -465,7 +465,7 @@ describe('CodeSearch - Unit Tests', () => {
 
     describe('searchInTable()', () => {
         it('should delegate to search with correct table and search_group', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([createMockRecordTypeResult()]));
 
             const results = await codeSearch.searchInTable('GlideRecord', 'sys_script_include', 'myGroup');
@@ -478,7 +478,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should pass through additional options', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockSearchResponse([]));
 
             await codeSearch.searchInTable('test', 'sys_script', 'myGroup', { limit: 10 });
@@ -498,7 +498,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should return tables on successful 200 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const mockTables = [
                 { name: 'sys_script_include', label: 'Script Include' },
                 { name: 'sys_script', label: 'Business Rule' }
@@ -513,7 +513,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should throw on non-200 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createErrorResponse(404));
 
             await expect(codeSearch.getTablesForSearchGroup('nonexistent'))
@@ -521,7 +521,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should construct correct URL with search_group param', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockTablesResponse([]));
 
             await codeSearch.getTablesForSearchGroup('myGroup');
@@ -534,7 +534,7 @@ describe('CodeSearch - Unit Tests', () => {
 
     describe('getSearchGroups()', () => {
         it('should return groups on successful 200 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const mockGroups = [
                 { sys_id: 'abc', name: 'Default Search Group' },
                 { sys_id: 'def', name: 'Custom Group' }
@@ -549,7 +549,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should throw on non-200 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createErrorResponse(500));
 
             await expect(codeSearch.getSearchGroups())
@@ -557,7 +557,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should apply default limit of 100', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockGroupsResponse([]));
 
             await codeSearch.getSearchGroups();
@@ -567,7 +567,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should apply custom limit when provided', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockGroupsResponse([]));
 
             await codeSearch.getSearchGroups({ limit: 25 });
@@ -577,7 +577,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should include encodedQuery when provided', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockGroupsResponse([]));
 
             await codeSearch.getSearchGroups({ encodedQuery: 'active=true' });
@@ -587,7 +587,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should work with no options', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockGroupsResponse([]));
 
             const groups = await codeSearch.getSearchGroups();
@@ -768,7 +768,7 @@ describe('CodeSearch - Unit Tests', () => {
 
     describe('addTableToSearchGroup() - API calls', () => {
         it('should return the created record on 201 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const mockRecord = {
                 sys_id: 'new123',
                 table: 'sys_script',
@@ -790,7 +790,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should return the created record on 200 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const mockRecord = {
                 sys_id: 'new456',
                 table: 'sys_script_include',
@@ -809,7 +809,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should throw on non-200/201 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(createErrorResponse(403));
 
             await expect(codeSearch.addTableToSearchGroup({
@@ -820,7 +820,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should throw with status unknown when response is null', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(null);
 
             await expect(codeSearch.addTableToSearchGroup({
@@ -831,7 +831,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should call TableAPI post with correct table name', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const mockRecord = { sys_id: 'x', table: 'sys_script', search_fields: 'script', search_group: 'g1' };
             mockRequestHandler.post.mockResolvedValue(createMockTableRecordResponse(mockRecord));
 
@@ -846,7 +846,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should include correct body fields in POST request', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const mockRecord = { sys_id: 'x', table: 'sys_ui_script', search_fields: 'script,name', search_group: 'grp1' };
             mockRequestHandler.post.mockResolvedValue(createMockTableRecordResponse(mockRecord));
 
@@ -877,7 +877,7 @@ describe('CodeSearch - Unit Tests', () => {
 
     describe('getTableRecordsForSearchGroup() - API calls', () => {
         it('should return table records on successful response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const mockRecords = [
                 { sys_id: 'rec1', table: 'sys_script', search_fields: 'script', search_group: 'grp1' },
                 { sys_id: 'rec2', table: 'sys_script_include', search_fields: 'script,name', search_group: 'grp1' }
@@ -892,7 +892,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should throw on non-200 response', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createErrorResponse(500));
 
             await expect(codeSearch.getTableRecordsForSearchGroup('grp1'))
@@ -900,7 +900,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should throw with status unknown when response is null', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(null);
 
             await expect(codeSearch.getTableRecordsForSearchGroup('grp1'))
@@ -908,7 +908,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should include search_group filter in query', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockGroupsResponse([]));
 
             await codeSearch.getTableRecordsForSearchGroup('abc123');
@@ -918,7 +918,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should apply default limit of 100', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockGroupsResponse([]));
 
             await codeSearch.getTableRecordsForSearchGroup('abc123');
@@ -928,7 +928,7 @@ describe('CodeSearch - Unit Tests', () => {
         });
 
         it('should apply custom limit when provided', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue(createMockGroupsResponse([]));
 
             await codeSearch.getTableRecordsForSearchGroup('abc123', { limit: 10 });

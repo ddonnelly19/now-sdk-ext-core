@@ -1,52 +1,52 @@
-/**
+﻿/**
  * Unit tests for ChannelListener
  */
 
 // Jest provides most globals automatically, but 'jest' object needs explicit import in ESM mode
-import { jest } from '@jest/globals';
+import { vi, Mock } from 'vitest';
 import { ChannelListener } from '../../../src/sn/amb/ChannelListener.js';
 import { Channel } from '../../../src/sn/amb/Channel.js';
 import { ServerConnection } from '../../../src/sn/amb/ServerConnection.js';
 
 // Mock Logger
-jest.mock('../../../src/util/Logger', () => ({
-    Logger: jest.fn().mockImplementation(() => ({
-        debug: jest.fn(),
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn()
-    }))
+vi.mock('../../../src/util/Logger', () => ({
+    Logger: vi.fn().mockImplementation(function(this: any) {
+        this.debug = vi.fn();
+        this.info = vi.fn();
+        this.warn = vi.fn();
+        this.error = vi.fn();
+    })
 }));
 
 describe('ChannelListener - Unit Tests', () => {
     let mockChannel: {
-        subscribe: jest.Mock;
-        unsubscribe: jest.Mock;
-        publish: jest.Mock;
-        getName: jest.Mock;
+        subscribe: Mock;
+        unsubscribe: Mock;
+        publish: Mock;
+        getName: Mock;
     };
     let mockServerConnection: {
-        getSubscriptionCommandSender: jest.Mock;
+        getSubscriptionCommandSender: Mock;
     };
     let channelListener: ChannelListener;
-    let subscriptionCallback: jest.Mock;
+    let subscriptionCallback: Mock;
 
     beforeEach(() => {
         // Create mock channel
         mockChannel = {
-            subscribe: jest.fn().mockReturnValue(1),
-            unsubscribe: jest.fn(),
-            publish: jest.fn(),
-            getName: jest.fn().mockReturnValue('test-channel')
+            subscribe: vi.fn().mockReturnValue(1),
+            unsubscribe: vi.fn(),
+            publish: vi.fn(),
+            getName: vi.fn().mockReturnValue('test-channel')
         };
 
         // Create mock server connection
         mockServerConnection = {
-            getSubscriptionCommandSender: jest.fn().mockReturnValue(null)
+            getSubscriptionCommandSender: vi.fn().mockReturnValue(null)
         };
 
         // Create subscription callback
-        subscriptionCallback = jest.fn();
+        subscriptionCallback = vi.fn();
 
         // Create channel listener
         channelListener = new ChannelListener(
@@ -94,7 +94,7 @@ describe('ChannelListener - Unit Tests', () => {
 
     describe('getCallback', () => {
         it('should return message callback', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             channelListener.subscribe(callback);
             
             expect(channelListener.getCallback()).toBe(callback);
@@ -127,7 +127,7 @@ describe('ChannelListener - Unit Tests', () => {
         });
 
         it('should return ID after subscription', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             channelListener.subscribe(callback);
             
             expect(channelListener.getID()).toBe(1);
@@ -136,7 +136,7 @@ describe('ChannelListener - Unit Tests', () => {
 
     describe('subscribe', () => {
         it('should subscribe with callback', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             const result = channelListener.subscribe(callback);
             
             expect(result).toBe(channelListener);
@@ -144,7 +144,7 @@ describe('ChannelListener - Unit Tests', () => {
         });
 
         it('should store message callback', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             channelListener.subscribe(callback);
             
             expect(channelListener.getCallback()).toBe(callback);
@@ -152,7 +152,7 @@ describe('ChannelListener - Unit Tests', () => {
 
         it('should update ID from channel subscription', () => {
             mockChannel.subscribe.mockReturnValue(42);
-            const callback = jest.fn();
+            const callback = vi.fn();
             
             channelListener.subscribe(callback);
             
@@ -160,7 +160,7 @@ describe('ChannelListener - Unit Tests', () => {
         });
 
         it('should return itself for chaining', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             const result = channelListener.subscribe(callback);
             
             expect(result).toBe(channelListener);
@@ -169,7 +169,7 @@ describe('ChannelListener - Unit Tests', () => {
 
     describe('resubscribe', () => {
         it('should resubscribe with same callback', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             channelListener.subscribe(callback);
             
             mockChannel.subscribe.mockClear();
@@ -183,7 +183,7 @@ describe('ChannelListener - Unit Tests', () => {
         });
 
         it('should return itself for chaining', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             channelListener.subscribe(callback);
             const result = channelListener.resubscribe();
             
@@ -205,7 +205,7 @@ describe('ChannelListener - Unit Tests', () => {
         });
 
         it('should work with optional listener parameter', () => {
-            const optionalCallback = jest.fn();
+            const optionalCallback = vi.fn();
             
             expect(() => channelListener.unsubscribe(optionalCallback)).not.toThrow();
             expect(mockChannel.unsubscribe).toHaveBeenCalledWith(channelListener);
@@ -251,14 +251,14 @@ describe('ChannelListener - Unit Tests', () => {
 
     describe('setNewChannel', () => {
         it('should unsubscribe from old channel', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             channelListener.subscribe(callback);
             
             const newMockChannel = {
-                subscribe: jest.fn().mockReturnValue(2),
-                unsubscribe: jest.fn(),
-                publish: jest.fn(),
-                getName: jest.fn().mockReturnValue('new-channel')
+                subscribe: vi.fn().mockReturnValue(2),
+                unsubscribe: vi.fn(),
+                publish: vi.fn(),
+                getName: vi.fn().mockReturnValue('new-channel')
             };
             
             channelListener.setNewChannel(newMockChannel as unknown as Channel);
@@ -267,14 +267,14 @@ describe('ChannelListener - Unit Tests', () => {
         });
 
         it('should subscribe to new channel', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             channelListener.subscribe(callback);
             
             const newMockChannel = {
-                subscribe: jest.fn().mockReturnValue(2),
-                unsubscribe: jest.fn(),
-                publish: jest.fn(),
-                getName: jest.fn().mockReturnValue('new-channel')
+                subscribe: vi.fn().mockReturnValue(2),
+                unsubscribe: vi.fn(),
+                publish: vi.fn(),
+                getName: vi.fn().mockReturnValue('new-channel')
             };
             
             channelListener.setNewChannel(newMockChannel as unknown as Channel);
@@ -283,14 +283,14 @@ describe('ChannelListener - Unit Tests', () => {
         });
 
         it('should preserve message callback when changing channels', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             channelListener.subscribe(callback);
             
             const newMockChannel = {
-                subscribe: jest.fn().mockReturnValue(2),
-                unsubscribe: jest.fn(),
-                publish: jest.fn(),
-                getName: jest.fn().mockReturnValue('new-channel')
+                subscribe: vi.fn().mockReturnValue(2),
+                unsubscribe: vi.fn(),
+                publish: vi.fn(),
+                getName: vi.fn().mockReturnValue('new-channel')
             };
             
             channelListener.setNewChannel(newMockChannel as unknown as Channel);
@@ -302,7 +302,7 @@ describe('ChannelListener - Unit Tests', () => {
 
     describe('Method chaining', () => {
         it('should support subscribe-publish chain', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             
             channelListener
                 .subscribe(callback)
@@ -313,7 +313,7 @@ describe('ChannelListener - Unit Tests', () => {
         });
 
         it('should support subscribe-unsubscribe chain', () => {
-            const callback = jest.fn();
+            const callback = vi.fn();
             
             channelListener
                 .subscribe(callback)

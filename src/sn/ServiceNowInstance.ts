@@ -1,7 +1,8 @@
-import { Creds } from "@servicenow/sdk-cli-core/dist/auth/index.js";
+import { Creds } from "@servicenow/sdk-cli/dist/auth/index.js";
 import { IServiceNowInstance } from "./IServiceNowInstance.js";
 
-/** Configuration bag passed to the {@link ServiceNowInstance} constructor. */
+
+/** Configuration bag passed to the {@link IServiceNowInstance} constructor. */
 export interface ServiceNowSettingsInstance {
 	/** Fully-qualified hostname (e.g. `https://myinstance.service-now.com`). */
 	host?: string;
@@ -25,7 +26,7 @@ export interface ServiceNowSettingsInstance {
  *
  * @example
  * ```ts
- * const instance = new ServiceNowInstance({ host: 'https://dev.service-now.com', alias: 'dev' });
+ * const instance = new IServiceNowInstance({ host: 'https://dev.service-now.com', alias: 'dev' });
  * const apps = new ApplicationManager(instance);
  * ```
  */

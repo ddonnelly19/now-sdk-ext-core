@@ -3,13 +3,13 @@ import { XMLHTTP_PROCESSOR_ENDPOINT } from '../../constants/ServiceNow.js';
 import { Parser } from 'xml2js';
 import { HTTPRequest } from "./HTTPRequest.js";
 import { IHttpResponse } from "./IHttpResponse.js";
-import { ServiceNowInstance } from "../../sn/ServiceNowInstance.js";
+import { IServiceNowInstance } from "../../sn/IServiceNowInstance.js";
 
 export class ServiceNowProcessorRequest {
 
-	_instance: ServiceNowInstance;
+	_instance: IServiceNowInstance;
 
-	public constructor(instance: ServiceNowInstance) {
+	public constructor(instance: IServiceNowInstance) {
 		this._instance = instance;
 	}
 

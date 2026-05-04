@@ -3,14 +3,14 @@
  * Uses mocks instead of real credentials
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { createGetCredentialsMock } from '../../__mocks__/servicenow-sdk-mocks.js';
 import { CompanyApplications } from '../../../../src/sn/application/CompanyApplications.js';
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();
-jest.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
+vi.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
     getCredentials: mockGetCredentials
 }));
 
@@ -19,7 +19,7 @@ describe('CompanyApplications - Unit Tests', () => {
     let companyApps: CompanyApplications;
 
     beforeEach(async () => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         
         const alias = 'test-instance';
         const credential = await mockGetCredentials(alias);

@@ -3,7 +3,7 @@
  * Caches ServiceNowRequest instances keyed by instance alias
  */
 
-
+import { vi } from 'vitest';
 import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
 import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { ServiceNowRequest } from '../../../../src/comm/http/ServiceNowRequest.js';
@@ -13,14 +13,14 @@ import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.
 import { AuthenticationHandlerFactory } from '../../../../src/auth/AuthenticationHandlerFactory.js';
 import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerFactory.js';
 
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 class MockRequestHandler {
-    get = jest.fn<() => Promise<unknown>>();
-    post = jest.fn<() => Promise<unknown>>();
-    put = jest.fn<() => Promise<unknown>>();
-    delete = jest.fn<() => Promise<unknown>>();
+    get = vi.fn<() => Promise<unknown>>();
+    post = vi.fn<() => Promise<unknown>>();
+    put = vi.fn<() => Promise<unknown>>();
+    delete = vi.fn<() => Promise<unknown>>();
 }
 
 function createMockInstance(alias: string, host?: string): ServiceNowInstance {
@@ -37,14 +37,14 @@ describe('SessionManager', () => {
     beforeEach(() => {
         // Reset singleton between tests
         SessionManager.resetInstance();
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
         mockAuthHandler = new MockAuthenticationHandler();
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
     });
 
@@ -123,7 +123,7 @@ describe('SessionManager', () => {
     describe('getAuthenticatedRequest', () => {
         it('returns a ServiceNowRequest that has been logged in', async () => {
             const instance = createMockInstance('dev01');
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(false);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(false);
             const mgr = SessionManager.getInstance();
 
             const req = await mgr.getAuthenticatedRequest(instance);
@@ -134,7 +134,7 @@ describe('SessionManager', () => {
 
         it('does not login again if already logged in', async () => {
             const instance = createMockInstance('dev01');
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const mgr = SessionManager.getInstance();
 
             const req = await mgr.getAuthenticatedRequest(instance);
@@ -145,7 +145,7 @@ describe('SessionManager', () => {
 
         it('reuses the same request across sync and async gets', async () => {
             const instance = createMockInstance('dev01');
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             const mgr = SessionManager.getInstance();
 
             const reqSync = mgr.getRequest(instance);

@@ -4,6 +4,7 @@
  */
 
 
+import { vi } from 'vitest';
 import { ServiceNowProcessorRequest } from '../../../../src/comm/http/ServiceNowProcessorRequest.js';
 import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
 import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
@@ -12,15 +13,15 @@ import { RequestHandlerFactory } from '../../../../src/comm/http/RequestHandlerF
 import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance.js';
 
 // Mock factories
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 // Mock request handler
 class MockRequestHandler {
-    get = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<() => Promise<IHttpResponse<unknown>>>();
+    get = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    post = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    put = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    delete = vi.fn<() => Promise<IHttpResponse<unknown>>>();
 }
 
 describe('ServiceNowProcessorRequest', () => {
@@ -30,19 +31,19 @@ describe('ServiceNowProcessorRequest', () => {
     let mockRequestHandler: MockRequestHandler;
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
         mockAuthHandler = new MockAuthenticationHandler();
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         mockInstance = {
-            getAlias: jest.fn().mockReturnValue('test-instance'),
-            getHost: jest.fn().mockReturnValue('<servicenow_instance_url>')
+            getAlias: vi.fn().mockReturnValue('test-instance'),
+            getHost: vi.fn().mockReturnValue('<servicenow_instance_url>')
         } as unknown as ServiceNowInstance;
 
         processorReq = new ServiceNowProcessorRequest(mockInstance);
@@ -57,7 +58,7 @@ describe('ServiceNowProcessorRequest', () => {
 
     describe('doXmlHttpRequest', () => {
         it('should assemble parameters correctly', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: '<xml answer="test"></xml>',
                 status: 200,
@@ -77,7 +78,7 @@ describe('ServiceNowProcessorRequest', () => {
         });
 
         it('should set Content-Type to x-www-form-urlencoded', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: '',
                 status: 200,
@@ -93,7 +94,7 @@ describe('ServiceNowProcessorRequest', () => {
         });
 
         it('should merge processor args into data object', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: '',
                 status: 200,
@@ -113,11 +114,11 @@ describe('ServiceNowProcessorRequest', () => {
         });
 
         it('should return null when request throws', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockRejectedValue(new Error('Connection refused'));
 
             const result = await processorReq.doXmlHttpRequest('Proc', 'method', 'global', {});
-            expect(result).toBeNull();
+            expect(result).toBeUndefined();
         });
 
         it('should return response on success', async () => {
@@ -129,7 +130,7 @@ describe('ServiceNowProcessorRequest', () => {
                 config: {}
             };
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue(expectedResponse);
 
             const result = await processorReq.doXmlHttpRequest('Proc', 'method', 'global', {});
@@ -143,7 +144,7 @@ describe('ServiceNowProcessorRequest', () => {
             // Response format: <?xml version="1.0"?>\n<xml answer="the_answer_value"></xml>
             const xmlResponse = '<?xml version="1.0" encoding="UTF-8"?><xml answer="scope_sys_id_123"></xml>';
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: xmlResponse,
                 status: 200,
@@ -157,7 +158,7 @@ describe('ServiceNowProcessorRequest', () => {
         });
 
         it('should return null when response has no answer= in data', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: '<xml><result>no answer attribute</result></xml>',
                 status: 200,
@@ -167,11 +168,11 @@ describe('ServiceNowProcessorRequest', () => {
             } as IHttpResponse<unknown>);
 
             const result = await processorReq.execute('Proc', 'method', 'global', {});
-            expect(result).toBeNull();
+            expect(result).toBeUndefined();
         });
 
         it('should return null when response status is not 200', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: 'error',
                 status: 500,
@@ -181,11 +182,11 @@ describe('ServiceNowProcessorRequest', () => {
             } as IHttpResponse<unknown>);
 
             const result = await processorReq.execute('Proc', 'method', 'global', {});
-            expect(result).toBeNull();
+            expect(result).toBeUndefined();
         });
 
         it('should return null when data is empty', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.post.mockResolvedValue({
                 data: '',
                 status: 200,
@@ -195,7 +196,7 @@ describe('ServiceNowProcessorRequest', () => {
             } as IHttpResponse<unknown>);
 
             const result = await processorReq.execute('Proc', 'method', 'global', {});
-            expect(result).toBeNull();
+            expect(result).toBeUndefined();
         });
     });
 });

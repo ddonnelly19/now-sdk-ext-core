@@ -1,5 +1,6 @@
 import { IAuthenticationHandler } from "../../auth/IAuthenticationHandler.js";
 import { IRequestHandler } from "./IRequestHandler.js";
+import { RequestHandler } from "./RequestHandler.js";
 import { AxiosRequestHandler } from "./AxiosRequestHandler.js";
 
 export class RequestHandlerFactory {

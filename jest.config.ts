@@ -12,11 +12,15 @@ const config: JestConfigWithTsJest = {
     "^.+\\.ts?$": [
       "ts-jest",
       {
-        useESM: true,
+        useESM: false,
+        tsconfig: {
+          module: "CommonJS",
+          moduleResolution: "node",
+          ignoreDeprecations: "6.0",
+        },
       },
     ],
   },
-  extensionsToTreatAsEsm: [".ts"],
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
     "^@src/(.*)$": "<rootDir>/src/$1",

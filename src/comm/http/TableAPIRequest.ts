@@ -1,6 +1,6 @@
 import { Join } from "ts-toolbelt/out/String/Join.js";
-import { ServiceNowInstance } from "../../sn/ServiceNowInstance.js";
-import { getURLSearchParams, isEmpty, isNotEmpty } from "../../util/utils.js";
+import { IServiceNowInstance } from "../../sn/IServiceNowInstance.js";
+import { isEmpty, isNotEmpty } from "../../util/utils.js";
 import { HTTPRequest } from "./HTTPRequest.js";
 import { IHttpResponse } from "./IHttpResponse.js";
 import { SessionManager } from "./SessionManager.js";
@@ -26,15 +26,15 @@ export class TableAPIRequest {
 		"Accept": "application/json"
 	};
 
-	private _snInstance: ServiceNowInstance;
-	public get snInstance(): ServiceNowInstance {
+	private _snInstance: IServiceNowInstance;
+	public get snInstance(): IServiceNowInstance {
 		return this._snInstance;
 	}
-	public set snInstance(value: ServiceNowInstance) {
+	public set snInstance(value: IServiceNowInstance) {
 		this._snInstance = value;
 	}
 
-	public constructor(instance: ServiceNowInstance) {
+	public constructor(instance: IServiceNowInstance) {
 		this._snInstance = instance;
 	}
 
@@ -78,7 +78,7 @@ export class TableAPIRequest {
 			path: uri,
 			method: httpMethod,
 			headers: this._headers,
-			query: getURLSearchParams({ ...query }),
+			query: query as HTTPRequest["query"],
 			body: null,
 			json: bodyData
 		};
@@ -371,7 +371,7 @@ export async function getGrouped<T extends table_name, F extends field_name<T>, 
 
 	return Object.fromEntries(
 		Object.entries(ret)
-			.map(e => [e[0] as F, (e[1] as Set<string>).values().toArray()] as const)
+			.map(e => [e[0] as unknown as F, (e[1] as Set<string>).values().toArray()] as const)
 	) as Record<F, string[]>;
 }
 

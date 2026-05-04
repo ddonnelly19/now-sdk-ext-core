@@ -1,6 +1,6 @@
 import { AuthenticationHandlerFactory } from "../../auth/AuthenticationHandlerFactory.js";
 import { IAuthenticationHandler } from "../../auth/IAuthenticationHandler.js";
-import { ServiceNowInstance } from "../../sn/ServiceNowInstance.js";
+import { IServiceNowInstance } from "../../sn/IServiceNowInstance.js";
 import { HTTPRequest } from "./HTTPRequest.js";
 import { IHttpResponse } from "./IHttpResponse.js";
 import { IRequestHandler } from "./IRequestHandler.js";
@@ -12,9 +12,9 @@ export class ServiceNowRequest {
 	_requestHandler: IRequestHandler;
 	auth: IAuthenticationHandler;
 
-	private _instance: ServiceNowInstance;
+	private _instance: IServiceNowInstance;
 
-	public constructor(instance: ServiceNowInstance) {
+	public constructor(instance: IServiceNowInstance) {
 		// let self:ServiceNowRequest = this;
 
 

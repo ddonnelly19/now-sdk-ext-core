@@ -3,35 +3,52 @@
  * Uses mocks instead of real credentials
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { vi } from 'vitest';
+
+// Hoist mock variables so they can be used in vi.mock() factories
+const { mockGetCredentials, mockGetSafeUserSession } = vi.hoisted(() => ({
+    mockGetCredentials: vi.fn().mockResolvedValue({
+        host: 'test-instance.service-now.com',
+        username: 'mock.user',
+        password: 'mock-password',
+        instanceUrl: 'https://test-instance.service-now.com',
+        token: 'mock-oauth-token',
+        type: 'basic',
+        alias: 'test-instance',
+        authType: 'basic'
+    }),
+    mockGetSafeUserSession: vi.fn().mockResolvedValue({
+        username: 'mock.user',
+        host: 'test-instance.service-now.com',
+        token: 'mock-session-token',
+        sessionId: 'mock-session-id',
+        instanceUrl: 'https://test-instance.service-now.com'
+    })
+}));
+
 import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../src/sn/ServiceNowInstance.js';
-import { createGetCredentialsMock, createGetSafeUserSessionMock } from '../__mocks__/servicenow-sdk-mocks.js';
 import { Application } from '../../../src/sn/Application.js';
 
-// Mock getCredentials and getSafeUserSession
-const mockGetCredentials = createGetCredentialsMock();
-const mockGetSafeUserSession = createGetSafeUserSessionMock();
-
-jest.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
+vi.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
     getCredentials: mockGetCredentials
 }));
 
-jest.mock('@servicenow/sdk-cli-core/dist/util/sessionToken.js', () => ({
+vi.mock('@servicenow/sdk-cli-core/dist/util/sessionToken.js', () => ({
     getSafeUserSession: mockGetSafeUserSession
 }));
 
 // Mock SDK utilities
-jest.mock('@servicenow/sdk-cli-core/dist/util/index.js', () => ({
-    parseXml: jest.fn(),
-    getScopeMetadataFromInstance: jest.fn(),
-    getNowTableRequest: jest.fn(),
-    monitorUninstallWorkerCompletion: jest.fn(),
-    getAppAndSummary: jest.fn()
+vi.mock('@servicenow/sdk-cli-core/dist/util/index.js', () => ({
+    parseXml: vi.fn(),
+    getScopeMetadataFromInstance: vi.fn(),
+    getNowTableRequest: vi.fn(),
+    monitorUninstallWorkerCompletion: vi.fn(),
+    getAppAndSummary: vi.fn()
 }));
 
-jest.mock('@servicenow/sdk-cli-core/dist/http/index.js', () => ({
-    makeRequest: jest.fn(),
-    parseResponseBody: jest.fn()
+vi.mock('@servicenow/sdk-cli-core/dist/http/index.js', () => ({
+    makeRequest: vi.fn(),
+    parseResponseBody: vi.fn()
 }));
 
 describe('SNAppUninstall - Unit Tests', () => {
@@ -40,7 +57,7 @@ describe('SNAppUninstall - Unit Tests', () => {
     const TEST_APP_ID = 'test-app-id-123';
 
     beforeEach(async () => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         
         const alias:string = 'test-instance';
         const credential = await mockGetCredentials(alias);

@@ -1,4 +1,4 @@
-import { ServiceNowInstance } from "../ServiceNowInstance.js";
+import { IServiceNowInstance } from "../IServiceNowInstance.js";
 import { Logger } from "../../util/Logger.js";
 import { TableAPIRequest } from "../../comm/http/TableAPIRequest.js";
 import { IHttpResponse } from "../../comm/http/IHttpResponse.js";
@@ -28,12 +28,12 @@ export class CMDBRelationships {
 
     private _logger: Logger = new Logger("CMDBRelationships");
     private _tableAPI: TableAPIRequest;
-    private _instance: ServiceNowInstance;
+    private _instance: IServiceNowInstance;
 
     /** Cache for CI records to minimize API calls during traversal */
     private _ciCache: Map<string, CMDBCIRecord> = new Map();
 
-    public constructor(instance: ServiceNowInstance) {
+    public constructor(instance: IServiceNowInstance) {
         this._instance = instance;
         this._tableAPI = new TableAPIRequest(instance);
     }

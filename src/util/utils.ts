@@ -2,7 +2,7 @@ import qs from "querystring"
 
 export const isUndefined = (value: any): value is undefined => value === undefined;
 export const isNull = (value: any): value is null => value === null;
-export const isNil = isEmpty;
+export const isNil = (value: any): value is null | undefined => isNull(value) || isUndefined(value);
 export const isObject = (x: any): x is NonNullable<object> => x != null && typeof x === 'object';
 export const isEmptyObject = (obj: any): obj is Record<never, never> => isObject(obj) && Object.keys(obj).length === 0;
 

@@ -3,7 +3,7 @@
  * Tests script generation, result parsing, and execution flow with mocked dependencies
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { ServiceNowInstance, ServiceNowSettingsInstance } from '../../../../src/sn/ServiceNowInstance.js';
 import { createGetCredentialsMock, MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
 import { FlowManager } from '../../../../src/sn/flow/FlowManager.js';
@@ -15,20 +15,20 @@ import { ExecuteFlowOptions, FlowScriptResultEnvelope, FlowLifecycleEnvelope, Pr
 
 // Mock getCredentials
 const mockGetCredentials = createGetCredentialsMock();
-jest.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
+vi.mock('@servicenow/sdk-cli/dist/auth/index.js', () => ({
     getCredentials: mockGetCredentials
 }));
 
 // Mock factories
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 // Mock request handler for BGS's internal HTTP calls
 class MockRequestHandler {
-    get = jest.fn<() => Promise<any>>();
-    post = jest.fn<() => Promise<any>>();
-    put = jest.fn<() => Promise<any>>();
-    delete = jest.fn<() => Promise<any>>();
+    get = vi.fn<() => Promise<any>>();
+    post = vi.fn<() => Promise<any>>();
+    put = vi.fn<() => Promise<any>>();
+    delete = vi.fn<() => Promise<any>>();
 }
 
 const RESULT_MARKER = '___FLOW_EXEC_RESULT___';
@@ -95,15 +95,15 @@ describe('FlowManager - Unit Tests', () => {
     let mockRequestHandler: MockRequestHandler;
 
     beforeEach(async () => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         SessionManager.resetInstance();
 
         mockAuthHandler = new MockAuthenticationHandler();
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         const alias = 'test-instance';
@@ -633,7 +633,7 @@ describe('FlowManager - Unit Tests', () => {
 
             // Mock the BGS executeScript method
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.execute({
                 scopedName: 'global.test_flow',
@@ -649,7 +649,7 @@ describe('FlowManager - Unit Tests', () => {
         it('should pass correct scope to BackgroundScriptExecutor', async () => {
             const bgResult = createBGResult(createSuccessEnvelope());
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             await flowMgr.execute({
                 scopedName: 'global.test_flow',
@@ -664,7 +664,7 @@ describe('FlowManager - Unit Tests', () => {
         it('should use default scope when scope not specified', async () => {
             const bgResult = createBGResult(createSuccessEnvelope());
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             await flowMgr.execute({
                 scopedName: 'global.test_flow',
@@ -677,7 +677,7 @@ describe('FlowManager - Unit Tests', () => {
 
         it('should return failure result when BackgroundScriptExecutor throws', async () => {
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockRejectedValueOnce(new Error('CSRF token not found'));
+            vi.spyOn(bgExecutor, 'executeScript').mockRejectedValueOnce(new Error('CSRF token not found'));
 
             const result = await flowMgr.execute({
                 scopedName: 'global.test_flow',
@@ -694,7 +694,7 @@ describe('FlowManager - Unit Tests', () => {
         it('should pass generated script containing the correct flow name', async () => {
             const bgResult = createBGResult(createSuccessEnvelope());
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             await flowMgr.execute({
                 scopedName: 'global.my_specific_flow',
@@ -709,7 +709,7 @@ describe('FlowManager - Unit Tests', () => {
             const errorEnvelope = createErrorEnvelope('No flow found with name: global.nonexistent');
             const bgResult = createBGResult(errorEnvelope);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.execute({
                 scopedName: 'global.nonexistent',
@@ -729,7 +729,7 @@ describe('FlowManager - Unit Tests', () => {
         it('should delegate to execute with type "flow"', async () => {
             const bgResult = createBGResult(createSuccessEnvelope());
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.executeFlow({
                 scopedName: 'global.test_flow'
@@ -743,7 +743,7 @@ describe('FlowManager - Unit Tests', () => {
         it('should pass all options through', async () => {
             const bgResult = createBGResult(createSuccessEnvelope());
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             await flowMgr.executeFlow({
                 scopedName: 'global.test_flow',
@@ -773,7 +773,7 @@ describe('FlowManager - Unit Tests', () => {
             });
             const bgResult = createBGResult(envelope);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.executeSubflow({
                 scopedName: 'global.test_subflow'
@@ -793,7 +793,7 @@ describe('FlowManager - Unit Tests', () => {
             });
             const bgResult = createBGResult(envelope);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.executeAction({
                 scopedName: 'global.test_action'
@@ -934,7 +934,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.getFlowContextStatus(contextId);
 
@@ -954,7 +954,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.getFlowContextStatus(contextId);
 
@@ -965,7 +965,7 @@ describe('FlowManager - Unit Tests', () => {
 
         it('should return failure when BGS throws', async () => {
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockRejectedValueOnce(new Error('Network error'));
+            vi.spyOn(bgExecutor, 'executeScript').mockRejectedValueOnce(new Error('Network error'));
 
             const result = await flowMgr.getFlowContextStatus(contextId);
 
@@ -990,7 +990,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.getFlowOutputs(contextId);
 
@@ -1006,7 +1006,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.getFlowOutputs(contextId);
 
@@ -1030,7 +1030,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.getFlowError(contextId);
 
@@ -1046,7 +1046,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.getFlowError(contextId);
 
@@ -1069,7 +1069,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.cancelFlow(contextId, 'Test cancellation');
 
@@ -1084,7 +1084,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             await flowMgr.cancelFlow(contextId);
 
@@ -1099,7 +1099,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.cancelFlow(contextId);
 
@@ -1130,7 +1130,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.sendFlowMessage(contextId, 'Resume Flow', 'payload data');
 
@@ -1145,7 +1145,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             await flowMgr.sendFlowMessage(contextId, 'Resume Flow', 'my payload');
 
@@ -1160,7 +1160,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             await flowMgr.sendFlowMessage(contextId, 'Resume');
 
@@ -1257,7 +1257,7 @@ describe('FlowManager - Unit Tests', () => {
         it('should return success when publish succeeds', async () => {
             const sysId = 'abc123def456789012345678901234ab';
             // Mock _resolveFlowIdentifier
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId, name: 'global.test_flow'
             });
 
@@ -1267,7 +1267,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.publishFlow(sysId);
 
@@ -1278,7 +1278,7 @@ describe('FlowManager - Unit Tests', () => {
 
         it('should return failure when publish fails', async () => {
             const sysId = 'abc123def456789012345678901234ab';
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId, name: 'global.test_flow'
             });
 
@@ -1288,7 +1288,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             const result = await flowMgr.publishFlow(sysId);
 
@@ -1297,7 +1297,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should return failure when flow not found', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockRejectedValueOnce(
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockRejectedValueOnce(
                 new Error('Flow not found: no sys_hub_flow record matches internal_name="nonexistent.flow"')
             );
 
@@ -1309,12 +1309,12 @@ describe('FlowManager - Unit Tests', () => {
 
         it('should return failure when BGS throws', async () => {
             const sysId = 'abc123def456789012345678901234ab';
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId, name: 'global.test_flow'
             });
 
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockRejectedValueOnce(new Error('Network error'));
+            vi.spyOn(bgExecutor, 'executeScript').mockRejectedValueOnce(new Error('Network error'));
 
             const result = await flowMgr.publishFlow(sysId);
 
@@ -1324,7 +1324,7 @@ describe('FlowManager - Unit Tests', () => {
 
         it('should pass correct script to BGS', async () => {
             const sysId = 'abc123def456789012345678901234ab';
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId, name: 'global.test_flow'
             });
 
@@ -1334,7 +1334,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             await flowMgr.publishFlow(sysId);
 
@@ -1344,7 +1344,7 @@ describe('FlowManager - Unit Tests', () => {
 
         it('should use custom scope when provided', async () => {
             const sysId = 'abc123def456789012345678901234ab';
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId, name: 'global.test_flow'
             });
 
@@ -1354,7 +1354,7 @@ describe('FlowManager - Unit Tests', () => {
             };
             const bgResult = createBGResult(envelope as any);
             const bgExecutor = (flowMgr as any)._bgExecutor;
-            jest.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
+            vi.spyOn(bgExecutor, 'executeScript').mockResolvedValueOnce(bgResult);
 
             await flowMgr.publishFlow(sysId, 'x_myapp');
 
@@ -1567,7 +1567,7 @@ describe('FlowManager - Unit Tests', () => {
 
         it('should return success with context ID on successful test', async () => {
             // Mock _resolveFlowIdentifier
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: FLOW_SYS_ID, name: 'global.test_flow'
             });
 
@@ -1606,7 +1606,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should send correct payload structure', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: FLOW_SYS_ID, name: 'global.test_flow'
             });
 
@@ -1639,7 +1639,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should default runOnThread to true', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: FLOW_SYS_ID, name: 'global.test_flow'
             });
 
@@ -1665,7 +1665,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should use scope from flow definition when not provided in options', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: FLOW_SYS_ID, name: 'global.test_flow'
             });
 
@@ -1692,7 +1692,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should use explicit scope over flow definition scope', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: FLOW_SYS_ID, name: 'global.test_flow'
             });
 
@@ -1719,7 +1719,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should return failure when flow identifier cannot be resolved', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockRejectedValueOnce(
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockRejectedValueOnce(
                 new Error('Flow not found: no sys_hub_flow record matches internal_name="bad.flow"')
             );
 
@@ -1733,7 +1733,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should return failure when flow definition fetch fails', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: FLOW_SYS_ID, name: 'global.test_flow'
             });
 
@@ -1749,7 +1749,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should return failure when test API returns error', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: FLOW_SYS_ID, name: 'global.test_flow'
             });
 
@@ -1781,7 +1781,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should handle POST HTTP errors gracefully', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: FLOW_SYS_ID, name: 'global.test_flow'
             });
 
@@ -1803,7 +1803,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should resolve scoped name to sys_id before fetching definition', async () => {
-            const resolveSpy = jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            const resolveSpy = vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: FLOW_SYS_ID, name: 'x_myapp.my_flow'
             });
 
@@ -1869,7 +1869,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should return success with new flow sys_id on successful copy', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: SOURCE_FLOW_SYS_ID, name: 'global.source_flow'
             });
 
@@ -1896,7 +1896,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should send correct payload and query parameters', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: SOURCE_FLOW_SYS_ID, name: 'global.source_flow'
             });
 
@@ -1931,7 +1931,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should resolve scoped name to sys_id before copying', async () => {
-            const resolveSpy = jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            const resolveSpy = vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: SOURCE_FLOW_SYS_ID, name: 'global.change__standard'
             });
 
@@ -1953,7 +1953,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should return failure when flow identifier cannot be resolved', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockRejectedValueOnce(
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockRejectedValueOnce(
                 new Error('Flow not found: no sys_hub_flow record matches internal_name="bad.flow"')
             );
 
@@ -1968,7 +1968,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should return failure when copy API returns error', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: SOURCE_FLOW_SYS_ID, name: 'global.source_flow'
             });
 
@@ -1995,7 +1995,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should handle HTTP errors gracefully', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: SOURCE_FLOW_SYS_ID, name: 'global.source_flow'
             });
 
@@ -2012,7 +2012,7 @@ describe('FlowManager - Unit Tests', () => {
         });
 
         it('should return failure when API returns null data with errorCode 0', async () => {
-            jest.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
+            vi.spyOn(flowMgr as any, '_resolveFlowIdentifier').mockResolvedValueOnce({
                 sysId: SOURCE_FLOW_SYS_ID, name: 'global.source_flow'
             });
 

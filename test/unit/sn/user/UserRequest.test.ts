@@ -3,7 +3,7 @@
  * Tests getUser() with various response scenarios
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { UserRequest } from '../../../../src/sn/user/UserRequest.js';
 import { IHttpResponse } from '../../../../src/comm/http/IHttpResponse.js';
 import { MockAuthenticationHandler } from '../../__mocks__/servicenow-sdk-mocks.js';
@@ -13,15 +13,15 @@ import { SessionManager } from '../../../../src/comm/http/SessionManager.js';
 import { ServiceNowInstance } from '../../../../src/sn/ServiceNowInstance.js';
 
 // Mock factories
-jest.mock('../../../../src/auth/AuthenticationHandlerFactory');
-jest.mock('../../../../src/comm/http/RequestHandlerFactory');
+vi.mock('../../../../src/auth/AuthenticationHandlerFactory');
+vi.mock('../../../../src/comm/http/RequestHandlerFactory');
 
 // Mock request handler
 class MockRequestHandler {
-    get = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    post = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    put = jest.fn<() => Promise<IHttpResponse<unknown>>>();
-    delete = jest.fn<() => Promise<IHttpResponse<unknown>>>();
+    get = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    post = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    put = vi.fn<() => Promise<IHttpResponse<unknown>>>();
+    delete = vi.fn<() => Promise<IHttpResponse<unknown>>>();
 }
 
 describe('UserRequest', () => {
@@ -41,20 +41,20 @@ describe('UserRequest', () => {
     };
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         SessionManager.resetInstance();
 
         mockAuthHandler = new MockAuthenticationHandler();
         mockRequestHandler = new MockRequestHandler();
 
-        jest.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
+        vi.spyOn(AuthenticationHandlerFactory, 'createAuthHandler')
             .mockReturnValue(mockAuthHandler as unknown as ReturnType<typeof AuthenticationHandlerFactory.createAuthHandler>);
-        jest.spyOn(RequestHandlerFactory, 'createRequestHandler')
+        vi.spyOn(RequestHandlerFactory, 'createRequestHandler')
             .mockReturnValue(mockRequestHandler as unknown as ReturnType<typeof RequestHandlerFactory.createRequestHandler>);
 
         mockInstance = {
-            getAlias: jest.fn().mockReturnValue('test-instance'),
-            getHost: jest.fn().mockReturnValue('<servicenow_instance_url>')
+            getAlias: vi.fn().mockReturnValue('test-instance'),
+            getHost: vi.fn().mockReturnValue('<servicenow_instance_url>')
         } as unknown as ServiceNowInstance;
 
         userRequest = new UserRequest(mockInstance);
@@ -72,7 +72,7 @@ describe('UserRequest', () => {
             // UserRequest.getUser creates a new TableAPIRequest internally,
             // which creates a new ServiceNowRequest, so we need the mocks
             // to work for that inner request too.
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: [mockUserRecord] },
                 status: 200,
@@ -90,7 +90,7 @@ describe('UserRequest', () => {
         });
 
         it('should return null when user not found (empty result array)', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: [] },
                 status: 200,
@@ -105,7 +105,7 @@ describe('UserRequest', () => {
         });
 
         it('should return null when response status is not 200', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: null,
                 status: 404,
@@ -120,7 +120,7 @@ describe('UserRequest', () => {
         });
 
         it('should query sys_user table with sys_id filter', async () => {
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: [mockUserRecord] },
                 status: 200,
@@ -141,7 +141,7 @@ describe('UserRequest', () => {
             const user1 = { ...mockUserRecord, sys_id: 'first' };
             const user2 = { ...mockUserRecord, sys_id: 'second' };
 
-            mockAuthHandler.isLoggedIn = jest.fn().mockReturnValue(true);
+            mockAuthHandler.isLoggedIn = vi.fn().mockReturnValue(true);
             mockRequestHandler.get.mockResolvedValue({
                 data: { result: [user1, user2] },
                 status: 200,
